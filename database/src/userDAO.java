@@ -369,11 +369,29 @@ public class userDAO
            			};
         String[] TUPLES2 = {
         		("insert into Request(requestID, status,note)"+
-            			"values ('334DGWP','P','Nothing');")
+            			"values ('334DGWP','P','Nothing'),"+
+        				"('4930634532','P','note'),"+
+            			"('492054243','R','NA'),"+
+        				"('435920853','A','good'),"+
+            			"('df3424','A','nice'),"+
+        				"('3954023452','A','reasonable'),"+
+        				"('3948123413','P','need more'),"+
+        				"('3928543213','R','No Way'),"+
+        				"('392043255','A','valid');")
+        		
         };
         String[] TUPLES3 = {
         		("insert into Quote(quoteID, status,negotiation_note,work_period,price)"+
-            			"values ('4421FGWP','A','Nothing','20','2500');")
+            			"values ('4421FGWP','A','Nothing','20','2500'),"+
+        				"('49204GQW3','A','satisfied','12','1340'),"+
+            			"('492054HW','R','invalid','13','4400'),"+
+        				"('39402043HQ','P','better deal','35','3752'),"+
+            			"('AW492054E4','P','do better','3','23456'),"+
+        				"('4825042','A','accepted','3','100'),"+
+            			"('5449205425','A','like it','7','3456'),"+
+        				"('4920543243','R','no','8','567'),"+
+        				"('4920542431','A','yes','19','24354');"
+        				)
         };
         
         System.out.println("33333333333.");
