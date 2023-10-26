@@ -4,7 +4,7 @@
 3) Set up the Environmental Variables for JAVA_HOME: Java installation
 4) Set up Envionmental Variables for CATALINA_HOME: set it to Tomcast directory
 
-## Instructions
+## Instruction Setup
 1) Make sure the Tomcast server and all the packages/files are configured
 2) 
 ### root view access
