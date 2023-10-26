@@ -9,10 +9,12 @@
 2) Make sure that all of the nessesary files are in the workspace
 3) Make sure the Tomcast server and all the packages/files are configured
 4) Use the eclipse workspace to run the jsp files
+5) Expand the WebContent folder from the Database folder, and you will see a buch of jsp files
 
-### root view access
-1) Make sure that the tomcast server is working
-2) Once it runs, click on "Initialize the database" to access the tables of all of the users
+# Run the code
+1) Make sure that the tomcast server is working and syncronized
+2) Hover any jsp file from the webcontent, and richt click
+3) After right click, hover to "Run As> Run on Server"
 
 #### Contributions
 Will: 
