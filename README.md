@@ -12,8 +12,15 @@
 2) Once it runs, click on "Initialize the database" to access the tables of all of the users
 
 #### Contributions
-* Will and Rishitha worked on the ER diagram together
-* Rishitha was able to set up the database while Will worked on inputing the raw data
-* Will set up the github repository
+Will: 
+* Worked on the ER diagram
+* Worked on adding tuples
+* Worked on setting up github
+Rishitha:
+* Worked on ER diagram
+* Worked on setting up the code
+* Worked on jsp files
+Both worked 20 hours each and 5 hours together
+###
 
 
