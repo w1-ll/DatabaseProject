@@ -6,7 +6,7 @@
 
 ## Instruction Setup
 1) Make sure the Tomcast server and all the packages/files are configured
-2) 
+2) Use the eclipse workspace to run the jsp files
 ### root view access
 1) Make sure that the tomcast server is working
 2) Once it runs, click on "Initialize the database" to access the tables of all of the users
