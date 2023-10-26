@@ -109,6 +109,51 @@ public class userDAO
         return listUser;
     }
     
+    public List<request> listAllRequests() throws SQLException {
+        List<request> listRequest = new ArrayList<request>();        
+        String sql = "SELECT * FROM Request";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String requestID = resultSet.getString("requestID");
+            String note = resultSet.getString("note");
+            String status = resultSet.getString("status");
+            
+             
+            request Requests = new request(requestID,status,note);
+            listRequest.add(Requests);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listRequest;
+    }
+    
+    public List<quote> listAllQuotes() throws SQLException {
+        List<quote> listQuote = new ArrayList<quote>();        
+        String sql = "SELECT * FROM Quote";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String quoteID = resultSet.getString("quoteID");
+            String negotiation_note = resultSet.getString("negotiation_note");
+            String status = resultSet.getString("status");
+            String work_period = resultSet.getString("work_period");
+            String price = resultSet.getString("price");
+             
+            quote Quotes = new quote(quoteID,status,negotiation_note,work_period,price);
+            listQuote.add(Quotes);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listQuote;
+    }
+    
+    
+    
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
         	connect.close();
@@ -264,9 +309,10 @@ public class userDAO
     
     
     public void init() throws SQLException, FileNotFoundException, IOException{
+    	System.out.println("init started.");
     	connect_func();
         statement =  (Statement) connect.createStatement();
-        
+        System.out.println("start it.");
         String[] INITIAL = {"drop database if exists testdb; ",
 					        "create database testdb; ",
 					        "use testdb; ",
@@ -284,7 +330,29 @@ public class userDAO
 					            "adress_zip_code VARCHAR(5),"+
 					            "creditcard_information VARCHAR(16),"+ 
 					            "PRIMARY KEY (email)); ")
+					        	
         					};
+        String[] INITIAL2 = {
+        		"drop table if exists Request;",
+		        ("CREATE TABLE if not exists Request( "+
+		        	"requestID VARCHAR(10),"+
+		        	"status VARCHAR(1),"+
+		        	"note VARCHAR(100),"+
+		        	"PRIMARY KEY(requestID));")
+
+        };
+        String[] INITIAL3 = {
+        		"drop table if exists Quote;",
+		        ("CREATE TABLE if not exists Quote( "+
+		        	"quoteID VARCHAR(10),"+
+		        	"status VARCHAR(1),"+
+		        	"Negotiation_note VARCHAR(100),"+
+		        	"work_period VARCHAR(2),"+
+		        	"price VARCHAR(6),"+
+		        	"PRIMARY KEY(quoteID));")
+        };
+        
+        System.out.println("finish it.");
         String[] TUPLES = {("insert into User(email, firstName, lastName, password, phone_number, adress_street_num, adress_street, adress_city, adress_state, adress_zip_code, creditcard_information)"+
         			"values ('susie@gmail.com', 'Susie ', 'Guzman', 'susie1234', '9438295729', '1234', 'whatever street', 'detroit', 'MI', '48202','8758274858294710'),\n"
         	
@@ -298,14 +366,48 @@ public class userDAO
         			+ "('damian@gmail.com','Damian','Wayne','Damian2534','1049283746','2932','Blood','Haven','NJ','29385','1057382945194037'),\n"
         			+ "('maria@gmail.com','Maria','Alsamaien','Maria1234','1112930457','4920','Street','Allen Park','MI','48277','1039675555556666');"
         		)
-			    			};
+           			};
+        String[] TUPLES2 = {
+        		("insert into Request(requestID, status,note)"+
+            			"values ('334DGWP','P','Nothing');")
+        };
+        String[] TUPLES3 = {
+        		("insert into Quote(quoteID, status,negotiation_note,work_period,price)"+
+            			"values ('4421FGWP','A','Nothing','20','2500');")
+        };
         
+        System.out.println("33333333333.");
         //for loop to put these in database
         for (int i = 0; i < INITIAL.length; i++)
         	statement.execute(INITIAL[i]);
-        for (int i = 0; i < TUPLES.length; i++)	
-        	statement.execute(TUPLES[i]);
+        
+        for (int i = 0; i < INITIAL2.length; i++)
+        	statement.execute(INITIAL2[i]);
+                
+        System.out.println("444444444444.");
+        for (int i = 0; i < INITIAL3.length; i++)
+        	statement.execute(INITIAL3[i]);
+        
+        
+        System.out.println("555555555555.");
+        for (int i = 0; i < TUPLES.length; i++)
+        	{statement.execute(TUPLES[i]);
+        	}
+        	
+      
+        	System.out.println("dsjfbsjfb");
+        
+        for (int j = 0; j<TUPLES2.length;j++) {
+        	statement.execute(TUPLES2[j]);
+        }
+        
+        for (int i = 0; i<TUPLES3.length;i++) {
+        	statement.execute(TUPLES3[i]);
+        }
+        
+        System.out.println("1111111111.");
         disconnect();
+        System.out.println("2222222222.");
     }
     
     
