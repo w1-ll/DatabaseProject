@@ -23,6 +23,7 @@ Rishitha:
 * Worked on jsp files
 
 Combined working hours - 5 hours
+
 Independent working hours:
 * Rishitha - 20 
 * Will - 20
