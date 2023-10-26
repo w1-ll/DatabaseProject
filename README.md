@@ -20,7 +20,11 @@ Rishitha:
 * Worked on ER diagram
 * Worked on setting up the code
 * Worked on jsp files
-Both worked 20 hours each and 5 hours together
+
+Combined working hours - 5 hours
+Independent working hours:
+* Rishitha - 20 
+* Will - 20
 ###
 
 
