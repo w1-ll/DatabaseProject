@@ -1,4 +1,4 @@
-# Prerequitsite
+# Prerequisite
 1) Install Eclipse Enterprise and Java Developers
 2) Follow the instructions when installing  [Apache Tomcat website ](https://tomcat.apache.org/)
 3) Set up the Environmental Variables for JAVA_HOME: Java installation
