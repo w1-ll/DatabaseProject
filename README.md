@@ -15,7 +15,8 @@
 Will: 
 * Worked on the ER diagram
 * Worked on adding tuples
-* Worked on setting up github
+* Worked on setting up github.
+  
 Rishitha:
 * Worked on ER diagram
 * Worked on setting up the code
