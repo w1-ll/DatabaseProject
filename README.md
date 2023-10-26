@@ -4,6 +4,10 @@
 ### root view access
 1) Make sure that the tomcast server is working
 2) Once it runs, click on "Initialize the database" to access the tables of all of the users
-3) 
+
+#### Contributions
+* Will and Rishitha worked on the ER diagram together
+* Rishitha was able to set up the database while Will worked on inputing the raw data
+* Will set up the github repository
 
 
