@@ -20,6 +20,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 
 
+
 public class ControlServlet extends HttpServlet {
 	    private static final long serialVersionUID = 1L;
 	    private userDAO userDAO = new userDAO();
@@ -91,6 +92,11 @@ public class ControlServlet extends HttpServlet {
 	    private void rootPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
 			request.setAttribute("listUser", userDAO.listAllUsers());
+			System.out.println("aaaaaaaa");
+		
+			request.setAttribute("Requests", userDAO.listAllRequests());
+			request.setAttribute("Quotes", userDAO.listAllQuotes());
+			
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
