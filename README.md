@@ -1,5 +1,8 @@
 # Table of contents
-[Prerequisite](#Prerequisite) 
+* [Prerequisite](#Prerequisite)
+* [Instructions](#InstructionSetup)
+* [Code instructions](#Runthecode)
+* [Contributions](#contributions)
 # Prerequisite
 1) Install Eclipse Enterprise and Java Developers
 2) Follow the instructions when installing  [Apache Tomcat website ](https://tomcat.apache.org/)
