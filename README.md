@@ -1,5 +1,6 @@
 # Description
-This project is used as a basis to show how the code interacts with web servers through Java, SQL, and jsp files
+This project is used as a basis to show how the code interacts with web servers through Java, SQL, and jsp files.
+
 This also sets a relation between the contractor, client, the negotiation quote, and more
 # Table of contents
 * [Prerequisite](#Prerequisite)
