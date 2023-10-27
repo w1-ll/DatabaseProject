@@ -1,7 +1,7 @@
 # Table of contents
 * [Prerequisite](#Prerequisite)
 * [Instructions](#InstructionSetup)
-* [Code instructions](#Runthecode)
+* [Run the code](#Runthecode)
 * [Contributions](#contributions)
 # Prerequisite
 1) Install Eclipse Enterprise and Java Developers
