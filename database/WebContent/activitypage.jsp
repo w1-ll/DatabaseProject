@@ -13,11 +13,14 @@
 
  
 	<body>
+	
 	 <center>
 		 <a href="login.jsp"target ="_self" > logout</a><br><br> 
 		 <p> You can show all the transactions or other attributes here like balance, name of the user and others.</p>
 		 </center>
 		 
-		<center><button type="button"> Start a new Request</button></center>
+		 <center><a href="ClientRequest.jsp"target ="_self" > Start a new Request</a></center><br><br> 
+		 <!-- <center><button type="button"> Start a new Request</button></center><input type="submit" value="Start a new Request"/> -->
+		
 	</body>
 </html>
