@@ -3,7 +3,7 @@ public class request
 		protected String requestID;
 	 	protected String status;
 	    protected String note;
-	   
+	    protected tree Tree;
 	 
 	    //constructors
 	    public request() {
@@ -14,17 +14,19 @@ public class request
 	        this.requestID = requestID;
 	    }
 	    
-	    public request(String requestID, String status, String note) 
+	    public request(String requestID, String status, String note, tree Tree) 
 	    {
-	    	this(status,note);
+	    	this(status,note,Tree);
 	    	this.requestID = requestID;
+	    	
 	    }
 	 
 	
-	    public request(String status, String note) 
+	    public request(String status, String note,tree Tree) 
 	    {
 	    	this.status = status;
 	    	this.note = note;
+	    	this.Tree = Tree;
 	    }
 	    
 	   //getter and setter methods
@@ -48,6 +50,11 @@ public class request
 	    public void setNote(String note) {
 	        this.note = note;
 	    }
-	        
+	    public void setTree(tree Tree) {
+	    	this.Tree = Tree;
+	    }
+	    public tree getTree() {
+	    	return Tree;
+	    }
 	   
 	}
