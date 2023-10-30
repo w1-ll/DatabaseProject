@@ -20,7 +20,6 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 
 
-
 public class ControlServlet extends HttpServlet {
 	    private static final long serialVersionUID = 1L;
 	    private userDAO userDAO = new userDAO();
@@ -67,7 +66,10 @@ public class ControlServlet extends HttpServlet {
         		break;
         	 case "/list": 
                  System.out.println("The action is: list");
-                 listUser(request, response);           	
+                 listUser(request, response);     
+        	 case "/newRequest":
+        		 System.out.println("Request initiated");
+        		 newRequest(request, response);
                  break;
 	    	}
 	    }
@@ -173,6 +175,18 @@ public class ControlServlet extends HttpServlet {
 	   		 request.getRequestDispatcher("register.jsp").forward(request, response);
 	   	 	}
 	    }    
+	    private void newRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	    	String RequestID = request.getParameter("requestID");
+	    	String Status = request.getParameter("status");
+	    	String Note = request.getParameter("note");
+	    	System.out.println("data obtained.");
+	    	request Request = new request(RequestID,Status,Note);
+	    	System.out.println("new request created");
+	    	userDAO.insertRequest(Request);
+	    	System.out.println("userDAO ran.");
+	    	response.sendRedirect("activitypage.jsp");
+	    }    
+	    
 	    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    	currentUser = "";
         		response.sendRedirect("login.jsp");
