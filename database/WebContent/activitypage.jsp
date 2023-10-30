@@ -17,5 +17,7 @@
 		 <a href="login.jsp"target ="_self" > logout</a><br><br> 
 		 <p> You can show all the transactions or other attributes here like balance, name of the user and others.</p>
 		 </center>
+		 
+		<center><button type="button"> Start a new Request</button></center>
 	</body>
 </html>
