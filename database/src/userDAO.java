@@ -73,8 +73,8 @@ public class userDAO
                 throw new SQLException(e);
             }
             connect = (Connection) DriverManager
-  			      .getConnection("jdbc:mysql://127.0.0.1:3306/userdb?"
-  			          + "useSSL=false&user=" + username + "&password=" + password);
+  			      .getConnection("jdbc:mysql://127.0.0.1:3306/testdb?"
+  			          + "allowPublicKeyRetrieval=true&useSSL=false&user=" + username + "&password=" + password);
             System.out.println(connect);
         }
     }
@@ -175,6 +175,22 @@ public class userDAO
 			preparedStatement.setString(9, users.getAdress_state());		
 			preparedStatement.setString(10, users.getAdress_zip_code());		
 			preparedStatement.setString(11, users.getCreditcard_information());			
+
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
+    
+    public void insertRequest(request requests) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","pass1234"); 
+    	System.out.println("connected");
+		String sql = "insert into Request(requestID,status,note) values (?, ?, ?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+	        preparedStatement.setString(1, requests.getRequestID());
+			preparedStatement.setString(2, requests.getStatus());
+			preparedStatement.setString(3, requests.getNote());
+			System.out.println("sql implemented.");
 
 		preparedStatement.executeUpdate();
         preparedStatement.close();
