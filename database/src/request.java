@@ -1,9 +1,10 @@
 public class request 
 {
+		protected String email;
 		protected String requestID;
 	 	protected String status;
 	    protected String note;
-	    protected tree Tree;
+	    //protected tree Tree;
 	 
 	    //constructors
 	    public request() {
@@ -14,19 +15,19 @@ public class request
 	        this.requestID = requestID;
 	    }
 	    
-	    public request(String requestID, String status, String note, tree Tree) 
+	    public request(String requestID, String status, String note, String email) 
 	    {
-	    	this(status,note,Tree);
+	    	this(status,note,email);
 	    	this.requestID = requestID;
 	    	
 	    }
 	 
 	
-	    public request(String status, String note,tree Tree) 
+	    public request(String status, String note, String email) 
 	    {
 	    	this.status = status;
 	    	this.note = note;
-	    	this.Tree = Tree;
+	    	this.email = email;
 	    }
 	    
 	   //getter and setter methods
@@ -50,11 +51,17 @@ public class request
 	    public void setNote(String note) {
 	        this.note = note;
 	    }
-	    public void setTree(tree Tree) {
+	    /*public void setTree(tree Tree) {
 	    	this.Tree = Tree;
 	    }
 	    public tree getTree() {
 	    	return Tree;
-	    }
+	    }*/
+	    public void setEmail(String email) {
+    	this.email = email;
+    }
+    public String getEmail() {
+    	return email;
+    }
 	   
 	}
