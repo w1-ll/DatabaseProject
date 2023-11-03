@@ -118,11 +118,12 @@ public class userDAO
          
         while (resultSet.next()) {
             String requestID = resultSet.getString("requestID");
+            String email = resultSet.getString("email");
             String note = resultSet.getString("note");
             String status = resultSet.getString("status");
             
              
-            request Requests = new request(requestID,status,note);
+            request Requests = new request(requestID,status,note,email);
             listRequest.add(Requests);
         }        
         resultSet.close();
@@ -182,18 +183,21 @@ public class userDAO
     
     public void insertRequest(request requests) throws SQLException {
     	System.out.println("insert began");
-    	connect_func("root","pass1234"); 
+    	connect_func("root","rishi1234"); 
     	System.out.println("connected");
-		String sql = "insert into Request(requestID,status,note) values (?, ?, ?)";
+		String sql = "insert into Request(email, requestID,status,note) values (?, ?, ?, ?)";
 		
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-	        preparedStatement.setString(1, requests.getRequestID());
-			preparedStatement.setString(2, requests.getStatus());
-			preparedStatement.setString(3, requests.getNote());
+		 preparedStatement.setString(1, requests.getEmail());
+	        preparedStatement.setString(2, requests.getRequestID());
+			preparedStatement.setString(3, requests.getStatus());
+			preparedStatement.setString(4, requests.getNote());
 			System.out.println("sql implemented.");
 
 		preparedStatement.executeUpdate();
+		System.out.println("updated");
         preparedStatement.close();
+        System.out.println("closed");
     }
     
     public boolean delete(String email) throws SQLException {
@@ -351,6 +355,7 @@ public class userDAO
         String[] INITIAL2 = {
         		"drop table if exists Request;",
 		        ("CREATE TABLE if not exists Request( "+
+		        	"email VARCHAR(50),"+
 		        	"requestID VARCHAR(10),"+
 		        	"status VARCHAR(1),"+
 		        	"note VARCHAR(100),"+
@@ -384,16 +389,16 @@ public class userDAO
         		)
            			};
         String[] TUPLES2 = {
-        		("insert into Request(requestID, status,note)"+
-            			"values ('334DGWP','P','Nothing'),"+
-        				"('4930634532','P','note'),"+
-            			"('492054243','R','NA'),"+
-        				"('435920853','A','good'),"+
-            			"('df3424','A','nice'),"+
-        				"('3954023452','A','reasonable'),"+
-        				"('3948123413','P','need more'),"+
-        				"('3928543213','R','No Way'),"+
-        				"('392043255','A','valid');")
+        		("insert into Request(email,requestID, status,note)"+
+            			"values ('roy@gmail.com','334DGWP','P','Nothing'),"+
+        				"('roy@gmail.com','4930634532','P','note'),"+
+            			"('dick@gmail.com','492054243','R','NA'),"+
+        				"('bat@gmail.com','435920853','A','good'),"+
+            			"('dick@gmail.com','df3424','A','nice'),"+
+        				"('barbara@gmail.com','3954023452','A','reasonable'),"+
+        				"('tim@gmail.com','3948123413','P','need more'),"+
+        				"('damian@gmai.com','3928543213','R','No Way'),"+
+        				"('maria@gmail.com','392043255','A','valid');")
         		
         };
         String[] TUPLES3 = {
