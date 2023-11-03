@@ -104,12 +104,12 @@ public class ControlServlet extends HttpServlet {
 	    
 	    private void contractorPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
 	    	System.out.println("contractor view");
-	    	request.setAttribute("listUser", userDAO.listAllUsers());
+	    	request.setAttribute("Requests", userDAO.listAllRequests());
 	    	request.getRequestDispatcher("contractor.jsp").forward(request, response);
 
 	    }
 	    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	    	System.out.println("checkpoint");
+	    	
 	    	 String email = request.getParameter("email");
 	    	 String password = request.getParameter("password");
 	    	 System.out.println("check");
@@ -176,11 +176,14 @@ public class ControlServlet extends HttpServlet {
 	   	 	}
 	    }    
 	    private void newRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	    	
 	    	String RequestID = request.getParameter("requestID");
 	    	String Status = request.getParameter("status");
 	    	String Note = request.getParameter("note");
+	    	String Email =  request.getParameter("email");
+	    	//System.out.println(session.getAttribute("username"));
 	    	System.out.println("data obtained.");
-	    	request Request = new request(RequestID,Status,Note);
+	    	request Request = new request(RequestID,Status,Note, Email);
 	    	System.out.println("new request created");
 	    	userDAO.insertRequest(Request);
 	    	System.out.println("userDAO ran.");
@@ -202,12 +205,3 @@ public class ControlServlet extends HttpServlet {
 	    
 	    
 }
-	        
-	        
-	    
-	        
-	        
-	        
-	    
-
-
