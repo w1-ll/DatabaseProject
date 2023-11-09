@@ -11,14 +11,14 @@
 
 <center><h1>Welcome, David! You have been successfully logged in</h1> </center>
 
-
-
+ 
 	<body>
 	 <center>
 		 <a href="login.jsp"target ="_self" > logout</a><br><br> 
 		 <p> You can show all the transactions or other attributes here like balance, name of the user and others.</p>
 		 </center>
 	<div align="center">
+		<form action= "DirectToQuotePage">
 		<table border="1" cellpadding="6">
             <caption><h2>List of Requests</h2></caption>
             <tr>
@@ -26,17 +26,23 @@
                 <th>User Email </th>
                 <th>Status</th>
                 <th>Note</th>
+                <th>Send Quote</th>
                               
             </tr>
             <c:forEach var="request" items="${Requests}">
                 <tr style="text-align:center">
-                    <td><c:out value="${request.requestID}" /></td>
+                    <td><c:out value="${request.requestID}" /></td>                    
                 	<td><c:out value="${request.email}" /></td>
                     <td><c:out value="${request.status}" /></td>
                     <td><c:out value="${request.note}" /></td>
-                                      
+                    <td align="center" colspan="5">
+                    	<input type="hidden" name="selectedEmail" value="${request.email}" />
+						<input type="submit" value="Send Quote"/>
+					</td>                  
            </c:forEach>
         </table>
+        
+        </form>
         </div> 
 	</body>
 </html>
