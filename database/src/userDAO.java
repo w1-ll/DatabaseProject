@@ -415,7 +415,7 @@ public class userDAO
         				)
         };
         
-        System.out.println("33333333333.");
+       
         //for loop to put these in database
         for (int i = 0; i < INITIAL.length; i++)
         	statement.execute(INITIAL[i]);
@@ -428,7 +428,7 @@ public class userDAO
         	statement.execute(INITIAL3[i]);
         
         
-        System.out.println("555555555555.");
+        
         for (int i = 0; i < TUPLES.length; i++)
         	{statement.execute(TUPLES[i]);
         	}
@@ -444,9 +444,8 @@ public class userDAO
         	statement.execute(TUPLES3[i]);
         }
         
-        System.out.println("1111111111.");
+        
         disconnect();
-        System.out.println("2222222222.");
     }
     
     
