@@ -7,14 +7,24 @@
 <title>Send Quote</title>
 </head>
 <body>
-<h1>New Request</h1> <br>
-	<form action="newRequest">
+<h1>Send Quote</h1> <br>
+	<form action="sendQuote">
 	<table border="1" cellpadding="5">
+				<tr> 
+				<th>Email Address</th>
+				<td align="center" colspan="3">
+						<p>${emailID}</p>
+						<input type="hidden" name="selectedEmail" value="${emailID}">
+					</td>
+				 
+				
+				</tr>
 				<tr>
 					<th>Quote ID </th>
 					<td align="center" colspan="3">
-						<input type="text" name="requestID" size="45"  value="M324233120" onfocus="this.value=''">
+						<input type="text" name="quoteID" size="45"  value="M324233120" onfocus="this.value=''">
 					</td>
+					
 				</tr>
 				<tr>
 					<th>Status </th>
@@ -48,6 +58,7 @@
 						<input type="submit" value="Submit Request"/>
 					</td>
 				</tr>
+	</table>
 	
 	</form>
 </body>
