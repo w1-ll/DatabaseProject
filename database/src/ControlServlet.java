@@ -66,11 +66,19 @@ public class ControlServlet extends HttpServlet {
         		break;
         	 case "/list": 
                  System.out.println("The action is: list");
-                 listUser(request, response);     
+                 listUser(request, response);  
+                 break;
         	 case "/newRequest":
         		 System.out.println("Request initiated");
         		 newRequest(request, response);
                  break;
+        	 case "/sendQuote":
+        		 System.out.println("Quote initiated");
+        		 newQuote(request, response);
+                 break;
+        	 case "/DirectToQuotePage":
+        		 System.out.println("Direct to Quote Page initiated.");
+        		 DirectToQuotePage(request,response);
 	    	}
 	    }
 	    catch(Exception ex) {
@@ -94,7 +102,6 @@ public class ControlServlet extends HttpServlet {
 	    private void rootPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
 			request.setAttribute("listUser", userDAO.listAllUsers());
-			System.out.println("aaaaaaaa");
 		
 			request.setAttribute("Requests", userDAO.listAllRequests());
 			request.setAttribute("Quotes", userDAO.listAllQuotes());
@@ -122,7 +129,7 @@ public class ControlServlet extends HttpServlet {
 	    	 }
 	    	 else if(email.equals("david@gmail.com") && password.equals("david1234")) {
 	    		 System.out.println("worked");
-				 System.out.println("Login Successful! Redirecting to root");
+				 System.out.println("Login Successful! Redirecting to the contractor.");
 				 session = request.getSession();
 				 session.setAttribute("username", email);
 				 contractorPage(request, response, "");
@@ -175,7 +182,7 @@ public class ControlServlet extends HttpServlet {
 	   		 request.getRequestDispatcher("register.jsp").forward(request, response);
 	   	 	}
 	    }    
-	    private void newRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+private void newRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
 	    	
 	    	String RequestID = request.getParameter("requestID");
 	    	String Status = request.getParameter("status");
@@ -190,18 +197,32 @@ public class ControlServlet extends HttpServlet {
 	    	response.sendRedirect("activitypage.jsp");
 	    }    
 	    
+private void newQuote(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	    	
+	    	String RequestID = request.getParameter("requestID");
+	    	String Status = request.getParameter("status");
+	    	String Note = request.getParameter("note");
+	    	String Email =  request.getParameter("email");
+	    	//System.out.println(session.getAttribute("username"));
+	    	System.out.println("data obtained.");
+	    	request Request = new request(RequestID,Status,Note, Email);
+	    	System.out.println("new request created");
+	    	userDAO.insertRequest(Request);
+	    	System.out.println("userDAO ran.");
+	    	response.sendRedirect("activitypage.jsp");
+	    } 
 	    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    	currentUser = "";
         		response.sendRedirect("login.jsp");
         	}
 	
-	    
+private void DirectToQuotePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	    	
+	 String email = request.getParameter("selectedEmail");
+	 System.out.println(email);
+	 request.setAttribute("emailID", email);
+	 System.out.println("Re started");	
+ 	request.getRequestDispatcher("SendQuote.jsp").forward(request, response);
+ 	System.out.println("Re ended");
 
-	     
-        
-	    
-	    
-	    
-	    
-	    
-}
+	    } 
