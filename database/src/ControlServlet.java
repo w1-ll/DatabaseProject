@@ -101,12 +101,11 @@ public class ControlServlet extends HttpServlet {
 	    	        
 	    private void rootPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
-			request.setAttribute("listUser", userDAO.listAllUsers());
-		
-			request.setAttribute("Requests", userDAO.listAllRequests());
-			request.setAttribute("Quotes", userDAO.listAllQuotes());
-			
-	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
+		request.setAttribute("listUser", userDAO.listAllUsers());
+		request.setAttribute("Requests", userDAO.listAllRequests());
+		request.setAttribute("Quotes", userDAO.listAllQuotes());
+		request.setAttribute("Trees", userDAO.listAllTrees());
+		request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
 	    private void contractorPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
