@@ -84,7 +84,25 @@
                     <td><c:out value="${quote.price}" /></td>                
            </c:forEach>
         </table>
-        
+
+	<table border="1" cellpadding="6">
+            <caption><h2>Tree Table</h2></caption>
+            <tr>
+                <th>Tree Distance</th>
+                <th>Trunk Size</th>
+                <th>Tree Height</th>
+                <th>Tree Location </th>              
+            </tr>
+            
+            
+            <c:forEach var="Trees" items="${Trees}">
+                <tr style="text-align:center">
+                    <td><c:out value="${tree.treeDistance}" /></td>
+                    <td><c:out value="${tree.trunkSize}" /></td>
+                    <td><c:out value="${tree.treeHeight}" /></td>
+                    <td><c:out value="${tree.treeLocation}" /></td>              
+           </c:forEach>
+        </table>
         
 	</div>
 	</div>
