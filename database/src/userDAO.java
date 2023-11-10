@@ -374,14 +374,14 @@ public class userDAO
         };
 	String[] INITIAL4 = {
         		"drop table if exists tree;",
-		        ("CREATE tree if not exists tree( "+
-		        	"treeDistance VARCHAR(4),"+
-		        	"trunk_size VARCHAR(4),"+
-		        	"tree_height VARCHAR(6),"+
-		        	"tree_location VARCHAR(2),"+
-		        	"PRIMARY KEY(tree-distance));")
-        };
+        		("CREATE TABLE IF NOT EXISTS tree ( "+
+        			    "tree_distance VARCHAR(4),"+
+        			    "trunk_size VARCHAR(4),"+
+        			    "tree_height VARCHAR(6),"+
+        			    "tree_location VARCHAR(2),"+
+        			    "PRIMARY KEY (tree_distance));")
 
+        };
 	    
         System.out.println("finish it.");
         String[] TUPLES = {("insert into User(email, firstName, lastName, password, phone_number, adress_street_num, adress_street, adress_city, adress_state, adress_zip_code, creditcard_information)"+
@@ -427,14 +427,14 @@ public class userDAO
 	String[] TUPLES4 = {
         		("insert into tree(tree_distance, trunk_size,tree_height,tree_location)"+
             			"values ('1111','1010','101010','10'),"+
-        				"('2','2','2','2','2'),"+
-            			"('1','1','1','1','1'),"+
-        				"('123','11','22','33','12'),"+
-            			"('1234','3213','12423','12','12'),"+
-        				"('3920','4322','33333','24242','33'),"+
-            			"('1232','11','222','12','12'),"+
-        				"('4323','234','423','3333','23'),"+
-        				"('3333','2222','333333','2333','44');"
+        				"('2','2','2','2'),"+
+            			"('1','1','1','1'),"+
+        				"('123','11','22876','33'),"+
+            			"('1234','3213','12423','12'),"+
+        				"('3920','4322','33333','24'),"+
+            			"('1232','11','222','12'),"+
+        				"('4323','234','423','33'),"+
+        				"('3333','2222','333333','23');"
         				)
         };
 	    
