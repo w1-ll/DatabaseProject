@@ -153,7 +153,26 @@ public class userDAO
         return listQuote;
     }
     
-    
+    public List<tree> listAllTrees() throws SQLException {
+        List<tree> listTree = new ArrayList<tree>();        
+        String sql = "SELECT * FROM tree";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String treeDistance = resultSet.getString("tree_distance");
+            String trunkSize = resultSet.getString("trunk_size");
+            String treeHeight = resultSet.getString("tree_height");
+            String treeLocation = resultSet.getString("tree_location");
+             
+            tree Trees = new tree(treeDistance,trunkSize,treeHeight,treeLocation);
+            listTree.add(Trees);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listTree;
+    }
     
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
