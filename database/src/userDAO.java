@@ -179,7 +179,30 @@ public class userDAO
         	connect.close();
         }
     }
-    
+    public List<Bill> listAllBills() throws SQLException{
+    	System.out.println("Started");
+        List<Bill> listBill = new ArrayList<Bill>();        
+        String sql = "SELECT * FROM bill";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+    	
+    	while(resultSet.next()) {
+    		String billID = resultSet.getString("bill_id");
+    		String initialPrice = resultSet.getString("initial_price");
+    		String priceBargain = resultSet.getString("price_bargain");
+    		String finalPrice = resultSet.getString("bill_id");
+    		Bill Bills = new Bill(billID, initialPrice, priceBargain, finalPrice);
+    		listBill.add(Bills);
+    	}
+    	resultSet.close();
+    	System.out.print("bill sucks");
+    	disconnect();
+    	return listBill;
+    		
+    	
+    }
+
     public void insert(user users) throws SQLException {
     	connect_func("root","pass1234");         
 		String sql = "insert into User(email, firstName, lastName, password, phone_number,adress_street_num, adress_street,adress_city,adress_state,adress_zip_code,creditcard_information) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?)";
@@ -401,7 +424,17 @@ public class userDAO
         			    "PRIMARY KEY (tree_distance));")
 
         };
-	    
+
+	String[] INITIAL5 = {
+        		"drop table if exists bill;",
+        		("CREATE TABLE IF NOT EXISTS bill ( "+
+        			    "bill_id VARCHAR(4),"+
+        			    "initial_price VARCHAR(4),"+
+        			    "price_bargain VARCHAR(4),"+
+        			    "final_bill VARCHAR(4),"+
+        			    "PRIMARY KEY (bill_id));")
+
+        };
         System.out.println("finish it.");
         String[] TUPLES = {("insert into User(email, firstName, lastName, password, phone_number, adress_street_num, adress_street, adress_city, adress_state, adress_zip_code, creditcard_information)"+
         			"values ('susie@gmail.com', 'Susie ', 'Guzman', 'susie1234', '9438295729', '1234', 'whatever street', 'detroit', 'MI', '48202','8758274858294710'),\n"
@@ -456,6 +489,19 @@ public class userDAO
         				"('3333','2222','333333','23');"
         				)
         };
+	String[] TUPLES5 = {
+        		("insert into bill(bill_id, initial_price,price_bargain,final_bill)"+
+            			"values ('0000','0000','0000','0000'),"+
+        				"('S24S','1000','980','800'),"+
+            			"('g345','9999','8888','7777'),"+
+        				"('dwrt','8750','5555','8749'),"+
+            			"('Jk98','3213','3210','3100'),"+
+        				"('h832','9998','3333','4000'),"+
+            			"('1232','8888','6000','6100'),"+
+        				"('43y3','2300','2100','2150'),"+
+        				"('hy78','6666','3333','4000');"
+        				)
+        };
 	    
         //for loop to put these in database
         for (int i = 0; i < INITIAL.length; i++)
@@ -469,13 +515,15 @@ public class userDAO
         	statement.execute(INITIAL3[i]);
         for (int i = 0; i < INITIAL4.length; i++)
         	statement.execute(INITIAL4[i]);
+	for (int i = 0; i < INITIAL5.length; i++)
+        	statement.execute(INITIAL5[i]);
 	    
         for (int i = 0; i < TUPLES.length; i++)
         	{statement.execute(TUPLES[i]);
         	}
 
 	    
-        	System.out.println("dsjfbsjfb");
+        System.out.println("dsjfbsjfb");
         
         for (int j = 0; j<TUPLES2.length;j++) {
         	statement.execute(TUPLES2[j]);
@@ -487,7 +535,9 @@ public class userDAO
 	for (int i = 0; i<TUPLES4.length;i++) {
         	statement.execute(TUPLES4[i]);
         }
-        
+        for (int i = 0; i<TUPLES5.length;i++) {
+        	statement.execute(TUPLES5[i]);
+        }
         
         disconnect();
     }
