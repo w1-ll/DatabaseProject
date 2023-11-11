@@ -103,6 +103,26 @@
                     <td><c:out value="${tree.treeLocation}" /></td>              
            </c:forEach>
         </table>
+
+	<table border="1" cellpadding="6">
+            <caption><h2>List of bills</h2></caption>
+            <tr>
+                <th>BillID</th>
+                <th>Initial Price</th>
+                <th>Bargained Price</th>
+                <th>Final Price </th>
+                              
+            </tr>
+            
+            
+            <c:forEach var="Bill" items="${Bill}">
+                <tr style="text-align:center">
+                    <td><c:out value="${Bill.billID}" /></td>
+                    <td><c:out value="${Bill.initialPrice}" /></td>
+                    <td><c:out value="${Bill.priceBargain}" /></td>
+                    <td><c:out value="${Bill.finalPrice}" /></td>              
+           </c:forEach>
+        </table>
         
 	</div>
 	</div>
