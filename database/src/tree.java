@@ -4,7 +4,7 @@ public class tree
 	 	protected String trunk_size;
 	    protected String tree_height;
 	    protected String tree_location;
-	 
+	    protected int tree_id;
 	    //constructors
 	    public tree() {
 	    }
@@ -54,7 +54,7 @@ public class tree
 	    public String getTree_location() {
 	        return tree_location;
 	    }
-	    public void setFinal_price(String tree_location) {
+	    public void setTree_location(String tree_location) {
 	        this.tree_location = tree_location;
 	    }
 	}
