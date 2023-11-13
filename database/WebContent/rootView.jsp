@@ -45,11 +45,14 @@
                   
            </c:forEach>
         </table>
-        
+        <br>
+       
+        <br>
          <table border="1" cellpadding="6">
             <caption><h2>List of Requests</h2></caption>
             <tr>
                 <th>RequestID</th>
+                <th>User Email </th>
                 <th>Status</th>
                 <th>Note</th>
                               
@@ -57,6 +60,7 @@
             <c:forEach var="request" items="${Requests}">
                 <tr style="text-align:center">
                     <td><c:out value="${request.requestID}" /></td>
+                	<td><c:out value="${request.email}" /></td>
                     <td><c:out value="${request.status}" /></td>
                     <td><c:out value="${request.note}" /></td>
                                       
@@ -67,10 +71,13 @@
             <caption><h2>List of Quotes</h2></caption>
             <tr>
                 <th>QuoteID</th>
-                <th>Status</th>
+                <th>User Email</th>
+                <th>Contractor Status</th>
+                <th>User Status</th>
                 <th>Negotiation Note</th>
                 <th>Work Period </th>
                 <th>Price</th>
+                <th>User note</th>
                               
             </tr>
             
@@ -78,14 +85,18 @@
             <c:forEach var="quote" items="${Quotes}">
                 <tr style="text-align:center">
                     <td><c:out value="${quote.quoteID}" /></td>
-                    <td><c:out value="${quote.status}" /></td>
+                    <td><c:out value="${quote.email}" /></td>
+                    <td><c:out value="${quote.contractor_status}" /></td>
+                    <td><c:out value="${quote.user_status}" /></td>
                     <td><c:out value="${quote.negotiation_note}" /></td>
                     <td><c:out value="${quote.work_period}" /></td>
-                    <td><c:out value="${quote.price}" /></td>                
+                    <td><c:out value="${quote.price}" /></td>    
+                    <td><c:out value="${quote.user_note}" /></td>             
            </c:forEach>
         </table>
-
-	<table border="1" cellpadding="6">
+        
+        
+        <table border="1" cellpadding="6">
             <caption><h2>Tree Table</h2></caption>
             <tr>
                 <th>Tree Distance</th>
@@ -95,35 +106,36 @@
             </tr>
             
             
-            <c:forEach var="Trees" items="${Trees}">
+            <c:forEach var="tree" items="${Trees}">
                 <tr style="text-align:center">
-                    <td><c:out value="${tree.treeDistance}" /></td>
-                    <td><c:out value="${tree.trunkSize}" /></td>
-                    <td><c:out value="${tree.treeHeight}" /></td>
-                    <td><c:out value="${tree.treeLocation}" /></td>              
+                    <td><c:out value="${tree.tree_distance}" /></td>
+                    <td><c:out value="${tree.trunk_size}" /></td>
+                    <td><c:out value="${tree.tree_height}" /></td>
+                    <td><c:out value="${tree.tree_location}" /></td>              
            </c:forEach>
         </table>
-
-	<table border="1" cellpadding="6">
-            <caption><h2>List of bills</h2></caption>
+       
+       
+       <table border="1" cellpadding="6">
+            <caption><h2>List of Bills</h2></caption>
             <tr>
-                <th>BillID</th>
-                <th>Initial Price</th>
-                <th>Bargained Price</th>
-                <th>Final Price </th>
-                              
+                <th>Bill ID</th>
+                <th>Status</th>
+                <th>Negotiation Note</th>
+                <th>Final Price </th>              
             </tr>
             
             
-            <c:forEach var="Bill" items="${Bill}">
+            <c:forEach var="bill" items="${Bills}">
                 <tr style="text-align:center">
-                    <td><c:out value="${Bill.billID}" /></td>
-                    <td><c:out value="${Bill.initialPrice}" /></td>
-                    <td><c:out value="${Bill.priceBargain}" /></td>
-                    <td><c:out value="${Bill.finalPrice}" /></td>              
+                    <td><c:out value="${bill.billID}" /></td>
+                    <td><c:out value="${bill.status}" /></td>
+                    <td><c:out value="${bill.negotiation_note}" /></td>
+                    <td><c:out value="${bill.final_price}" /></td>   
            </c:forEach>
         </table>
-        
+       
+
 	</div>
 	</div>
 
