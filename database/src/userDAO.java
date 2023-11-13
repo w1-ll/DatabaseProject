@@ -131,6 +131,30 @@ public class userDAO
         return listRequest;
     }
     
+    
+    public List<request> listAllRequestsForContractor() throws SQLException {
+        List<request> listRequest = new ArrayList<request>();        
+        String sql = "SELECT * FROM Request WHERE status != 'S' ";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String requestID = resultSet.getString("requestID");
+            String email = resultSet.getString("email");
+            String note = resultSet.getString("note");
+            String status = resultSet.getString("status");
+            
+             
+            request Requests = new request(requestID,status,note,email);
+            listRequest.add(Requests);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listRequest;
+    }
+    
+    
     public List<quote> listAllQuotes() throws SQLException {
         List<quote> listQuote = new ArrayList<quote>();        
         String sql = "SELECT * FROM Quote";      
@@ -139,13 +163,16 @@ public class userDAO
         ResultSet resultSet = statement.executeQuery(sql);
          
         while (resultSet.next()) {
+        	String user_note =  resultSet.getString("user_note");
+        	String email = resultSet.getString("email");
             String quoteID = resultSet.getString("quoteID");
             String negotiation_note = resultSet.getString("negotiation_note");
-            String status = resultSet.getString("status");
+            String contractor_status = resultSet.getString("contractor_status");
+            String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
             String price = resultSet.getString("price");
              
-            quote Quotes = new quote(quoteID,status,negotiation_note,work_period,price);
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note);
             listQuote.add(Quotes);
         }        
         resultSet.close();
@@ -154,55 +181,104 @@ public class userDAO
     }
     
     public List<tree> listAllTrees() throws SQLException {
-        List<tree> listTree = new ArrayList<tree>();        
-        String sql = "SELECT * FROM tree";      
+    	 List<tree> listTree = new ArrayList<tree>();        
+         String sql = "SELECT * FROM tree";      
+         connect_func();      
+         statement = (Statement) connect.createStatement();
+         ResultSet resultSet = statement.executeQuery(sql);
+          
+         while (resultSet.next()) {
+         	String tree_distance =  resultSet.getString("tree_distance");
+         	String trunk_size = resultSet.getString("trunk_size");
+             String tree_height = resultSet.getString("tree_height");
+             String tree_location = resultSet.getString("tree_location");
+             //System.out.println(tree_distance+"\n"+trunk_size+"\n"+tree_height+"\n"+tree_location);
+              
+             tree Tree = new tree(tree_distance,trunk_size,tree_height,tree_location);
+             listTree.add(Tree);
+         }        
+         resultSet.close();
+         disconnect();        
+         return listTree;
+    }
+    
+    public List<bill> listAllBills() throws SQLException{
+    	List<bill> listBill = new ArrayList<bill>();        
+        String sql = "SELECT * FROM bill";      
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
          
         while (resultSet.next()) {
-            String treeDistance = resultSet.getString("tree_distance");
-            String trunkSize = resultSet.getString("trunk_size");
-            String treeHeight = resultSet.getString("tree_height");
-            String treeLocation = resultSet.getString("tree_location");
+        	String billID = resultSet.getString("billID");
+        	String status = resultSet.getString("status");
+        	String negotiation_note = resultSet.getString("negotiation_note");
+        	String final_price = resultSet.getString("final_price");
+            System.out.println(billID+" "+status+" "+negotiation_note+" "+final_price);
              
-            tree Trees = new tree(treeDistance,trunkSize,treeHeight,treeLocation);
-            listTree.add(Trees);
+            bill Bill = new bill(billID,status,negotiation_note,final_price);
+            System.out.println(Bill.getBillID()+" "+Bill.getStatus()+" "+ Bill.getNegotiation_note()+" "+ Bill.getFinal_price());
+            listBill.add(Bill);
         }        
         resultSet.close();
         disconnect();        
-        return listTree;
+        return listBill;
+    		
+    	
     }
     
+    
+    public List<request> listSpecificRequests(String email) throws SQLException {
+        List<request> listRequest = new ArrayList<request>();        
+        System.out.println("Started");
+        String sql = String.format("SELECT * FROM Request WHERE email=\"%s\";",email);    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String requestID = resultSet.getString("requestID");
+            String status = resultSet.getString("status");
+            
+             
+            request Requests = new request(requestID,status);
+            listRequest.add(Requests);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listRequest;
+    }
+    
+    public List<quote> listSpecificQuote(String email) throws SQLException {
+        List<quote> listQuote = new ArrayList<quote>();        
+        System.out.println("Started");
+        String sql = String.format("SELECT * FROM Quote WHERE email=\"%s\";",email);    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String quoteID = resultSet.getString("quoteID");
+            String negotiation_note = resultSet.getString("negotiation_note");
+            String contractor_status = resultSet.getString("contractor_status");
+            String user_status = resultSet.getString("user_status");
+            String work_period = resultSet.getString("work_period");
+            String price = resultSet.getString("price");
+            quote Quotes = new quote(quoteID, contractor_status, user_status, negotiation_note,work_period, price,email);
+            listQuote.add(Quotes);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listQuote;
+    }
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
         	connect.close();
         }
     }
-    public List<Bill> listAllBills() throws SQLException{
-    	System.out.println("Started");
-        List<Bill> listBill = new ArrayList<Bill>();        
-        String sql = "SELECT * FROM bill";      
-        connect_func();      
-        statement = (Statement) connect.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-    	
-    	while(resultSet.next()) {
-    		String billID = resultSet.getString("bill_id");
-    		String initialPrice = resultSet.getString("initial_price");
-    		String priceBargain = resultSet.getString("price_bargain");
-    		String finalPrice = resultSet.getString("bill_id");
-    		Bill Bills = new Bill(billID, initialPrice, priceBargain, finalPrice);
-    		listBill.add(Bills);
-    	}
-    	resultSet.close();
-    	System.out.print("bill sucks");
-    	disconnect();
-    	return listBill;
-    		
-    	
-    }
-
+    
     public void insert(user users) throws SQLException {
     	connect_func("root","pass1234");         
 		String sql = "insert into User(email, firstName, lastName, password, phone_number,adress_street_num, adress_street,adress_city,adress_state,adress_zip_code,creditcard_information) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?)";
@@ -242,6 +318,28 @@ public class userDAO
         System.out.println("closed");
     }
     
+    public void insertQuote(quote quotes) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+    	System.out.println(quotes.getQuoteID());
+		String sql = "insert into quote(email,quoteID, contractor_status, user_status ,negotiation_note,work_period,price) values (?, ?, ?, ?, ?,?, ?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, quotes.getEmail());
+		 preparedStatement.setString(2, quotes.getQuoteID());
+	        preparedStatement.setString(3, quotes.getContractor_status());
+	        preparedStatement.setString(4, quotes.getUser_status());
+			preparedStatement.setString(5, quotes.getNegotiation_note());
+			preparedStatement.setString(6, quotes.getWork_period());
+			preparedStatement.setString(7, quotes.getPrice());
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+        preparedStatement.close();
+        System.out.println("closed");
+    }
     public boolean delete(String email) throws SQLException {
         String sql = "DELETE FROM User WHERE email = ?";        
         connect_func();
@@ -274,6 +372,77 @@ public class userDAO
         boolean rowUpdated = preparedStatement.executeUpdate() > 0;
         preparedStatement.close();
         return rowUpdated;     
+    }
+    
+    
+    public boolean modifyUserQuote(String quoteID, String user_note, String status) throws SQLException {
+        String updateSql = "UPDATE quote SET user_note = ?, user_status = ? WHERE quoteID = ?";
+        String selectSql = "SELECT user_note, user_status FROM quote WHERE quoteID = ?";
+        connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(updateSql);
+             PreparedStatement selectStatement = (PreparedStatement) connect.prepareStatement(selectSql);
+
+            // Update the quote
+            updateStatement.setString(1, user_note);
+            updateStatement.setString(2, status);
+            updateStatement.setString(3, quoteID);
+
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+            // Retrieve updated values
+            selectStatement.setString(1, quoteID);
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String updatedUserNote = resultSet.getString("user_note");
+                String updatedUserStatus = resultSet.getString("user_status");
+
+                System.out.println("Updated user_note: " + updatedUserNote);
+                System.out.println("Updated user_status: " + updatedUserStatus);
+            }
+
+            return rowUpdated;
+        
+        
+        
+    }
+
+public boolean modifyContractorQuote(String quoteID, String Contractor_note, String Contractor_status, String price) throws SQLException {
+        String updateSql = "UPDATE quote SET Negotiation_note = ?, contractor_status = ?, price = ? WHERE quoteID = ?";
+        String selectSql = "SELECT Negotiation_note, contractor_status,  price FROM quote WHERE quoteID = ?";
+        connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(updateSql);
+             PreparedStatement selectStatement = (PreparedStatement) connect.prepareStatement(selectSql);
+
+            // Update the quote
+            updateStatement.setString(1, Contractor_note);
+            updateStatement.setString(2, Contractor_status);
+            updateStatement.setString(3, price);
+            updateStatement.setString(4, quoteID);
+
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+            // Retrieve updated values
+            selectStatement.setString(1, quoteID);
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String updatedContractorNote = resultSet.getString("Negotiation_note");
+                String updatedContractorStatus = resultSet.getString("contractor_status");
+                String updatedPrice = resultSet.getString("price");
+                System.out.println("Updated contractor_note: " + updatedContractorNote);
+                System.out.println("Updated contractor_status: " + updatedContractorStatus);
+                System.out.println("Updated price: " + updatedPrice);
+            }
+
+            return rowUpdated;
+        
+        
+        
     }
     
     public user getUser(String email) throws SQLException {
@@ -370,6 +539,24 @@ public class userDAO
     }
     
     
+    public boolean updateRequest(String requestID, String status) throws SQLException
+    {
+    	String sql = "UPDATE request SET status = ? WHERE requestID = ?";
+    	connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(sql);
+
+            // Update the request
+            updateStatement.setString(1, status);
+            updateStatement.setString(2, requestID);
+           
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+            return rowUpdated;
+    }
+    
+    
     public void init() throws SQLException, FileNotFoundException, IOException{
     	System.out.println("init started.");
     	connect_func();
@@ -401,40 +588,50 @@ public class userDAO
 		        	"requestID VARCHAR(10),"+
 		        	"status VARCHAR(1),"+
 		        	"note VARCHAR(100),"+
-		        	"PRIMARY KEY(requestID));")
+		        	"tree_id INT,"+
+		        	"PRIMARY KEY(requestID),"+
+		        	"FOREIGN KEY(tree_id) REFERENCES tree(tree_id));")
 
         };
         String[] INITIAL3 = {
         		"drop table if exists Quote;",
 		        ("CREATE TABLE if not exists Quote( "+
+		        	"email VARCHAR(50),"+
 		        	"quoteID VARCHAR(10),"+
-		        	"status VARCHAR(1),"+
+		        	"contractor_status VARCHAR(1),"+
+		        	"user_status VARCHAR(1),"+
 		        	"Negotiation_note VARCHAR(100),"+
 		        	"work_period VARCHAR(2),"+
 		        	"price VARCHAR(6),"+
+		        	"user_note VARCHAR(100),"+
 		        	"PRIMARY KEY(quoteID));")
         };
-	String[] INITIAL4 = {
+        
+        String[] INITIAL4 = {
         		"drop table if exists tree;",
         		("CREATE TABLE IF NOT EXISTS tree ( "+
+        				"tree_id INT AUTO_INCREMENT,"+
         			    "tree_distance VARCHAR(4),"+
         			    "trunk_size VARCHAR(4),"+
         			    "tree_height VARCHAR(6),"+
-        			    "tree_location VARCHAR(2),"+
-        			    "PRIMARY KEY (tree_distance));")
+        			    "tree_location VARCHAR(50),"+
+        			    "PRIMARY KEY (tree_id));")
 
         };
-
-	String[] INITIAL5 = {
+        
+        String[] INITIAL5 = {
         		"drop table if exists bill;",
         		("CREATE TABLE IF NOT EXISTS bill ( "+
-        			    "bill_id VARCHAR(4),"+
-        			    "initial_price VARCHAR(4),"+
-        			    "price_bargain VARCHAR(4),"+
-        			    "final_bill VARCHAR(4),"+
-        			    "PRIMARY KEY (bill_id));")
+        			    "billID VARCHAR(10),"+
+        			    "status VARCHAR(1),"+
+        			    "negotiation_note VARCHAR(60),"+
+        			    "final_price VARCHAR(4),"+
+        			    "PRIMARY KEY (billID));")
 
         };
+        
+        
+        
         System.out.println("finish it.");
         String[] TUPLES = {("insert into User(email, firstName, lastName, password, phone_number, adress_street_num, adress_street, adress_city, adress_state, adress_zip_code, creditcard_information)"+
         			"values ('susie@gmail.com', 'Susie ', 'Guzman', 'susie1234', '9438295729', '1234', 'whatever street', 'detroit', 'MI', '48202','8758274858294710'),\n"
@@ -446,85 +643,90 @@ public class userDAO
         			+ "('bat@gmail.com','Bruce','Wayne','bruce1234','1029384756',2954,'green','Central','NY','39455','4103943022594302'),\n"
         			+ "('barbara@gmail.com','Barbara','Gordan','barb1234','1029483945','3945','blue','Gotham','NY','10447','1039583960402943'),\n"
         			+ "('tim@gmail.com','Tim','Drake','tim1234','2034564345','4923','gre','Gotham','NY',48603,'3456783948272345'),\n"
-        			+ "('damian@gmail.com','Damian','Wayne','Damian2534','1049283746','2932','Blood','Haven','NJ','29385','1057382945194037'),\n"
-        			+ "('maria@gmail.com','Maria','Alsamaien','Maria1234','1112930457','4920','Street','Allen Park','MI','48277','1039675555556666');"
+        			+ "('damian@gmail.com','Damian','Wayne','damian2534','1049283746','2932','Blood','Haven','NJ','29385','1057382945194037'),\n"
+        			+ "('maria@gmail.com','Maria','Alsamaien','maria1234','1112930457','4920','Street','Allen Park','MI','48277','1039675555556666');"
         		)
            			};
         String[] TUPLES2 = {
-        		("insert into Request(email,requestID, status,note)"+
-            			"values ('roy@gmail.com','334DGWP','P','Nothing'),"+
-        				"('roy@gmail.com','4930634532','P','note'),"+
-            			"('dick@gmail.com','492054243','R','NA'),"+
-        				"('bat@gmail.com','435920853','A','good'),"+
-            			"('dick@gmail.com','df3424','A','nice'),"+
-        				"('barbara@gmail.com','3954023452','A','reasonable'),"+
-        				"('tim@gmail.com','3948123413','P','need more'),"+
-        				"('damian@gmai.com','3928543213','R','No Way'),"+
-        				"('maria@gmail.com','392043255','A','valid');")
+        		("insert into Request(email,requestID, status,note,tree_id)"+
+            			"values ('roy@gmail.com','334DGWP','P','Nothing',1),"+
+        				"('roy@gmail.com','4930634532','P','note',2),"+
+            			"('dick@gmail.com','492054243','R','NA',3),"+
+        				"('bat@gmail.com','435920853','P','good',4),"+
+            			"('dick@gmail.com','df3424','P','nice',5),"+
+        				"('barbara@gmail.com','3954023452','P','reasonable',6),"+
+        				"('tim@gmail.com','3948123413','R','need more',7),"+
+        				"('damian@gmail.com','3928543213','P','No Way',8),"+
+        				"('maria@gmail.com','392043255','P','valid',9);")
         		
         };
         String[] TUPLES3 = {
-        		("insert into Quote(quoteID, status,negotiation_note,work_period,price)"+
-            			"values ('4421FGWP','A','Nothing','20','2500'),"+
-        				"('49204GQW3','A','satisfied','12','1340'),"+
-            			"('492054HW','R','invalid','13','4400'),"+
-        				"('39402043HQ','P','better deal','35','3752'),"+
-            			"('AW492054E4','P','do better','3','23456'),"+
-        				"('4825042','A','accepted','3','100'),"+
-            			"('5449205425','A','like it','7','3456'),"+
-        				"('4920543243','R','no','8','567'),"+
-        				"('4920542431','A','yes','19','24354');"
-        				)
+//        		
+        		("insert into Quote(email, quoteID, contractor_status, user_status,negotiation_note,work_period,price,user_note)"+
+            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20','2500',''),"+
+        				"('roy@gmail.com','49204GQW3','P','P','satisfied','12','1340',''),"+
+            			"('dick@gmail.com','492054HW','R','R','invalid','13','4400',''),"+
+        				"('bat@gmail.com','39402043HQ','P','P','better deal','35','3752',''),"+
+            			"('bat@gmail.com','AW492054E4','P','P','do better','3','23456',''),"+
+        				"('barbara@gmail.com','4825042','P','P','accepted','3','100',''),"+
+            			"('tim@gmail.com','5449205425','P','P','like it','7','3456',''),"+
+        				"('damian@gmail.com','4920543243','P','P','no','8','567',''),"+
+        				"('maria@gmail.com','4920542431','P','P','yes','19','24354','');")
         };
-	String[] TUPLES4 = {
+        
+        String[] TUPLES4 = {
         		("insert into tree(tree_distance, trunk_size,tree_height,tree_location)"+
-            			"values ('1111','1010','101010','10'),"+
-        				"('2','2','2','2'),"+
-            			"('1','1','1','1'),"+
-        				"('123','11','22876','33'),"+
-            			"('1234','3213','12423','12'),"+
-        				"('3920','4322','33333','24'),"+
-            			"('1232','11','222','12'),"+
-        				"('4323','234','423','33'),"+
-        				"('3333','2222','333333','23');"
+            			"values ('1111','1010','101010','Troy'),"+
+        				"('2','2','2','Birmingham'),"+
+            			"('1','1','1','Detroit'),"+
+        				"('123','11','22876','Baltimore'),"+
+            			"('1234','3213','12423','Warren'),"+
+        				"('3920','4322','33333','Canton'),"+
+            			"('1232','11','222','Dearborn'),"+
+        				"('4323','234','423','Ann Arbor'),"+
+        				"('3333','2222','333333','Troy');"
         				)
         };
-	String[] TUPLES5 = {
-        		("insert into bill(bill_id, initial_price,price_bargain,final_bill)"+
-            			"values ('0000','0000','0000','0000'),"+
-        				"('S24S','1000','980','800'),"+
-            			"('g345','9999','8888','7777'),"+
-        				"('dwrt','8750','5555','8749'),"+
-            			"('Jk98','3213','3210','3100'),"+
-        				"('h832','9998','3333','4000'),"+
-            			"('1232','8888','6000','6100'),"+
-        				"('43y3','2300','2100','2150'),"+
-        				"('hy78','6666','3333','4000');"
+       
+        
+        String[] TUPLES5 = {
+        		("insert into bill(billID, status,negotiation_note,final_price)"+
+            			"values ('0000','P','No notes','0000'),"+
+        				"('S24S','P','Reduce price','800'),"+
+            			"('g345','P','No notes','7777'),"+
+        				"('dwrt','P','No notes','8749'),"+
+            			"('Jk98','P','No notes','3100'),"+
+        				"('h832','P','No notes','4000'),"+
+            			"('1232','P','Reduce price','6100'),"+
+        				"('43y3','P','Reduce price','2150'),"+
+        				"('hy78','P','Reduce price','4000');"
         				)
         };
-	    
         //for loop to put these in database
         for (int i = 0; i < INITIAL.length; i++)
         	statement.execute(INITIAL[i]);
-        
+        for (int i = 0; i < INITIAL4.length; i++)
+        	statement.execute(INITIAL4[i]);
         for (int i = 0; i < INITIAL2.length; i++)
         	statement.execute(INITIAL2[i]);
                 
         System.out.println("444444444444.");
         for (int i = 0; i < INITIAL3.length; i++)
         	statement.execute(INITIAL3[i]);
-        for (int i = 0; i < INITIAL4.length; i++)
-        	statement.execute(INITIAL4[i]);
-	for (int i = 0; i < INITIAL5.length; i++)
+        
+        for (int i = 0; i < INITIAL5.length; i++)
         	statement.execute(INITIAL5[i]);
-	    
+        
+        
         for (int i = 0; i < TUPLES.length; i++)
         	{statement.execute(TUPLES[i]);
         	}
-
-	    
-        System.out.println("dsjfbsjfb");
-        
+        	
+      
+        	System.out.println("dsjfbsjfb");
+        for (int i = 0; i<TUPLES4.length;i++) {
+            statement.execute(TUPLES4[i]);
+            }
         for (int j = 0; j<TUPLES2.length;j++) {
         	statement.execute(TUPLES2[j]);
         }
@@ -532,12 +734,11 @@ public class userDAO
         for (int i = 0; i<TUPLES3.length;i++) {
         	statement.execute(TUPLES3[i]);
         }
-	for (int i = 0; i<TUPLES4.length;i++) {
-        	statement.execute(TUPLES4[i]);
-        }
+        
         for (int i = 0; i<TUPLES5.length;i++) {
         	statement.execute(TUPLES5[i]);
         }
+        
         
         disconnect();
     }
