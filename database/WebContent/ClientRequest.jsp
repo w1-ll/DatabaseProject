@@ -13,15 +13,12 @@
 				<tr>
 					<th>Request ID </th>
 					<td align="center" colspan="3">
-						<input type="text" name="requestID" size="45"  value="M324233120" onfocus="this.value=''">
+						<p>${requestID}</p>
+					<input type="hidden" name = "requestID" value="${requestID}">
+					<input type="hidden" name = "status" value="P">			
 					</td>
 				</tr>
-				<tr>
-					<th>Status </th>
-					<td align="center" colspan="3">
-						<input type="text" name="status" size="45" value="pending" onfocus="this.value=''">
-					</td>
-				</tr>
+				
 				<tr>
 					<th>Note </th>
 					<td align="center" colspan="3">
@@ -30,11 +27,44 @@
 				</tr>
 				
 				<tr>
+					<th>Tree Distance </th>
+					<td align="center" colspan="3">
+						<input type="text" name="tree_distance" size="100" value="Tree distance from house" onfocus="this.value=''">
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>Trunk Size </th>
+					<td align="center" colspan="3">
+						<input type="text" name="trunk_size" size="100" value="Approx. Trunk Size" onfocus="this.value=''">
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>Tree Height</th>
+					<td align="center" colspan="3">
+						<input type="text" name="tree_height" size="100" value="Approx. Tree Height" onfocus="this.value=''">
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>Tree location</th>
+					<td align="center" colspan="3">
+						<input type="text" name="tree_location" size="100" value="Tree Location" onfocus="this.value=''">
+
+					</td>
+					
+				</tr>
+				
+				<tr>
 					<td align="center" colspan="5">
 						<input type="submit" value="Submit Request"/>
 					</td>
 				</tr>
-	
+	</table>
 	</form>
 </body>
 </html>
