@@ -1,11 +1,13 @@
 public class quote 
 {
 		protected String quoteID;
-	 	protected String status;
+	 	protected String contractor_status;
+	 	protected String user_status;
 	    protected String negotiation_note;
 	    protected String work_period;
 	    protected String price;
-	 
+	    protected String email;
+	    protected String user_note;
 	    //constructors
 	    public quote() {
 	    }
@@ -15,16 +17,24 @@ public class quote
 	        this.quoteID = quoteID;
 	    }
 	    
-	    public quote(String quoteID, String status, String negotiation_note,String work_period, String price) 
+	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, String price,String email) 
 	    {
-	    	this(status,negotiation_note,work_period, price);
+	    	//contractor status = status1 user status = status2
+	    	this(status1, status2, negotiation_note,work_period, price,email);
 	    	this.quoteID = quoteID;
 	    }
 	 
-	
-	    public quote(String status, String negotiation_note,String work_period, String price) 
+	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, String price,String email, String user_note) 
 	    {
-	    	this.status = status;
+	    	this(quoteID,status1, status2,negotiation_note,work_period,price,email);
+	    	this.user_note = user_note;
+	    }
+	
+	    public quote(String status1, String status2, String negotiation_note,String work_period, String price, String email) 
+	    {
+	    	this.email = email;
+	    	contractor_status = status1;
+	    	user_status = status2;
 	    	this.negotiation_note = negotiation_note;
 	    	this.work_period = work_period;
 	    	this.price = price;
@@ -38,11 +48,18 @@ public class quote
 	        this.quoteID = quoteID;
 	    }
 	    
-	    public String getStatus() {
-	        return status;
+	    public String getContractor_status() {
+	        return contractor_status;
 	    }
-	    public void setStatus(String status) {
-	        this.status = status;
+	    public void setContractor_status(String status) {
+	        contractor_status = status;
+	    }
+	    
+	    public String getUser_status() {
+	        return user_status;
+	    }
+	    public void setUser_status(String status) {
+	        user_status = status;
 	    }
 	    
 	    public String getNegotiation_note() {
@@ -60,9 +77,23 @@ public class quote
 	    }
 	    
 	    public String getPrice() {
-	        return quoteID;
+	        return price;
 	    }
 	    public void setPrice(String price) {
 	        this.price = price;
 	    }
+	    public String getEmail() {
+	    	return email;
+	    }
+	    public void setEmail(String email) {
+	    	this.email = email;
+	    }
+	    
+	    public String getUser_note() {
+	    	return user_note;
+	    }
+	    public void setUser_note(String user_note) {
+	    	this.user_note = user_note;
+	    }
+	    
 	}
