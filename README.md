@@ -45,4 +45,4 @@ Independent working hours:
 
 # Part 2
 ## Description
-Implelent the jsp files
+Part 2 is about implementing the sql files into the jsp/web browsers
