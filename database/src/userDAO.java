@@ -651,7 +651,17 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
 
         };
         
-        
+        String[] INITIAL6 = {
+        		"drop table if exists messages;",
+        		("CREATE TABLE IF NOT EXISTS messages ( "+
+        			    "message_id AUTO_INCREMENT INT PRIMARY KEY ),"+
+        			    "sender_id INT,"+
+        			    "recipient_id INT,"+
+        			    "content TEXT,"+
+        			    "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
+        			    "PRIMARY KEY (message_id));")
+
+        };
         
         System.out.println("finish it.");
         String[] TUPLES = {("insert into User(email, firstName, lastName, password, phone_number, adress_street_num, adress_street, adress_city, adress_state, adress_zip_code, creditcard_information)"+
@@ -723,6 +733,19 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         				"('hy78','P','Reduce price','4000');"
         				)
         };
+	String[] TUPLES6 = {
+        	("insert into messages(sender_id, recipient_id, content),"+
+        			"values (12,332,'this is stuff'),"+
+        			"('33,22,'gotcha'),"+
+        			"(44,555,'no prize'),"+
+        			"(33,222,'this stinks')"+
+        			"(1,89.'life sucks')"+
+        			"(33,44,'I hate this')"+
+        			"(444,222,'Why is this nessesary')"+
+        			"(4,2,'why')"+
+        			"(3,1,'plz do not do this to me');"
+        			)	
+        };
         //for loop to put these in database
         for (int i = 0; i < INITIAL.length; i++)
         	statement.execute(INITIAL[i]);
@@ -737,6 +760,8 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         
         for (int i = 0; i < INITIAL5.length; i++)
         	statement.execute(INITIAL5[i]);
+	for (int i = 0; i < INITIAL6.length; i++)
+        	statement.execute(INITIAL6[i]);
         
         
         for (int i = 0; i < TUPLES.length; i++)
@@ -758,6 +783,9 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         
         for (int i = 0; i<TUPLES5.length;i++) {
         	statement.execute(TUPLES5[i]);
+        }
+	for (int i = 0; i<TUPLES6.length;i++) {
+        	statement.execute(TUPLES6[i]);
         }
         
         
