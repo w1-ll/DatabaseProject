@@ -134,7 +134,27 @@
                     <td><c:out value="${bill.final_price}" /></td>   
            </c:forEach>
         </table>
-       
+
+       <table border="1" cellpadding="6">
+            <caption><h2>List of Messages</h2></caption>
+            <tr>
+                <th>Message ID</th>
+                <th>Sender id</th>
+                <th>Recipient ID</th>
+                <th>Content </th> 
+                <th>Timestamp </th>             
+            </tr>
+      
+            
+            <c:forEach var="messages" items="${Messages}">
+                <tr style="text-align:center">
+                    <td><c:out value="${message.message_id}" /></td>
+                    <td><c:out value="${message.sender_id}" /></td>
+                    <td><c:out value="${message.recipient_id}" /></td>
+                    <td><c:out value="${message.content}" /></td> 
+                    <td><c:out value="${message.timestamp}" /></td>   
+           </c:forEach>
+        </table>
 
 	</div>
 	</div>
