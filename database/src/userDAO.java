@@ -249,6 +249,25 @@ public class userDAO
         disconnect();        
         return listRequest;
     }
+    public List<messages> listAllMessages() throws SQLException {
+    	System.out.println("Started");
+        List<messages> listMessages = new ArrayList<messages>();        
+        String sql = "SELECT * FROM messages";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        while(resultSet.next()) {
+        	String sender_id = resultSet.getString("sender_id");
+        	String recipient_id = resultSet.getString("recipient_id");
+        	String content = resultSet.getString("content");
+        	String timestamp = resultSet.getString("timestamp");
+        	messages Message = new messages(sender_id,recipient_id,content,timestamp);
+        	listMessages.add(Message);
+        }
+        resultSet.close();
+        disconnect();
+        return listMessages;
+    }
     
     public List<quote> listSpecificQuote(String email) throws SQLException {
         List<quote> listQuote = new ArrayList<quote>();        
@@ -278,7 +297,9 @@ public class userDAO
         	connect.close();
         }
     }
-    
+	
+
+
     public void insert(user users) throws SQLException {
     	connect_func("root","pass1234");         
 		String sql = "insert into User(email, firstName, lastName, password, phone_number,adress_street_num, adress_street,adress_city,adress_state,adress_zip_code,creditcard_information) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?)";
