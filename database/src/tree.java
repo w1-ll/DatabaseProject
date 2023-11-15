@@ -57,5 +57,8 @@ public class tree
 	    public void setTree_location(String tree_location) {
 	        this.tree_location = tree_location;
 	    }
+	    public int getTree_id() {
+	        return tree_id;
+	    }
 	}
 
