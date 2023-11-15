@@ -1,12 +1,13 @@
 # Description
 This project is used as a basis to show how the code interacts with web servers through Java, SQL, and jsp files.
-
-This also sets a relation between the contractor, client, the negotiation quote, and more
+This also sets a relation between the contractor, client, the negotiation quote, and more.
+Part 2 is now about implementing the jsp files to interact with the users.
 # Table of contents
 * [Prerequisite](#Prerequisite)
 * [Instructions](#Instruction-Setup)
 * [Run the code](#Run-the-code)
 * [Contributions](#contributions)
+* [Part 2 instructions](#Part-2-Project-Instructions)
 # Prerequisite
 1) Install Eclipse Enterprise and Java Developers
 2) Follow the instructions when installing  [Apache Tomcat website ](https://tomcat.apache.org/)
@@ -43,14 +44,10 @@ Independent working hours:
 * Will - 20
 ###
 
-# Part 2
-## Description
-Part 2 is about implementing the sql files into the jsp/web browsers
-
-### Instructions:
+### Part 2 Project Instructions:
 Make sure that you did the nessesary steps to download and compile the project from part 1.
 
 1) User goes to the login page form the login page
 2) To register a user, they click the register action and input the nessasary information
 3) Now that the new user is registered, now you need to log in
-4) 
+4) Now that the user is logged in, 
