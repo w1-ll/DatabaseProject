@@ -104,6 +104,14 @@ public class ControlServlet extends HttpServlet {
         		 System.out.println("Quote revision initiated.");
         		 ReviseQuote(request,response);
         		 break;
+        	 case "/CheckOrder":
+        		 System.out.println("check order initiated.");
+        		 CheckOrder(request,response);
+        		 break;
+        	 case "/ClientOrderPage":
+        		 System.out.println("client order page initiated.");
+        		 ClientOrderPage(request,response);
+        		 break;
 	    	}
 	    }
 	    catch(Exception ex) {
@@ -131,20 +139,22 @@ public class ControlServlet extends HttpServlet {
 			request.setAttribute("Requests", userDAO.listAllRequests());
 			request.setAttribute("Quotes", userDAO.listAllQuotes());
 			request.setAttribute("Trees", userDAO.listAllTrees());
+
+			request.setAttribute("Orders", userDAO.listAllOrders());
 			List<bill> lb = userDAO.listAllBills();
 
 			for (bill e : lb) {
 				System.out.println(e.getBillID()+" "+e.getStatus()+" "+ e.getNegotiation_note()+" "+ e.getFinal_price());
 			}
 			request.setAttribute("Bills", userDAO.listAllBills());
-			//request.setAttribute("Bills", "Bills are fucking stupid and cowards.");
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
 	    
 	    private void contractorPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
 	    	System.out.println("contractor view");
 	    	request.setAttribute("Requests", userDAO.listAllRequestsForContractor());
-	    	request.setAttribute("Quotes", userDAO.listAllQuotes());
+	    	request.setAttribute("Quotes", userDAO.listAllQuotesForContractor());
+	    	request.setAttribute("Orders", userDAO.listAllOrders());
 	    	request.getRequestDispatcher("contractor.jsp").forward(request, response);
 
 	    }
@@ -155,6 +165,7 @@ public class ControlServlet extends HttpServlet {
 	    	 String email = (String)session.getAttribute("username");
 	    	 request.setAttribute("specificRequest",userDAO.listSpecificRequests(email));
 			 request.setAttribute("specificQuote", userDAO.listSpecificQuote(email));
+			 request.setAttribute("specificOrder", userDAO.listSpecificOrder(email));
 		     request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 
 	    }
@@ -240,10 +251,15 @@ private void newRequest(HttpServletRequest request, HttpServletResponse response
 	    	String tree_height = request.getParameter("tree_height");
 	    	String tree_location = request.getParameter("tree_location");
 	    	//System.out.println(Email);
+//	    	SELECT users.user_id, username, order_id, order_date
+//	    	FROM users
+//	    	INNER JOIN orders ON users.user_id = orders.user_id;
 	    	System.out.println("data obtained.");
-	    	request Request = new request(RequestID,Status,Note, Email);
 	    	tree Tree = new tree(tree_distance,trunk_size, tree_height,tree_location);
+	    	int tree_id = userDAO.insertTree(Tree);
+	    	request Request = new request(RequestID,Status,Note, Email,tree_id);
 	    	System.out.println("new request created");
+	    	System.out.println("new tree created");
 	    	userDAO.insertRequest(Request);
 	    	System.out.println("userDAO ran.");
 	    	userPage(request, response, "");
@@ -258,11 +274,15 @@ private void newQuote(HttpServletRequest request, HttpServletResponse response) 
 	    	String WorkPeriod = request.getParameter("workPeriod");
 	    	String price = request.getParameter("price");
 	    	String requestID = request.getParameter("selectedRequestID");
+	    	String user_note = request.getParameter("user_note");
+	    	int tree_id = Integer.parseInt(request.getParameter("tree_id"));
+	    	
 	    	System.out.println("data obtained.");
-	    	System.out.println(QuoteID);
+	    	System.out.println(tree_id);
 	    	userDAO.updateRequest(requestID,RequestStatus);
-	    	quote Quote = new quote(QuoteID,"P","",Note, WorkPeriod,price,email);
+	    	quote Quote = new quote(QuoteID,"P","",Note, WorkPeriod,price,email,user_note,tree_id);
 	    	//Quote.setRequest(null);
+	    	System.out.println(Quote.getTree_id());
 	    	System.out.println("new quote created");
 	    	userDAO.insertQuote(Quote);
 	    	System.out.println("userDAO ran.");
@@ -300,6 +320,14 @@ private void DirectToQuotePage(HttpServletRequest request, HttpServletResponse r
      request.setAttribute("quoteID", QuoteID);
 	 request.setAttribute("emailID", email);
 	 request.setAttribute("requestID", requestID);
+	 request re = userDAO.getRequest(requestID);
+	 tree Tr = userDAO.getTree(re.getTree_id());
+	 request.setAttribute("tree_id", re.getTree_id());
+	 request.setAttribute("user_note", re.getNote());
+	 request.setAttribute("tree_distance", Tr.getTree_distance());
+	 request.setAttribute("trunk_size", Tr.getTrunk_size());
+	 request.setAttribute("tree_height", Tr.getTree_height());
+	 request.setAttribute("tree_location", Tr.getTree_location());
 	 System.out.println("Re started");	
  	request.getRequestDispatcher("SendQuote.jsp").forward(request, response);
  	System.out.println("Re ended");
@@ -308,17 +336,25 @@ private void DirectToQuotePage(HttpServletRequest request, HttpServletResponse r
 private void ClientQuotePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
 	
 	 String quoteID = request.getParameter("quoteID");
-	 String status = request.getParameter("status");
-	 String note = request.getParameter("note");
-	 String work_period = request.getParameter("work_period");
-	 String price = request.getParameter("price");
-	 String user_note = request.getParameter("user_note");
+	 quote sample = userDAO.getQuote(quoteID);
+	 String user_status = sample.getUser_status();
+	 String note = sample.getNegotiation_note();
+	 String work_period = sample.getWork_period();
+	 String price = sample.getPrice();
+	 String user_note = sample.getUser_note();
+	 tree sampleT = userDAO.getTree(sample.getTree_id());
 	 request.setAttribute("quoteID", quoteID);
-	 request.setAttribute("user_status", status);
+	 request.setAttribute("user_status", user_status);
 	 request.setAttribute("note", note);
 	 request.setAttribute("work_period", work_period);
 	 request.setAttribute("price", price);
 	 request.setAttribute("user_note", user_note);
+	 request.setAttribute("tree_distance", sampleT.getTree_distance());
+	 request.setAttribute("trunk_size", sampleT.getTrunk_size());
+	 request.setAttribute("tree_height", sampleT.getTree_height());
+	 request.setAttribute("tree_location", sampleT.getTree_location());
+
+
 	 System.out.println("Re started");	
 	request.getRequestDispatcher("CheckQuote.jsp").forward(request, response);
 	System.out.println("Re ended");
@@ -328,19 +364,31 @@ private void ClientQuotePage(HttpServletRequest request, HttpServletResponse res
 private void ContractorQuotePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
 	
 	 String quoteID = request.getParameter("quoteID");
-	 String Contractor_status = request.getParameter("Cstatus");
-	 String Client_status = request.getParameter("Ustatus");
-	 String Contractor_note = request.getParameter("note");
-	 String work_period = request.getParameter("work_period");
-	 String price = request.getParameter("price");
-	 String user_note = request.getParameter("user_note");
+	 quote sample = userDAO.getQuote(quoteID);
+	 String email = sample.getEmail();
+	 String Contractor_status = sample.getContractor_status();
+	 String user_status = sample.getUser_status();
+	 String note = sample.getNegotiation_note();
+	 String work_period = sample.getWork_period();
+	 String price = sample.getPrice();
+	 System.out.println("Tree ID 1st print :" + (sample.getTree_id()));
+	 String user_note = sample.getUser_note();
+	 tree sampleT = userDAO.getTree(sample.getTree_id());
+	 System.out.println("Tree ID 1st print :" + (sampleT.getTree_id()));
+	 request.setAttribute("email", email);
 	 request.setAttribute("quoteID", quoteID);
 	 request.setAttribute("Contractor_status", Contractor_status);
-	 request.setAttribute("user_status", Client_status);
-	 request.setAttribute("Contractor_note", Contractor_note);
+	 request.setAttribute("user_status", user_status);
+	 request.setAttribute("Contractor_note", note);
 	 request.setAttribute("work_period", work_period);
 	 request.setAttribute("price", price);
 	 request.setAttribute("user_note", user_note);
+	 request.setAttribute("tree_id", sample.getTree_id());
+	 System.out.println("Tree ID :" + sampleT.getTree_id());
+	 request.setAttribute("tree_distance", sampleT.getTree_distance());
+	 request.setAttribute("trunk_size", sampleT.getTrunk_size());
+	 request.setAttribute("tree_height", sampleT.getTree_height());
+	 request.setAttribute("tree_location", sampleT.getTree_location());
 	 System.out.println("Re started");	
 	request.getRequestDispatcher("ContractorQuotePage.jsp").forward(request, response);
 	System.out.println("Re ended");
@@ -368,7 +416,7 @@ private void SendToRequestPage(HttpServletRequest request, HttpServletResponse r
 	 String email = (String)session.getAttribute("username");
 	 //System.out.println(email);
 	 request.setAttribute("emailID", email);
-	 
+	 System.out.println("order email " +email);
 	 String requestID = randomIDGenerator();
 	 request.setAttribute("requestID", requestID);
 	 System.out.println("Re started");	
@@ -379,29 +427,79 @@ private void SendToRequestPage(HttpServletRequest request, HttpServletResponse r
 
 
 private void ReviseQuote(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	
-	 String price = request.getParameter("price");
+	 int tree_id = Integer.parseInt(request.getParameter("tree_id"));
+	 String email = request.getParameter("email");
+	 String price1 = request.getParameter("price");
+	 String price2 = request.getParameter("price2");
 	 String Contractor_status = request.getParameter("options");
+	 String user_status = request.getParameter("user_status");
 	 String Contractor_note = request.getParameter("Contractor_note");
 	 String quoteID = request.getParameter("quoteID");
-	 System.out.println(price);
+	 System.out.println("data:");
+	 System.out.println("Price1: "+price1);
+	 System.out.println("Price2: "+price2);
 	 System.out.println(Contractor_status);
 	 System.out.println(quoteID);
-	
+	 System.out.println(tree_id);
+	 if (Contractor_status.equals("S") && user_status.equals("S")) {
+		 orders Order = new orders(email,randomIDGenerator(),"P",tree_id);
+		 userDAO.insertOrder(Order);
+		 System.out.println("Order inserted.");
+	 }
 	 System.out.println("Re started");
-	 
-	 userDAO.modifyContractorQuote(quoteID,Contractor_note,Contractor_status,price);
+	 String newP = (price2 == "")? price1:price2;
+	 userDAO.modifyContractorQuote(quoteID,Contractor_note,Contractor_status,newP);
 	 contractorPage(request, response, "");
 	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 	System.out.println("Re ended");
 
 	    }
 	     
+private void CheckOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 String orderID = request.getParameter("orderID");
+	 String status = request.getParameter("status");
+	 String email = request.getParameter("email");
+	 orders newOrder = userDAO.getOrder(orderID);
+	 int tree_id = newOrder.getTree_id();
+	 tree newTree = userDAO.getTree(tree_id);
+	 request.setAttribute("orderID", orderID);
+	 request.setAttribute("status", status);
+	 request.setAttribute("email", email);
+	 request.setAttribute("tree_distance", newTree.getTree_distance());
+	 request.setAttribute("trunk_size", newTree.getTrunk_size());
+	 request.setAttribute("tree_height", newTree.getTree_height());
+	 request.setAttribute("tree_location", newTree.getTree_location());
+	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
+
+
+	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
+	System.out.println("Re ended");
+
+	    }
+
+private void ClientOrderPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 String orderID = request.getParameter("orderID");
+	 String status = request.getParameter("status");
+	 session = request.getSession();
+	 String email = (String)session.getAttribute("username");
+	 orders newOrder = userDAO.getOrder(orderID);
+	 int tree_id = newOrder.getTree_id();
+	 tree newTree = userDAO.getTree(tree_id);
+	 request.setAttribute("orderID", orderID);
+	 request.setAttribute("status", status);
+	 request.setAttribute("tree_distance", newTree.getTree_distance());
+	 request.setAttribute("trunk_size", newTree.getTrunk_size());
+	 request.setAttribute("tree_height", newTree.getTree_height());
+	 request.setAttribute("tree_location", newTree.getTree_location());
+	 request.getRequestDispatcher("ClientOrderPage.jsp").forward(request, response);
+
+
+	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
+	System.out.println("Re ended");
+
+	    }
         
-	    
-	    
-	    
-	    
+	        
 	    
 }
 	        
