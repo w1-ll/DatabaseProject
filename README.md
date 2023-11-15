@@ -56,7 +56,11 @@ Make sure that you did the nessesary steps to download and compile the project f
 Will: 
 * Made the tables
 * worked on the front end
+* 20 hours
 
 Rishitha: 
 * Functionality of the code
 * jsp interactions
+* 25 hours
+
+10 ith hours combined work
