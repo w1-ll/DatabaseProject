@@ -171,8 +171,34 @@ public class userDAO
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
             String price = resultSet.getString("price");
-             
-            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note);
+            int tree_id =  resultSet.getInt("tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+            listQuote.add(Quotes);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listQuote;
+    }
+    public List<quote> listAllQuotesForContractor() throws SQLException {
+        List<quote> listQuote = new ArrayList<quote>();        
+        String sql = "SELECT * FROM Quote WHERE NOT (contractor_status = 'S' AND user_status = 'S');  ";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+        	String user_note =  resultSet.getString("user_note");
+        	String email = resultSet.getString("email");
+            String quoteID = resultSet.getString("quoteID");
+            String negotiation_note = resultSet.getString("negotiation_note");
+            String contractor_status = resultSet.getString("contractor_status");
+            System.out.println("status1:"+resultSet.getString("contractor_status"));
+            System.out.println("status2:"+resultSet.getString("user_status"));
+            String user_status = resultSet.getString("user_status");
+            String work_period = resultSet.getString("work_period");
+            String price = resultSet.getString("price");
+            int tree_id =  resultSet.getInt("tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
             listQuote.add(Quotes);
         }        
         resultSet.close();
@@ -227,6 +253,29 @@ public class userDAO
     	
     }
     
+    public List<orders> listAllOrders() throws SQLException{
+    	List<orders> listOrders = new ArrayList<orders>();        
+        String sql = "SELECT * FROM orders";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+        	String orderID = resultSet.getString("orderID");
+        	String status = resultSet.getString("status");
+        	String email = resultSet.getString("email");
+            System.out.println(orderID+" "+status+" "+email);
+             
+            orders Order = new orders(email,orderID,status);
+            //System.out.println(Bill.getBillID()+" "+Bill.getStatus()+" "+ Bill.getNegotiation_note()+" "+ Bill.getFinal_price());
+            listOrders.add(Order);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listOrders;
+    		
+    	
+    }
     
     public List<request> listSpecificRequests(String email) throws SQLException {
         List<request> listRequest = new ArrayList<request>();        
@@ -248,25 +297,6 @@ public class userDAO
         resultSet.close();
         disconnect();        
         return listRequest;
-    }
-    public List<messages> listAllMessages() throws SQLException {
-    	System.out.println("Started");
-        List<messages> listMessages = new ArrayList<messages>();        
-        String sql = "SELECT * FROM messages";      
-        connect_func();      
-        statement = (Statement) connect.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-        while(resultSet.next()) {
-        	String sender_id = resultSet.getString("sender_id");
-        	String recipient_id = resultSet.getString("recipient_id");
-        	String content = resultSet.getString("content");
-        	String timestamp = resultSet.getString("timestamp");
-        	messages Message = new messages(sender_id,recipient_id,content,timestamp);
-        	listMessages.add(Message);
-        }
-        resultSet.close();
-        disconnect();
-        return listMessages;
     }
     
     public List<quote> listSpecificQuote(String email) throws SQLException {
@@ -292,14 +322,33 @@ public class userDAO
         disconnect();        
         return listQuote;
     }
+    
+    public List<orders> listSpecificOrder(String email) throws SQLException {
+        List<orders> listOrder = new ArrayList<orders>();        
+        System.out.println("Started");
+        String sql = String.format("SELECT * FROM orders WHERE email=\"%s\";",email);    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String orderID = resultSet.getString("orderID");
+            String status = resultSet.getString("status");
+            int tree_id = resultSet.getInt("tree_id");
+            orders Order = new orders(email, orderID, status, tree_id);
+            listOrder.add(Order);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listOrder;
+    }
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
         	connect.close();
         }
     }
-	
-
-
+    
     public void insert(user users) throws SQLException {
     	connect_func("root","pass1234");         
 		String sql = "insert into User(email, firstName, lastName, password, phone_number,adress_street_num, adress_street,adress_city,adress_state,adress_zip_code,creditcard_information) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?)";
@@ -324,13 +373,14 @@ public class userDAO
     	System.out.println("insert began");
     	connect_func("root","rishi1234"); 
     	System.out.println("connected");
-		String sql = "insert into Request(email, requestID,status,note) values (?, ?, ?, ?)";
+		String sql = "insert into Request(email, requestID,status,note,tree_id) values (?, ?, ?, ?,?)";
 		
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		 preparedStatement.setString(1, requests.getEmail());
 	        preparedStatement.setString(2, requests.getRequestID());
 			preparedStatement.setString(3, requests.getStatus());
 			preparedStatement.setString(4, requests.getNote());
+			preparedStatement.setInt(5, requests.getTree_id());
 			System.out.println("sql implemented.");
 
 		preparedStatement.executeUpdate();
@@ -344,7 +394,7 @@ public class userDAO
     	connect_func("root","rishi1234"); 
     	System.out.println("connected");
     	System.out.println(quotes.getQuoteID());
-		String sql = "insert into quote(email,quoteID, contractor_status, user_status ,negotiation_note,work_period,price) values (?, ?, ?, ?, ?,?, ?)";
+		String sql = "insert into quote(email,quoteID, contractor_status, user_status ,negotiation_note,work_period,price,tree_id) values (?,?, ?, ?, ?, ?,?, ?)";
 		
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		 preparedStatement.setString(1, quotes.getEmail());
@@ -354,6 +404,7 @@ public class userDAO
 			preparedStatement.setString(5, quotes.getNegotiation_note());
 			preparedStatement.setString(6, quotes.getWork_period());
 			preparedStatement.setString(7, quotes.getPrice());
+			preparedStatement.setInt(8, quotes.getTree_id());
 			System.out.println("sql implemented.");
 
 		preparedStatement.executeUpdate();
@@ -361,6 +412,73 @@ public class userDAO
         preparedStatement.close();
         System.out.println("closed");
     }
+    
+    
+    public int insertTree(tree trees) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+    	//System.out.println(quotes.getQuoteID());
+		String sql = "insert into tree(tree_distance, trunk_size,tree_height,tree_location) values (?, ?, ?, ?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, trees.getTree_distance());
+		 preparedStatement.setString(2, trees.getTrunk_size());
+	        preparedStatement.setString(3, trees.getTree_height());
+	        preparedStatement.setString(4, trees.getTree_location());
+			
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+		String selectSql = "SELECT tree_id FROM tree ORDER BY tree_id DESC LIMIT 1;";
+        PreparedStatement selectStatement = (PreparedStatement) connect.prepareStatement(selectSql);
+
+		ResultSet resultSet = selectStatement.executeQuery();
+		int tree_id = 1;
+        if (resultSet.next()) {
+        	tree_id = resultSet.getInt(tree_id);
+        	System.out.println(tree_id);
+            
+        }
+        System.out.println("Updated tree_number: " + tree_id);
+        preparedStatement.close();
+        System.out.println("closed");
+        return tree_id;
+    }
+    
+    public void insertOrder(orders Order) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+    	//System.out.println(quotes.getQuoteID());
+		String sql = "insert into Orders(orderID,status,email,tree_id) values (?, ?, ?, ?)";
+		System.out.println(Order.getTree_id());
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, Order.getOrderID());
+		 preparedStatement.setString(2, Order.getStatus());
+	        preparedStatement.setString(3, Order.getEmail());
+	        System.out.println(Order.getEmail());
+	        preparedStatement.setInt(4, Order.getTree_id());
+			
+			System.out.println("sql implemented.");
+
+			try {
+		        // Your existing code for establishing connection and preparing the statement
+
+		        // Execute the SQL query
+		        preparedStatement.executeUpdate();
+
+		        // Close resources
+		        preparedStatement.close();
+		        connect.close();
+		    } catch (SQLException e) {
+		        System.err.println("SQLException: " + e.getMessage());
+		        System.err.println("SQLState: " + e.getSQLState());
+		        System.err.println("VendorError: " + e.getErrorCode());
+		    }
+    }
+    
     public boolean delete(String email) throws SQLException {
         String sql = "DELETE FROM User WHERE email = ?";        
         connect_func();
@@ -465,7 +583,112 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         
         
     }
-    
+
+
+public request getRequest(String requestID) throws SQLException {
+	request Request = null;
+    String sql = "SELECT * FROM request WHERE requestID = ?";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setString(1, requestID);
+     
+    ResultSet resultSet = preparedStatement.executeQuery();
+    String user_note = ""; 
+    int tree_id= 1; 
+    if (resultSet.next()) {
+    	 user_note = resultSet.getString("note");
+         tree_id = resultSet.getInt("tree_id"); 
+         }
+    Request = new request(user_note, tree_id);
+    System.out.println(Request.getTree_id()); 
+    resultSet.close();
+    preparedStatement.close();
+     
+    return Request;
+}
+
+public quote getQuote(String quoteID) throws SQLException {
+	quote Quote = null;
+    String sql = "SELECT * FROM quote WHERE quoteID = ?";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setString(1, quoteID);
+     
+    ResultSet resultSet = preparedStatement.executeQuery();
+    String user_note = "",contractor_status="", user_status="", negotiation_note="",work_period ="", price="",email=""; 
+    int tree_id= 1; 
+    if (resultSet.next()) {
+    	 user_note = resultSet.getString("user_note");
+    	 contractor_status = resultSet.getString("contractor_status");
+    	 user_status = resultSet.getString("user_status");
+    	 negotiation_note = resultSet.getString("Negotiation_note");
+    	 work_period = resultSet.getString("work_period");
+    	 price = resultSet.getString("price");
+    	 email = resultSet.getString("email");
+         tree_id = resultSet.getInt("tree_id"); 
+         }
+    Quote = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+    //System.out.println(Request.getTree_id()); 
+    resultSet.close();
+    preparedStatement.close();
+     
+    return Quote;
+}
+
+public tree getTree(int treeID) throws SQLException {
+	tree Tree = null;
+    String sql = "SELECT * FROM tree WHERE tree_id = ?";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setInt(1, treeID);
+     
+    ResultSet resultSet = preparedStatement.executeQuery();
+    String tree_distance="", trunk_size="",tree_height="",tree_location = ""; 
+    if (resultSet.next()) {
+    	 tree_distance = resultSet.getString("tree_distance");
+         trunk_size = resultSet.getString("trunk_size");
+         tree_height = resultSet.getString("tree_height");
+         tree_location = resultSet.getString("tree_location");
+         }
+    Tree = new tree(tree_distance, trunk_size,tree_height,tree_location); 
+    //System.out.println(Tree.getTree_distance()+" "+Tree.getTrunk_size()+" "+Tree.getTree_height()+" "+Tree.getTree_location()); 
+
+    resultSet.close();
+    preparedStatement.close();
+    return Tree;
+}
+public orders getOrder(String orderID) throws SQLException {
+	orders Order = null;
+    String sql = "SELECT * FROM orders WHERE orderID = ?";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setString(1, orderID);
+     
+    ResultSet resultSet = preparedStatement.executeQuery();
+    String status="", email="";
+    int tree_id = 1;
+    if (resultSet.next()) {
+    	 status = resultSet.getString("status");
+         email = resultSet.getString("email");
+         tree_id = resultSet.getInt("tree_id");
+         }
+    Order = new orders(email,orderID,status,tree_id); 
+    //System.out.println(Tree.getTree_distance()+" "+Tree.getTrunk_size()+" "+Tree.getTree_height()+" "+Tree.getTree_location()); 
+
+    resultSet.close();
+    preparedStatement.close();
+    return Order;
+}
+
+
     public user getUser(String email) throws SQLException {
     	user user = null;
         String sql = "SELECT * FROM User WHERE email = ?";
@@ -625,7 +848,9 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
 		        	"work_period VARCHAR(2),"+
 		        	"price VARCHAR(6),"+
 		        	"user_note VARCHAR(100),"+
-		        	"PRIMARY KEY(quoteID));")
+		        	"tree_id INT,"+
+		        	"PRIMARY KEY(quoteID),"+
+		        	"FOREIGN KEY(tree_id) REFERENCES tree(tree_id));")
         };
         
         String[] INITIAL4 = {
@@ -652,14 +877,14 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         };
         
         String[] INITIAL6 = {
-        		"drop table if exists messages;",
-        		("CREATE TABLE IF NOT EXISTS messages ( "+
-        			    "message_id AUTO_INCREMENT INT PRIMARY KEY ),"+
-        			    "sender_id INT,"+
-        			    "recipient_id INT,"+
-        			    "content TEXT,"+
-        			    "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
-        			    "PRIMARY KEY (message_id));")
+        		"drop table if exists orders;",
+        		("CREATE TABLE IF NOT EXISTS orders ( "+
+    					"orderID VARCHAR(10), "+
+    							"status VARCHAR(1),"+
+    		                    "email VARCHAR(50),"+
+    		                    "tree_id INT,"+
+    		                    "PRIMARY KEY(orderID),"+
+    		                    "FOREIGN KEY(tree_id) REFERENCES tree(tree_id));")
 
         };
         
@@ -674,7 +899,7 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         			+ "('bat@gmail.com','Bruce','Wayne','bruce1234','1029384756',2954,'green','Central','NY','39455','4103943022594302'),\n"
         			+ "('barbara@gmail.com','Barbara','Gordan','barb1234','1029483945','3945','blue','Gotham','NY','10447','1039583960402943'),\n"
         			+ "('tim@gmail.com','Tim','Drake','tim1234','2034564345','4923','gre','Gotham','NY',48603,'3456783948272345'),\n"
-        			+ "('damian@gmail.com','Damian','Wayne','damian2534','1049283746','2932','Blood','Haven','NJ','29385','1057382945194037'),\n"
+        			+ "('damian@gmail.com','Damian','Wayne','damian1234','1049283746','2932','Blood','Haven','NJ','29385','1057382945194037'),\n"
         			+ "('maria@gmail.com','Maria','Alsamaien','maria1234','1112930457','4920','Street','Allen Park','MI','48277','1039675555556666');"
         		)
            			};
@@ -693,16 +918,16 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         };
         String[] TUPLES3 = {
 //        		
-        		("insert into Quote(email, quoteID, contractor_status, user_status,negotiation_note,work_period,price,user_note)"+
-            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20','2500',''),"+
-        				"('roy@gmail.com','49204GQW3','P','P','satisfied','12','1340',''),"+
-            			"('dick@gmail.com','492054HW','R','R','invalid','13','4400',''),"+
-        				"('bat@gmail.com','39402043HQ','P','P','better deal','35','3752',''),"+
-            			"('bat@gmail.com','AW492054E4','P','P','do better','3','23456',''),"+
-        				"('barbara@gmail.com','4825042','P','P','accepted','3','100',''),"+
-            			"('tim@gmail.com','5449205425','P','P','like it','7','3456',''),"+
-        				"('damian@gmail.com','4920543243','P','P','no','8','567',''),"+
-        				"('maria@gmail.com','4920542431','P','P','yes','19','24354','');")
+        		("insert into Quote(email, quoteID, contractor_status, user_status,negotiation_note,work_period,price,user_note,tree_id)"+
+            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20','2500','',1),"+
+        				"('roy@gmail.com','49204GQW3','P','P','satisfied','12','1340','',2),"+
+            			"('dick@gmail.com','492054HW','R','R','invalid','13','4400','',3),"+
+        				"('bat@gmail.com','39402043HQ','P','P','better deal','35','3752','',4),"+
+            			"('dick@gmail.com','AW492054E4','P','P','do better','3','23456','',5),"+
+        				"('barbara@gmail.com','4825042','P','P','accepted','3','100','',6),"+
+            			"('tim@gmail.com','5449205425','P','P','like it','7','3456','',7),"+
+        				"('damian@gmail.com','4920543243','P','P','no','8','567','',8),"+
+        				"('maria@gmail.com','4920542431','P','P','yes','19','24354','',9);")
         };
         
         String[] TUPLES4 = {
@@ -733,19 +958,12 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         				"('hy78','P','Reduce price','4000');"
         				)
         };
-	String[] TUPLES6 = {
-        	("insert into messages(sender_id, recipient_id, content),"+
-        			"values (12,332,'this is stuff'),"+
-        			"('33,22,'gotcha'),"+
-        			"(44,555,'no prize'),"+
-        			"(33,222,'this stinks')"+
-        			"(1,89.'life sucks')"+
-        			"(33,44,'I hate this')"+
-        			"(444,222,'Why is this nessesary')"+
-        			"(4,2,'why')"+
-        			"(3,1,'plz do not do this to me');"
-        			)	
+        
+        String[] TUPLES6 = {
+        		("insert into Orders(orderID,status,email,tree_id)\n"
+        				+ "            			values ('ap9807','P', 'roy@gmail.com',1);")
         };
+        
         //for loop to put these in database
         for (int i = 0; i < INITIAL.length; i++)
         	statement.execute(INITIAL[i]);
@@ -760,9 +978,9 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         
         for (int i = 0; i < INITIAL5.length; i++)
         	statement.execute(INITIAL5[i]);
-	for (int i = 0; i < INITIAL6.length; i++)
-        	statement.execute(INITIAL6[i]);
         
+        for (int i = 0; i < INITIAL6.length; i++)
+        	statement.execute(INITIAL6[i]);
         
         for (int i = 0; i < TUPLES.length; i++)
         	{statement.execute(TUPLES[i]);
@@ -784,7 +1002,8 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         for (int i = 0; i<TUPLES5.length;i++) {
         	statement.execute(TUPLES5[i]);
         }
-	for (int i = 0; i<TUPLES6.length;i++) {
+        
+        for (int i = 0; i<TUPLES6.length;i++) {
         	statement.execute(TUPLES6[i]);
         }
         
