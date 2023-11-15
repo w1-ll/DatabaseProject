@@ -25,7 +25,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th>Note </th>
+					<th>Contractor Note </th>
 					<td align="center" colspan="3">
 						<p>${note}</p>
 					</td>
@@ -47,6 +47,34 @@
 					<th>Price </th>
 					<td align="center" colspan="3">
 						<p>${price}</p>
+					</td>
+				</tr>
+				
+				<tr>
+					<th>Tree Distance </th>
+					<td align="center" colspan="3">
+						<p>${tree_distance}</p>
+					</td>
+				</tr>
+				
+				<tr>
+					<th>Trunk Size </th>
+					<td align="center" colspan="3">
+						<p>${trunk_size}</p>
+					</td>
+				</tr>
+				
+				<tr>
+					<th>Tree Height </th>
+					<td align="center" colspan="3">
+						<p>${tree_height}</p>
+					</td>
+				</tr>
+				
+				<tr>
+					<th>Tree Location </th>
+					<td align="center" colspan="3">
+						<p>${tree_location}</p>
 					</td>
 				</tr>
 				
