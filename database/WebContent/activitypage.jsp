@@ -45,7 +45,6 @@
         </center>
         
         <center>
-        <form action="ClientQuotePage" method="post">
 		 <table border="1" cellpadding="6">
             <caption><h2>Your Quotes</h2></caption>
             <tr>
@@ -60,6 +59,7 @@
             
             
             <c:forEach var="quote" items="${specificQuote}">
+            <form action="ClientQuotePage" method="post">
             
                 <tr style="text-align:center">
                     <td><c:out value="${quote.quoteID}" /></td>
@@ -78,10 +78,40 @@
                     <input type="hidden" name="user_note" value="${quote.user_note}" />
                      <input type="submit" value="Check Quote" /> 
                     <!--<center><a href="ClientRequest.jsp"target ="_self" > Check Quote </a></center>-->
-                </td>               
+                </td>   
+                </tr>
+                 </form>            
            </c:forEach>
         </table>
-        </form>	
-        </center>
+       	
+        
+        
+        <table border="1" cellpadding="6">
+            <caption><h2>Your Orders</h2></caption>
+            <tr>
+                <th>OrderID</th>
+                <th>Status</th>
+                <th>Check</th>
+                              
+            </tr>
+            
+            
+            <c:forEach var="order" items="${specificOrder}">
+            <form action="ClientOrderPage" method="post">
+            
+                <tr style="text-align:center">
+                    <td><c:out value="${order.orderID}" /></td>
+                    <td><c:out value="${order.status}" /></td>
+                    <td align="center">
+                    <input type="hidden" name="orderID" value="${order.orderID}" />
+                    <input type="hidden" name="status" value="${order.status}" />
+                     <input type="submit" value="Check Order" /> 
+                    <!--<center><a href="ClientRequest.jsp"target ="_self" > Check Quote </a></center>-->
+                </td>   
+                </tr>
+                 </form>            
+           </c:forEach>
+        </table>
+    </center>   	
 	</body>
 </html>
