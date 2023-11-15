@@ -50,4 +50,5 @@ Make sure that you did the nessesary steps to download and compile the project f
 1) User goes to the login page form the login page
 2) To register a user, they click the register action and input the nessasary information
 3) Now that the new user is registered, now you need to log in
-4) Now that the user is logged in, 
+4) Now that the user is logged in, the user can make a request by inputting information about what tree to cut down
+5) 
