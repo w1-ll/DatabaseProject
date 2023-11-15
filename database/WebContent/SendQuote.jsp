@@ -7,6 +7,7 @@
 <title>Send Quote</title>
 </head>
 <body>
+<center>
 <h1>Send Quote</h1> <br>
 	<form action="sendQuote">
 	<table border="1" cellpadding="5">
@@ -25,10 +26,60 @@
 					<td align="center" colspan="3">
 						<p>${quoteID}</p>
 						<input type="hidden" name="quoteID" value = "${quoteID}">
+						<input type="hidden" name="tree_id" value = "${tree_id}">
 					</td>
 					
 				</tr>
 				
+				<tr>
+					<th>Request ID</th>
+					<td align="center" colspan="3">
+						<p>${requestID}</p>
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>User Note </th>
+					<td align="center" colspan="3">
+						<p>${user_note}</p>
+						<input type="hidden" name="user_note" value = "${user_note}">
+						
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>Tree Distance </th>
+					<td align="center" colspan="3">
+						<p>${tree_distance}</p>
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>Trunk Size</th>
+					<td align="center" colspan="3">
+						<p>${trunk_size}</p>
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>Tree Height</th>
+					<td align="center" colspan="3">
+						<p>${tree_height}</p>
+					</td>
+					
+				</tr>
+				
+				<tr>
+					<th>Tree Location</th>
+					<td align="center" colspan="3">
+						<p>${tree_location}</p>
+					</td>
+					
+				</tr>
 				
 				<tr> 
 				<th>Your status</th>
@@ -70,5 +121,6 @@
 	</table>
 	
 	</form>
+	</center>
 </body>
 </html>
