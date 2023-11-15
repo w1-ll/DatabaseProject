@@ -23,7 +23,7 @@
 				<tr>
 					<th>Your Status </th>
 					<td align="center" colspan="3">
-						<p>${user_status}</p>
+						<p>${Contractor_status}</p>
 					</td>
 				</tr>
 				<tr>
@@ -44,22 +44,59 @@
 					<th>Price </th>
 					<td align="center" colspan="3">
 						<p>${price}</p>
+						<input type="hidden" name = "price" value="${price}">
+					</td>
+				</tr>
+	</table>
+	<h2>Tree Details: </h2>
+		<table border="1" cellpadding="5">
+				<tr>
+					<th>Tree Distance</th>
+					<td align="center" colspan="3">
+						<p>${tree_distance}</p>
+						
+					</td>
+				</tr>
+								
+				<tr>
+					<th>Trunk Size</th>
+					<td align="center" colspan="3">
+						<p>${trunk_size}</p>
 					</td>
 				</tr>
 				<tr>
+					<th>Tree Height</th>
+					<td align="center" colspan="3">
+						<p>${tree_height}</p>
+					</td>
+				</tr>
+				
+				<tr>
+					<th>Tree Location</th>
+					<td align="center" colspan="3">
+						<p>${tree_location}</p>
+					</td>
+				</tr>
+				
+				
 	</table>
+	
 	<h2>User Response: </h2>
 	<table border="1" cellpadding="5">
 				<tr>
 					<th>User Status </th>
 					<td align="center" colspan="3">
 						<p>${user_status}</p>
+						<input type = "hidden" name="user_status" value="${user_status}"/>
+						<input type = "hidden" name="tree_id" value="${tree_id}"/>
+						<input type = "hidden" name="email" value="${email}"/>
 					</td>
 				</tr>
 				<tr>
 					<th>User Note </th>
 					<td align="center" colspan="3">
 						<p>${user_note}</p>
+						<p>${tree_id }</p>
 					</td>
 				</tr>
 				
@@ -76,7 +113,7 @@
 		</tr>
 		<tr>
 			<th>Price Changes: </th>
-			<th><input type="text" name="price" size="45"  value="Enter your price" onfocus="this.value=''"></th>
+			<th><input type="text" name="price2" size="45"  value="" onfocus="this.value=''"></th>
 			<input type="hidden" name = "quoteID" value="${quoteID}">
 		</tr>
 		<tr> 
