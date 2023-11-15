@@ -46,3 +46,11 @@ Independent working hours:
 # Part 2
 ## Description
 Part 2 is about implementing the sql files into the jsp/web browsers
+
+### Instructions:
+Make sure that you did the nessesary steps to download and compile the project from part 1.
+
+1) User goes to the login page form the login page
+2) To register a user, they click the register action and input the nessasary information
+3) Now that the new user is registered, now you need to log in
+4) 
