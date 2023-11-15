@@ -8,6 +8,7 @@ public class quote
 	    protected String price;
 	    protected String email;
 	    protected String user_note;
+	    protected int tree_id;
 	    //constructors
 	    public quote() {
 	    }
@@ -28,6 +29,13 @@ public class quote
 	    {
 	    	this(quoteID,status1, status2,negotiation_note,work_period,price,email);
 	    	this.user_note = user_note;
+	    }
+	    
+	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, String price,String email, String user_note,int tree_id) 
+	    {
+	    	this(quoteID,status1, status2,negotiation_note,work_period,price,email,user_note);
+	    	this.tree_id = tree_id;
+	    	System.out.println(this.tree_id);
 	    }
 	
 	    public quote(String status1, String status2, String negotiation_note,String work_period, String price, String email) 
@@ -92,8 +100,11 @@ public class quote
 	    public String getUser_note() {
 	    	return user_note;
 	    }
-	    public void setUser_note(String user_note) {
-	    	this.user_note = user_note;
+	    public void setUser_note(String note) {
+	    	this.user_note = note;
+	    }
+	    public int getTree_id() {
+	    	return tree_id;
 	    }
 	    
 	}
