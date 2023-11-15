@@ -51,4 +51,12 @@ Make sure that you did the nessesary steps to download and compile the project f
 2) To register a user, they click the register action and input the nessasary information
 3) Now that the new user is registered, now you need to log in
 4) Now that the user is logged in, the user can make a request by inputting information about what tree to cut down
-5) 
+
+## Part 2 contributions
+Will: 
+* Made the tables
+* worked on the front end
+
+Rishitha: 
+* Functionality of the code
+* jsp interactions
