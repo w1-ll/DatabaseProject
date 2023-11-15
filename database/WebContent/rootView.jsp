@@ -78,6 +78,7 @@
                 <th>Work Period </th>
                 <th>Price</th>
                 <th>User note</th>
+                <th>Tree ID</th>
                               
             </tr>
             
@@ -91,7 +92,8 @@
                     <td><c:out value="${quote.negotiation_note}" /></td>
                     <td><c:out value="${quote.work_period}" /></td>
                     <td><c:out value="${quote.price}" /></td>    
-                    <td><c:out value="${quote.user_note}" /></td>             
+                    <td><c:out value="${quote.user_note}" /></td>    
+                    <td><c:out value="${quote.tree_id}" /></td>           
            </c:forEach>
         </table>
         
@@ -134,25 +136,21 @@
                     <td><c:out value="${bill.final_price}" /></td>   
            </c:forEach>
         </table>
-
+       
        <table border="1" cellpadding="6">
-            <caption><h2>List of Messages</h2></caption>
+            <caption><h2>List of Orders</h2></caption>
             <tr>
-                <th>Message ID</th>
-                <th>Sender id</th>
-                <th>Recipient ID</th>
-                <th>Content </th> 
-                <th>Timestamp </th>             
+                <th>Order ID</th>
+                <th>Status</th>
+                <th>User Email</th>           
             </tr>
-      
             
-            <c:forEach var="messages" items="${Messages}">
+            
+            <c:forEach var="order" items="${Orders}">
                 <tr style="text-align:center">
-                    <td><c:out value="${message.message_id}" /></td>
-                    <td><c:out value="${message.sender_id}" /></td>
-                    <td><c:out value="${message.recipient_id}" /></td>
-                    <td><c:out value="${message.content}" /></td> 
-                    <td><c:out value="${message.timestamp}" /></td>   
+                    <td><c:out value="${order.orderID}" /></td>
+                    <td><c:out value="${order.status}" /></td>
+                    <td><c:out value="${order.email}" /></td>  
            </c:forEach>
         </table>
 
