@@ -40,45 +40,6 @@
     </form>
 </c:forEach>
 
-
-
-
-
-	<center>
-<!--         <form action="ContractorQuotePage" method="post">
-		 <table border="1" cellpadding="6">
-            <caption><h2>Current Quotes</h2></caption>
-            <tr>
-                <th>QuoteID</th>
-                <th>User Email</th>
-                <th>Your Status</th>
-                <th>User Status</th>
-                <th>Check</th>              
-            </tr>
-            
-            
-            <c:forEach var="quote" items="${Quotes}">
-            
-                <tr style="text-align:center">
-                    <td><c:out value="${quote.quoteID}" /></td>
-                    <td><c:out value="${quote.email}" /></td>
-                    <td><c:out value="${quote.contractor_status}" /></td>
-                    <td><c:out value="${quote.user_status}" /></td>
-                    <td align="center">
-                    <input type="hidden" name="quoteID" value="${quote.quoteID}" />
-                    <input type="hidden" name="Cstatus" value="${quote.contractor_status}" />
-                    <input type="hidden" name="Ustatus" value="${quote.user_status}" />
-                    <input type="hidden" name="note" value="${quote.negotiation_note}" />
-                    <input type="hidden" name="work_period" value="${quote.work_period}" />
-                    <input type="hidden" name="price" value="${quote.price}" />
-                    <input type="hidden" name="user_note" value="${quote.user_note}" />
-                     <input type="submit" value="Check Quote" /> 
-                    <!--<center><a href="ClientRequest.jsp"target ="_self" > Check Quote </a></center>-->
-               <!-- </td>               
-           </c:forEach>
-        </table>
-        </form>	--> 
-        
         
         <table border="1" cellpadding="6">
     <caption><h2>Current Quotes</h2></caption>
@@ -112,8 +73,34 @@
     </c:forEach>
 </table>
         
-        </center>
 
+<table border="1" cellpadding="6">
+            <caption><h2>Pending Orders</h2></caption>
+            <tr>
+                <th>Order ID</th>
+                <th>Status</th>
+                <th>User Email</th>   
+                <th>Check</th>        
+            </tr>
+            
+            
+            <c:forEach var="order" items="${Orders}">
+            <form action="CheckOrder" method="post">
+            
+                <tr style="text-align:center">
+                    <td><c:out value="${order.orderID}" /></td>
+                    <input type="hidden" name="orderID" value="${order.orderID}" />                    
+                    <td><c:out value="${order.status}" /></td>
+                    <input type="hidden" name="status" value="${order.status}" />
+                    
+                    <td><c:out value="${order.email}" /></td> 
+                    <input type="hidden" name="email" value="${order.email}" />
+                    
+                    <td><input type="submit" value="Check Order" /> </td>
+                    </tr>
+                    </form>
+           </c:forEach>
+        </table>
 
         </div> 
 	</body>
