@@ -1,7 +1,6 @@
 # Description
 This project is used as a basis to show how the code interacts with web servers through Java, SQL, and jsp files.
-This also sets a relation between the contractor, client, the negotiation quote, and more.
-Part 2 is now about implementing the jsp files to interact with the users.
+This also sets a relation between the contractor, client, the negotiation quote, and more.  Part 2 is now about implementing the jsp files to interact with the users.  This part of the project is about the users and the client interacting with the requests for cutting trees and negotiating the price.
 # Table of contents
 * [Prerequisite](#Prerequisite)
 * [Instructions](#Instruction-Setup)
@@ -50,7 +49,10 @@ Make sure that you did the nessesary steps to download and compile the project f
 1) User goes to the login page form the login page
 2) To register a user, they click the register action and input the nessasary information
 3) Now that the new user is registered, now you need to log in
-4) Now that the user is logged in, the user can make a request by inputting information about what tree to cut down
+4) Now that the user is logged in, the user can make a request by inputting information about what tree to cut down wait for the contractor to respond to the request
+5) Contractor has to log in and view the request
+6) Contractor click 'send' from the tree request and makes the price for the tree cutting
+7) The user and contractor can interact with the page by checking to see if there are any requests that have been accepted or need to be negotiated
 
 ## Part 2 contributions
 Will: 
@@ -63,4 +65,4 @@ Rishitha:
 * jsp interactions
 * 25 hours
 
-10 ith hours combined work
+10 hours combined work 
