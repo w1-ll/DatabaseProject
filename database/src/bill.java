@@ -3,7 +3,7 @@ public class bill
 		protected String billID;
 	 	protected String status;
 	    protected String negotiation_note;
-	    protected String final_price;
+	    protected int final_price;
 	 
 	    //constructors
 	    public bill() {
@@ -14,14 +14,14 @@ public class bill
 	        this.billID = billID;
 	    }
 	    
-	    public bill(String billID, String status, String negotiation_note, String final_price) 
+	    public bill(String billID, String status, String negotiation_note, int final_price) 
 	    {
 	    	this(status,negotiation_note, final_price);
 	    	this.billID = billID;
 	    }
 	 
 	
-	    public bill(String status, String negotiation_note, String final_price) 
+	    public bill(String status, String negotiation_note, int final_price) 
 	    {
 	    	this.status = status;
 	    	this.negotiation_note = negotiation_note;
@@ -51,10 +51,10 @@ public class bill
 	    }
 	        
 	    	    
-	    public String getFinal_price() {
+	    public int getFinal_price() {
 	        return final_price;
 	    }
-	    public void setFinal_price(String final_price) {
+	    public void setFinal_price(int final_price) {
 	        this.final_price = final_price;
 	    }
 	}
