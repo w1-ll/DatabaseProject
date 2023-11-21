@@ -246,10 +246,10 @@ private void newRequest(HttpServletRequest request, HttpServletResponse response
 	    	String Status = request.getParameter("status");
 	    	String Note = request.getParameter("note");
 	    	String Email =  (String)session.getAttribute("username");
-	    	String tree_distance = request.getParameter("tree_distance");
-	    	String trunk_size = request.getParameter("trunk_size");
-	    	String tree_height = request.getParameter("tree_height");
-	    	String tree_location = request.getParameter("tree_location");
+	    	int tree_distance = Integer.parseInt(request.getParameter("tree_distance"));
+	    	int trunk_size = Integer.parseInt(request.getParameter("trunk_size"));
+	    	int tree_height = Integer.parseInt(request.getParameter("tree_height"));
+	    	int tree_location = Integer.parseInt(request.getParameter("tree_location"));
 	    	//System.out.println(Email);
 //	    	SELECT users.user_id, username, order_id, order_date
 //	    	FROM users
@@ -272,7 +272,7 @@ private void newQuote(HttpServletRequest request, HttpServletResponse response) 
 	    	String RequestStatus = request.getParameter("options");
 	    	String Note = request.getParameter("note");
 	    	String WorkPeriod = request.getParameter("workPeriod");
-	    	String price = request.getParameter("price");
+	    	int price = Integer.parseInt(request.getParameter("price"));
 	    	String requestID = request.getParameter("selectedRequestID");
 	    	String user_note = request.getParameter("user_note");
 	    	int tree_id = Integer.parseInt(request.getParameter("tree_id"));
@@ -340,7 +340,7 @@ private void ClientQuotePage(HttpServletRequest request, HttpServletResponse res
 	 String user_status = sample.getUser_status();
 	 String note = sample.getNegotiation_note();
 	 String work_period = sample.getWork_period();
-	 String price = sample.getPrice();
+	 int price = sample.getPrice();
 	 String user_note = sample.getUser_note();
 	 tree sampleT = userDAO.getTree(sample.getTree_id());
 	 request.setAttribute("quoteID", quoteID);
@@ -370,7 +370,7 @@ private void ContractorQuotePage(HttpServletRequest request, HttpServletResponse
 	 String user_status = sample.getUser_status();
 	 String note = sample.getNegotiation_note();
 	 String work_period = sample.getWork_period();
-	 String price = sample.getPrice();
+	 int price = sample.getPrice();
 	 System.out.println("Tree ID 1st print :" + (sample.getTree_id()));
 	 String user_note = sample.getUser_note();
 	 tree sampleT = userDAO.getTree(sample.getTree_id());
@@ -503,11 +503,3 @@ private void ClientOrderPage(HttpServletRequest request, HttpServletResponse res
 	    
 }
 	        
-	        
-	    
-	        
-	        
-	        
-	    
-
-
