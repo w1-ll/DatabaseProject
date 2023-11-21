@@ -5,7 +5,7 @@ public class quote
 	 	protected String user_status;
 	    protected String negotiation_note;
 	    protected String work_period;
-	    protected String price;
+	    protected int price;
 	    protected String email;
 	    protected String user_note;
 	    protected int tree_id;
@@ -18,27 +18,27 @@ public class quote
 	        this.quoteID = quoteID;
 	    }
 	    
-	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, String price,String email) 
+	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, int price,String email) 
 	    {
 	    	//contractor status = status1 user status = status2
 	    	this(status1, status2, negotiation_note,work_period, price,email);
 	    	this.quoteID = quoteID;
 	    }
 	 
-	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, String price,String email, String user_note) 
+	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, int price,String email, String user_note) 
 	    {
 	    	this(quoteID,status1, status2,negotiation_note,work_period,price,email);
 	    	this.user_note = user_note;
 	    }
 	    
-	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, String price,String email, String user_note,int tree_id) 
+	    public quote(String quoteID, String status1, String status2, String negotiation_note,String work_period, int price,String email, String user_note,int tree_id) 
 	    {
 	    	this(quoteID,status1, status2,negotiation_note,work_period,price,email,user_note);
 	    	this.tree_id = tree_id;
 	    	System.out.println(this.tree_id);
 	    }
 	
-	    public quote(String status1, String status2, String negotiation_note,String work_period, String price, String email) 
+	    public quote(String status1, String status2, String negotiation_note,String work_period, int price, String email) 
 	    {
 	    	this.email = email;
 	    	contractor_status = status1;
@@ -84,10 +84,10 @@ public class quote
 	        this.work_period = work_period;
 	    }
 	    
-	    public String getPrice() {
+	    public int getPrice() {
 	        return price;
 	    }
-	    public void setPrice(String price) {
+	    public void setPrice(int price) {
 	        this.price = price;
 	    }
 	    public String getEmail() {
