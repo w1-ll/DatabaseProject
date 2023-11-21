@@ -170,7 +170,7 @@ public class userDAO
             String contractor_status = resultSet.getString("contractor_status");
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
-            String price = resultSet.getString("price");
+            int price = resultSet.getInt("price");
             int tree_id =  resultSet.getInt("tree_id");
             quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
             listQuote.add(Quotes);
@@ -196,7 +196,7 @@ public class userDAO
             System.out.println("status2:"+resultSet.getString("user_status"));
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
-            String price = resultSet.getString("price");
+            int price = resultSet.getInt("price");
             int tree_id =  resultSet.getInt("tree_id");
             quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
             listQuote.add(Quotes);
@@ -214,10 +214,10 @@ public class userDAO
          ResultSet resultSet = statement.executeQuery(sql);
           
          while (resultSet.next()) {
-         	String tree_distance =  resultSet.getString("tree_distance");
-         	String trunk_size = resultSet.getString("trunk_size");
-             String tree_height = resultSet.getString("tree_height");
-             String tree_location = resultSet.getString("tree_location");
+         	int tree_distance = resultSet.getInt("tree_distance");//Integer.parseInt(resultSet.getString("tree_distance"));
+         	int trunk_size = resultSet.getInt("trunk_size");
+             int tree_height = resultSet.getInt("tree_height");
+             int tree_location = resultSet.getInt("tree_location");
              //System.out.println(tree_distance+"\n"+trunk_size+"\n"+tree_height+"\n"+tree_location);
               
              tree Tree = new tree(tree_distance,trunk_size,tree_height,tree_location);
@@ -239,7 +239,7 @@ public class userDAO
         	String billID = resultSet.getString("billID");
         	String status = resultSet.getString("status");
         	String negotiation_note = resultSet.getString("negotiation_note");
-        	String final_price = resultSet.getString("final_price");
+        	int final_price = resultSet.getInt("final_price");
             System.out.println(billID+" "+status+" "+negotiation_note+" "+final_price);
              
             bill Bill = new bill(billID,status,negotiation_note,final_price);
@@ -314,7 +314,7 @@ public class userDAO
             String contractor_status = resultSet.getString("contractor_status");
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
-            String price = resultSet.getString("price");
+            int price = resultSet.getInt("price");
             quote Quotes = new quote(quoteID, contractor_status, user_status, negotiation_note,work_period, price,email);
             listQuote.add(Quotes);
         }        
@@ -403,7 +403,7 @@ public class userDAO
 	        preparedStatement.setString(4, quotes.getUser_status());
 			preparedStatement.setString(5, quotes.getNegotiation_note());
 			preparedStatement.setString(6, quotes.getWork_period());
-			preparedStatement.setString(7, quotes.getPrice());
+			preparedStatement.setInt(7, quotes.getPrice());
 			preparedStatement.setInt(8, quotes.getTree_id());
 			System.out.println("sql implemented.");
 
@@ -422,10 +422,10 @@ public class userDAO
 		String sql = "insert into tree(tree_distance, trunk_size,tree_height,tree_location) values (?, ?, ?, ?)";
 		
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		 preparedStatement.setString(1, trees.getTree_distance());
-		 preparedStatement.setString(2, trees.getTrunk_size());
-	        preparedStatement.setString(3, trees.getTree_height());
-	        preparedStatement.setString(4, trees.getTree_location());
+		 preparedStatement.setInt(1, trees.getTree_distance());
+		 preparedStatement.setInt(2, trees.getTrunk_size());
+	        preparedStatement.setInt(3, trees.getTree_height());
+	        preparedStatement.setInt(4, trees.getTree_location());
 			
 			System.out.println("sql implemented.");
 
@@ -619,15 +619,15 @@ public quote getQuote(String quoteID) throws SQLException {
     preparedStatement.setString(1, quoteID);
      
     ResultSet resultSet = preparedStatement.executeQuery();
-    String user_note = "",contractor_status="", user_status="", negotiation_note="",work_period ="", price="",email=""; 
-    int tree_id= 1; 
+    String user_note = "",contractor_status="", user_status="", negotiation_note="",work_period ="",email=""; 
+    int tree_id= 1, price=0; 
     if (resultSet.next()) {
     	 user_note = resultSet.getString("user_note");
     	 contractor_status = resultSet.getString("contractor_status");
     	 user_status = resultSet.getString("user_status");
     	 negotiation_note = resultSet.getString("Negotiation_note");
     	 work_period = resultSet.getString("work_period");
-    	 price = resultSet.getString("price");
+    	 price = resultSet.getInt("price");
     	 email = resultSet.getString("email");
          tree_id = resultSet.getInt("tree_id"); 
          }
@@ -649,12 +649,12 @@ public tree getTree(int treeID) throws SQLException {
     preparedStatement.setInt(1, treeID);
      
     ResultSet resultSet = preparedStatement.executeQuery();
-    String tree_distance="", trunk_size="",tree_height="",tree_location = ""; 
+    int tree_distance=0, trunk_size=0,tree_height=0,tree_location = 0; 
     if (resultSet.next()) {
-    	 tree_distance = resultSet.getString("tree_distance");
-         trunk_size = resultSet.getString("trunk_size");
-         tree_height = resultSet.getString("tree_height");
-         tree_location = resultSet.getString("tree_location");
+    	 tree_distance = resultSet.getInt("tree_distance");
+         trunk_size = resultSet.getInt("trunk_size");
+         tree_height = resultSet.getInt("tree_height");
+         tree_location = resultSet.getInt("tree_location");
          }
     Tree = new tree(tree_distance, trunk_size,tree_height,tree_location); 
     //System.out.println(Tree.getTree_distance()+" "+Tree.getTrunk_size()+" "+Tree.getTree_height()+" "+Tree.getTree_location()); 
@@ -846,7 +846,7 @@ public orders getOrder(String orderID) throws SQLException {
 		        	"user_status VARCHAR(1),"+
 		        	"Negotiation_note VARCHAR(100),"+
 		        	"work_period VARCHAR(2),"+
-		        	"price VARCHAR(6),"+
+		        	"price INT,"+
 		        	"user_note VARCHAR(100),"+
 		        	"tree_id INT,"+
 		        	"PRIMARY KEY(quoteID),"+
@@ -857,10 +857,10 @@ public orders getOrder(String orderID) throws SQLException {
         		"drop table if exists tree;",
         		("CREATE TABLE IF NOT EXISTS tree ( "+
         				"tree_id INT AUTO_INCREMENT,"+
-        			    "tree_distance VARCHAR(4),"+
-        			    "trunk_size VARCHAR(4),"+
-        			    "tree_height VARCHAR(6),"+
-        			    "tree_location VARCHAR(50),"+
+        			    "tree_distance INT,"+
+        			    "trunk_size INT,"+
+        			    "tree_height INT,"+
+        			    "tree_location INT,"+
         			    "PRIMARY KEY (tree_id));")
 
         };
@@ -871,7 +871,7 @@ public orders getOrder(String orderID) throws SQLException {
         			    "billID VARCHAR(10),"+
         			    "status VARCHAR(1),"+
         			    "negotiation_note VARCHAR(60),"+
-        			    "final_price VARCHAR(4),"+
+        			    "final_price INT,"+
         			    "PRIMARY KEY (billID));")
 
         };
@@ -919,43 +919,43 @@ public orders getOrder(String orderID) throws SQLException {
         String[] TUPLES3 = {
 //        		
         		("insert into Quote(email, quoteID, contractor_status, user_status,negotiation_note,work_period,price,user_note,tree_id)"+
-            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20','2500','',1),"+
-        				"('roy@gmail.com','49204GQW3','P','P','satisfied','12','1340','',2),"+
-            			"('dick@gmail.com','492054HW','R','R','invalid','13','4400','',3),"+
-        				"('bat@gmail.com','39402043HQ','P','P','better deal','35','3752','',4),"+
-            			"('dick@gmail.com','AW492054E4','P','P','do better','3','23456','',5),"+
-        				"('barbara@gmail.com','4825042','P','P','accepted','3','100','',6),"+
-            			"('tim@gmail.com','5449205425','P','P','like it','7','3456','',7),"+
-        				"('damian@gmail.com','4920543243','P','P','no','8','567','',8),"+
-        				"('maria@gmail.com','4920542431','P','P','yes','19','24354','',9);")
+            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20',2500,'',1),"+
+        				"('roy@gmail.com','49204GQW3','P','P','satisfied','12',1340,'',2),"+
+            			"('dick@gmail.com','492054HW','R','R','invalid','13',4400,'',3),"+
+        				"('bat@gmail.com','39402043HQ','P','P','better deal','35',3752,'',4),"+
+            			"('dick@gmail.com','AW492054E4','P','P','do better','3',23456,'',5),"+
+        				"('barbara@gmail.com','4825042','P','P','accepted','3',100,'',6),"+
+            			"('tim@gmail.com','5449205425','P','P','like it','7',3456,'',7),"+
+        				"('damian@gmail.com','4920543243','P','P','no','8',567,'',8),"+
+        				"('maria@gmail.com','4920542431','P','P','yes','19',2435,'',9);")
         };
         
         String[] TUPLES4 = {
         		("insert into tree(tree_distance, trunk_size,tree_height,tree_location)"+
-            			"values ('1111','1010','101010','Troy'),"+
-        				"('2','2','2','Birmingham'),"+
-            			"('1','1','1','Detroit'),"+
-        				"('123','11','22876','Baltimore'),"+
-            			"('1234','3213','12423','Warren'),"+
-        				"('3920','4322','33333','Canton'),"+
-            			"('1232','11','222','Dearborn'),"+
-        				"('4323','234','423','Ann Arbor'),"+
-        				"('3333','2222','333333','Troy');"
+            			"values (1111,1010,101010,10),"+
+        				"(2,2,2,18),"+
+            			"(1,1,1,20),"+
+        				"(123,11,22876,9),"+
+            			"(123,3213,12423,29),"+
+        				"(3920,4322,33333,3),"+
+            			"(1232,11,222,20),"+
+        				"(4323,234,423,16),"+
+        				"(3333,2222,333333,18);"
         				)
         };
        
         
         String[] TUPLES5 = {
         		("insert into bill(billID, status,negotiation_note,final_price)"+
-            			"values ('0000','P','No notes','0000'),"+
-        				"('S24S','P','Reduce price','800'),"+
-            			"('g345','P','No notes','7777'),"+
-        				"('dwrt','P','No notes','8749'),"+
-            			"('Jk98','P','No notes','3100'),"+
-        				"('h832','P','No notes','4000'),"+
-            			"('1232','P','Reduce price','6100'),"+
-        				"('43y3','P','Reduce price','2150'),"+
-        				"('hy78','P','Reduce price','4000');"
+            			"values ('0000','P','No notes',0000),"+
+        				"('S24S','P','Reduce price',800),"+
+            			"('g345','P','No notes',7777),"+
+        				"('dwrt','P','No notes',8749),"+
+            			"('Jk98','P','No notes',3100),"+
+        				"('h832','P','No notes',4000),"+
+            			"('1232','P','Reduce price',6100),"+
+        				"('43y3','P','Reduce price',2150),"+
+        				"('hy78','P','Reduce price',4000);"
         				)
         };
         
