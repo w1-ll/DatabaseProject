@@ -66,3 +66,6 @@ Rishitha:
 * 25 hours
 
 10 hours combined work 
+### Part 3 Project Instructions:
+Make sure that you follow the instructions on how to download the code and run it
+For the user DAO functions, any code that has a password associated with the root, change the password to your own root password
