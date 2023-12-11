@@ -3,6 +3,7 @@ import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
  
@@ -112,6 +113,10 @@ public class ControlServlet extends HttpServlet {
         		 System.out.println("client order page initiated.");
         		 ClientOrderPage(request,response);
         		 break;
+        	 case "/ChangeFinishDate":
+        		 System.out.println("change finish date initiated.");
+        		 ChangeFinishDate(request,response);
+        		 break;
 	    	}
 	    }
 	    catch(Exception ex) {
@@ -155,6 +160,10 @@ public class ControlServlet extends HttpServlet {
 	    	request.setAttribute("Requests", userDAO.listAllRequestsForContractor());
 	    	request.setAttribute("Quotes", userDAO.listAllQuotesForContractor());
 	    	request.setAttribute("Orders", userDAO.listAllOrders());
+	    	request.setAttribute("RejectedQuotes", userDAO.listAllRejectedQuotes());
+	    	request.setAttribute("RejectedRequests", userDAO.listAllRejectedRequests());
+	    	request.setAttribute("SuccessfulRequests", userDAO.listAllSuccessfulRequests());
+	    	request.setAttribute("SuccessfulQuotes", userDAO.listAllSuccessfulQuotes());
 	    	request.getRequestDispatcher("contractor.jsp").forward(request, response);
 
 	    }
@@ -280,11 +289,13 @@ private void newQuote(HttpServletRequest request, HttpServletResponse response) 
 	    	System.out.println("data obtained.");
 	    	System.out.println(tree_id);
 	    	userDAO.updateRequest(requestID,RequestStatus);
-	    	quote Quote = new quote(QuoteID,"P","",Note, WorkPeriod,price,email,user_note,tree_id);
+	    	if (RequestStatus == "S") {
+	    		quote Quote = new quote(QuoteID,"P","P",Note, WorkPeriod,price,email,user_note,tree_id);
 	    	//Quote.setRequest(null);
-	    	System.out.println(Quote.getTree_id());
-	    	System.out.println("new quote created");
-	    	userDAO.insertQuote(Quote);
+	    		System.out.println(Quote.getTree_id());
+	    		System.out.println("new quote created");
+	    		userDAO.insertQuote(Quote);
+	    	}
 	    	System.out.println("userDAO ran.");
 	    	contractorPage(request,response,"");
 	    	
@@ -441,6 +452,10 @@ private void ReviseQuote(HttpServletRequest request, HttpServletResponse respons
 	 System.out.println(Contractor_status);
 	 System.out.println(quoteID);
 	 System.out.println(tree_id);
+	 
+	  
+	 if (!(user_status.equals("S") || user_status.equals("R")) ) Contractor_status = "P";
+	 
 	 if (Contractor_status.equals("S") && user_status.equals("S")) {
 		 orders Order = new orders(email,randomIDGenerator(),"P",tree_id);
 		 userDAO.insertOrder(Order);
@@ -465,6 +480,13 @@ private void CheckOrder(HttpServletRequest request, HttpServletResponse response
 	 request.setAttribute("orderID", orderID);
 	 request.setAttribute("status", status);
 	 request.setAttribute("email", email);
+	 if (newOrder.getFinish_date()!=new Date(100,9,1)) {
+		request.setAttribute("finish_date", newOrder.getFinish_date()); 
+	 }else {
+		request.setAttribute("finish_date", null); 
+
+	 }
+	 
 	 request.setAttribute("tree_distance", newTree.getTree_distance());
 	 request.setAttribute("trunk_size", newTree.getTrunk_size());
 	 request.setAttribute("tree_height", newTree.getTree_height());
@@ -487,6 +509,8 @@ private void ClientOrderPage(HttpServletRequest request, HttpServletResponse res
 	 tree newTree = userDAO.getTree(tree_id);
 	 request.setAttribute("orderID", orderID);
 	 request.setAttribute("status", status);
+	 request.setAttribute("finish_date", newOrder.getFinish_date());
+	 System.out.println(newOrder.getFinish_date());
 	 request.setAttribute("tree_distance", newTree.getTree_distance());
 	 request.setAttribute("trunk_size", newTree.getTrunk_size());
 	 request.setAttribute("tree_height", newTree.getTree_height());
@@ -498,8 +522,36 @@ private void ClientOrderPage(HttpServletRequest request, HttpServletResponse res
 	System.out.println("Re ended");
 
 	    }
+
+
+@SuppressWarnings("deprecation")
+private void ChangeFinishDate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 String firstInput = request.getParameter("changeFinishDate");
+	 String orderID = request.getParameter("orderID");
+	 orders tempOrder = userDAO.getOrder(orderID);
+	 Date finishDate = new Date();
+	 Calendar cal = Calendar.getInstance();
+	 cal.setTime(finishDate);
+	 int day = Integer.parseInt(firstInput.substring(8,10));
+	 int month = Integer.parseInt(firstInput.substring(5,7))-1;
+	 int year = Integer.parseInt(firstInput.substring(0,4));
+	 
+	 cal.set(Calendar.DAY_OF_MONTH, day); // Set the day of the month
+	 cal.set(Calendar.YEAR, year); // Set the year
+	 cal.set(Calendar.MONTH, month); // Set the month (Note: Months are zero-based in Java)
+	 finishDate = cal.getTime();
+	 userDAO.modifyOrderFinalDate(orderID, finishDate);
+	 System.out.println(finishDate.toString());
+	 
+	 request.getRequestDispatcher("ClientOrderPage.jsp").forward(request, response);
+
+	 session = request.getSession();
+	 String email = (String)session.getAttribute("username");
+	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
+	System.out.println("Re ended");
+
+	    }
         
 	        
 	    
 }
-	        
