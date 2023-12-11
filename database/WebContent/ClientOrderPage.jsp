@@ -25,6 +25,13 @@
 					</td>
 				</tr>
 				
+				<tr>
+					<th>Finish Date</th>
+					<td align="center" colspan="3">
+						<p>${finish_date}</p>
+					</td>
+				</tr>
+				
 	</table>
 	
 	<h1>Tree Details:</h1>
