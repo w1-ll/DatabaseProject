@@ -9,7 +9,8 @@
 <body>
 	<h1>New Request</h1> <br>
 	<form action="newRequest">
-	<table border="1" cellpadding="5">
+	<center>
+	  <table border="1" cellpadding="5">
 				<tr>
 					<th>Request ID </th>
 					<td align="center" colspan="3">
@@ -25,8 +26,55 @@
 						<input type="text" name="note" size="100" value="Any notes" onfocus="this.value=''">
 					</td>
 				</tr>
+				        		
 				
-				<tr>
+				
+			<!--	<div id="tree_data"></div>
+				<button type="button" onclick="addTreeInfo()">Add New Tree</button>
+				<br>
+				<button type="submit">Submit</button>
+				
+        		
+       </center> 		
+        <script>
+        let fieldCounter = 1;
+
+        function addTreeInfo() {
+            addField('TreeDistance');
+            addField('TrunkSize');
+            addField('TreeHeight');
+            addField('TreeLocation');
+            fieldCounter++;
+        }
+
+        function addField(fieldType) {
+        	const inputFieldsDiv = document.getElementById("tree_data");
+            
+            const paragraph = document.createElement("p"); // Create a paragraph element
+
+            const label = document.createElement("label");
+            label.textContent = `${fieldCounter}.${fieldType}: `;
+            
+            const input = document.createElement("input");
+            input.type = "number";
+            input.name = `${fieldType}${fieldCounter}`;
+            
+            const lineBreak = document.createElement("br");
+            
+            paragraph.appendChild(label); // Append label to the paragraph
+            paragraph.appendChild(input); // Append input to the paragraph
+
+            inputFieldsDiv.appendChild(paragraph); // Append the paragraph to the tree_data div
+            inputFieldsDiv.appendChild(lineBreak); // Append line break after the paragraph
+        
+
+            
+        }
+        
+    </script>  -->
+    
+    
+				 <tr>
 					<th>Tree Distance </th>
 					<td align="center" colspan="3">
 						<input type="text" name="tree_distance" size="100" value="Tree distance from house" onfocus="this.value=''">
