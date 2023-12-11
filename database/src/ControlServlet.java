@@ -528,6 +528,9 @@ private void ClientOrderPage(HttpServletRequest request, HttpServletResponse res
 private void ChangeFinishDate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
 	 String firstInput = request.getParameter("changeFinishDate");
 	 String orderID = request.getParameter("orderID");
+	 String status = request.getParameter("status");
+	 session = request.getSession();
+	 String email = (String)session.getAttribute("username");
 	 orders tempOrder = userDAO.getOrder(orderID);
 	 Date finishDate = new Date();
 	 Calendar cal = Calendar.getInstance();
@@ -543,13 +546,30 @@ private void ChangeFinishDate(HttpServletRequest request, HttpServletResponse re
 	 userDAO.modifyOrderFinalDate(orderID, finishDate);
 	 System.out.println(finishDate.toString());
 	 
-	 request.getRequestDispatcher("ClientOrderPage.jsp").forward(request, response);
+	 orders newOrder = userDAO.getOrder(orderID);
+	 int tree_id = newOrder.getTree_id();
+	 tree newTree = userDAO.getTree(tree_id);
+	 request.setAttribute("orderID", orderID);
+	 request.setAttribute("status", status);
+	 request.setAttribute("email", email);
+	 if (newOrder.getFinish_date()!=new Date(100,9,1)) {
+		request.setAttribute("finish_date", newOrder.getFinish_date()); 
+	 }else {
+		request.setAttribute("finish_date", null); 
 
-	 session = request.getSession();
-	 String email = (String)session.getAttribute("username");
+	 }
+	 
+	 request.setAttribute("tree_distance", newTree.getTree_distance());
+	 request.setAttribute("trunk_size", newTree.getTrunk_size());
+	 request.setAttribute("tree_height", newTree.getTree_height());
+	 request.setAttribute("tree_location", newTree.getTree_location());
+	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
+
+
 	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 	System.out.println("Re ended");
-
+	 
+	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
 	    }
         
 	        
