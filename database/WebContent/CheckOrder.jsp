@@ -37,6 +37,7 @@
 					<td align="center" colspan="3">
 						<input type="date" name="changeFinishDate" onfocus="this.value=''">
 						<input type="hidden" name="orderID" value = "${orderID}">
+						<input type="hidden" name="status" value = "${status}">
 						<input type="submit" value="Enter/Alter Date"/>
 				
 				
