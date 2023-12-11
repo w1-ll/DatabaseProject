@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 //import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 /**
  * Servlet implementation class Connect
  */
@@ -131,10 +132,53 @@ public class userDAO
         return listRequest;
     }
     
+    public List<request> listAllRejectedRequests() throws SQLException {
+        List<request> listRequest = new ArrayList<request>();        
+        String sql = "SELECT * FROM Request WHERE status = 'R'";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String requestID = resultSet.getString("requestID");
+            String email = resultSet.getString("email");
+            String note = resultSet.getString("note");
+            String status = resultSet.getString("status");
+            
+             
+            request Requests = new request(requestID,status,note,email);
+            listRequest.add(Requests);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listRequest;
+    }
+    
+    public List<request> listAllSuccessfulRequests() throws SQLException {
+        List<request> listRequest = new ArrayList<request>();        
+        String sql = "SELECT * FROM Request WHERE status = 'S'";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String requestID = resultSet.getString("requestID");
+            String email = resultSet.getString("email");
+            String note = resultSet.getString("note");
+            String status = resultSet.getString("status");
+            
+             
+            request Requests = new request(requestID,status,note,email);
+            listRequest.add(Requests);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listRequest;
+    }
     
     public List<request> listAllRequestsForContractor() throws SQLException {
         List<request> listRequest = new ArrayList<request>();        
-        String sql = "SELECT * FROM Request WHERE status != 'S' ";      
+        String sql = "SELECT * FROM Request WHERE status = 'P' ";      
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -179,9 +223,62 @@ public class userDAO
         disconnect();        
         return listQuote;
     }
+    
+    public List<quote> listAllRejectedQuotes() throws SQLException {
+        List<quote> listQuote = new ArrayList<quote>();        
+        String sql = "SELECT * FROM Quote WHERE (contractor_status  = 'R' AND user_status = 'R')";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+        	String user_note =  resultSet.getString("user_note");
+        	String email = resultSet.getString("email");
+            String quoteID = resultSet.getString("quoteID");
+            String negotiation_note = resultSet.getString("negotiation_note");
+            String contractor_status = resultSet.getString("contractor_status");
+            String user_status = resultSet.getString("user_status");
+            String work_period = resultSet.getString("work_period");
+            int price = resultSet.getInt("price");
+            int tree_id =  resultSet.getInt("tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+            listQuote.add(Quotes);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listQuote;
+    }
+    
+    
+    public List<quote> listAllSuccessfulQuotes() throws SQLException {
+        List<quote> listQuote = new ArrayList<quote>();        
+        String sql = "SELECT * FROM Quote WHERE (contractor_status  = 'S' AND user_status = 'S')";      
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+        	String user_note =  resultSet.getString("user_note");
+        	String email = resultSet.getString("email");
+            String quoteID = resultSet.getString("quoteID");
+            String negotiation_note = resultSet.getString("negotiation_note");
+            String contractor_status = resultSet.getString("contractor_status");
+            String user_status = resultSet.getString("user_status");
+            String work_period = resultSet.getString("work_period");
+            int price = resultSet.getInt("price");
+            int tree_id =  resultSet.getInt("tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+            listQuote.add(Quotes);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listQuote;
+    }
+    
+    
     public List<quote> listAllQuotesForContractor() throws SQLException {
         List<quote> listQuote = new ArrayList<quote>();        
-        String sql = "SELECT * FROM Quote WHERE NOT (contractor_status = 'S' AND user_status = 'S');  ";      
+        String sql = "SELECT * FROM Quote WHERE (contractor_status = 'P');  ";      
         connect_func();      
         statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -264,9 +361,10 @@ public class userDAO
         	String orderID = resultSet.getString("orderID");
         	String status = resultSet.getString("status");
         	String email = resultSet.getString("email");
+        	Date finishDate = resultSet.getDate("finish_date");
             System.out.println(orderID+" "+status+" "+email);
              
-            orders Order = new orders(email,orderID,status);
+            orders Order = new orders(email,orderID,status,finishDate);
             //System.out.println(Bill.getBillID()+" "+Bill.getStatus()+" "+ Bill.getNegotiation_note()+" "+ Bill.getFinal_price());
             listOrders.add(Order);
         }        
@@ -336,7 +434,8 @@ public class userDAO
             String orderID = resultSet.getString("orderID");
             String status = resultSet.getString("status");
             int tree_id = resultSet.getInt("tree_id");
-            orders Order = new orders(email, orderID, status, tree_id);
+            Date finish_date = resultSet.getDate("finish_date");
+            orders Order = new orders(email, orderID, status, tree_id,finish_date);
             listOrder.add(Order);
         }        
         resultSet.close();
@@ -452,7 +551,7 @@ public class userDAO
     	connect_func("root","rishi1234"); 
     	System.out.println("connected");
     	//System.out.println(quotes.getQuoteID());
-		String sql = "insert into Orders(orderID,status,email,tree_id) values (?, ?, ?, ?)";
+		String sql = "insert into Orders(orderID,status,email,tree_id) values (?, ?, ?, ?,?)";
 		System.out.println(Order.getTree_id());
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		 preparedStatement.setString(1, Order.getOrderID());
@@ -460,6 +559,7 @@ public class userDAO
 	        preparedStatement.setString(3, Order.getEmail());
 	        System.out.println(Order.getEmail());
 	        preparedStatement.setInt(4, Order.getTree_id());
+	        preparedStatement.setDate(5, (java.sql.Date) Order.getFinish_date());
 			
 			System.out.println("sql implemented.");
 
@@ -584,6 +684,36 @@ public boolean modifyContractorQuote(String quoteID, String Contractor_note, Str
         
     }
 
+public boolean modifyOrderFinalDate(String orderID,Date finish_date) throws SQLException {
+    String updateSql = "UPDATE orders SET finish_date = ?  WHERE orderID = ?";
+    String selectSql = "SELECT finish_date FROM orders WHERE orderID = ?";
+    connect_func(); 
+    
+    	 
+         PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(updateSql);
+         PreparedStatement selectStatement = (PreparedStatement) connect.prepareStatement(selectSql);
+
+        // Update the quote
+        updateStatement.setDate(1, new java.sql.Date(finish_date.getTime()));
+        updateStatement.setString(2, orderID);
+
+        boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+        // Retrieve updated values
+        selectStatement.setString(1, orderID);
+        ResultSet resultSet = selectStatement.executeQuery();
+
+        if (resultSet.next()) {
+            Date updatedFinishDate = resultSet.getDate("finish_date");
+            System.out.println("Updated contractor_note: " + updatedFinishDate);
+        }
+
+        return rowUpdated;
+    
+    
+    
+}
+
 
 public request getRequest(String requestID) throws SQLException {
 	request Request = null;
@@ -663,6 +793,7 @@ public tree getTree(int treeID) throws SQLException {
     preparedStatement.close();
     return Tree;
 }
+@SuppressWarnings("deprecation")
 public orders getOrder(String orderID) throws SQLException {
 	orders Order = null;
     String sql = "SELECT * FROM orders WHERE orderID = ?";
@@ -675,12 +806,14 @@ public orders getOrder(String orderID) throws SQLException {
     ResultSet resultSet = preparedStatement.executeQuery();
     String status="", email="";
     int tree_id = 1;
+    Date finish_date = new Date(100,9,1);
     if (resultSet.next()) {
     	 status = resultSet.getString("status");
          email = resultSet.getString("email");
          tree_id = resultSet.getInt("tree_id");
+         finish_date = resultSet.getDate("finish_date");
          }
-    Order = new orders(email,orderID,status,tree_id); 
+    Order = new orders(email,orderID,status,tree_id,finish_date); 
     //System.out.println(Tree.getTree_distance()+" "+Tree.getTrunk_size()+" "+Tree.getTree_height()+" "+Tree.getTree_location()); 
 
     resultSet.close();
@@ -883,6 +1016,7 @@ public orders getOrder(String orderID) throws SQLException {
     							"status VARCHAR(1),"+
     		                    "email VARCHAR(50),"+
     		                    "tree_id INT,"+
+    		                    "finish_date DATE,"+
     		                    "PRIMARY KEY(orderID),"+
     		                    "FOREIGN KEY(tree_id) REFERENCES tree(tree_id));")
 
@@ -960,8 +1094,8 @@ public orders getOrder(String orderID) throws SQLException {
         };
         
         String[] TUPLES6 = {
-        		("insert into Orders(orderID,status,email,tree_id)\n"
-        				+ "            			values ('ap9807','P', 'roy@gmail.com',1);")
+        		("insert into Orders(orderID,status,email,tree_id,finish_date)\n"
+        				+ "            			values ('ap9807','P', 'roy@gmail.com',1,'2023-10-12');")
         };
         
         //for loop to put these in database
