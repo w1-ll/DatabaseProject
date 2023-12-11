@@ -142,7 +142,8 @@
             <tr>
                 <th>Order ID</th>
                 <th>Status</th>
-                <th>User Email</th>           
+                <th>User Email</th>
+                <th>Finish Date</th>             
             </tr>
             
             
@@ -150,7 +151,8 @@
                 <tr style="text-align:center">
                     <td><c:out value="${order.orderID}" /></td>
                     <td><c:out value="${order.status}" /></td>
-                    <td><c:out value="${order.email}" /></td>  
+                    <td><c:out value="${order.email}" /></td>
+                    <td><c:out value="${order.finish_date}" /></td>  
            </c:forEach>
         </table>
 
