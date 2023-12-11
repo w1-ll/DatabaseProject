@@ -1,8 +1,10 @@
+import java.util.Date;
 public class orders {
 		protected String email;
 		protected String orderID;
 		protected String status;
 		protected int tree_id;
+		protected Date finish_date;
 		
 		public orders(){
 			
@@ -17,6 +19,17 @@ public class orders {
 			this.tree_id = tree_id;
 			
 		}
+		public orders(String email,String orderID,String status,Date finish_date){
+			this(email,orderID,status);
+			this.finish_date = finish_date;
+			
+		}
+		public orders(String email,String orderID,String status,int tree_id,Date finish_date){
+			this(email,orderID,status,tree_id);
+			this.finish_date = finish_date;
+			
+		}
+		
 		
 		
 		public String getOrderID() {
@@ -40,5 +53,10 @@ public class orders {
 		public void setEmail(String email) {
 			this.email = email;
 		}
-		
+		public Date getFinish_date() {
+			return finish_date;
+		}
+		public void setFinish_date(Date finish_date) {
+			this.finish_date = finish_date;
+		}
 }
