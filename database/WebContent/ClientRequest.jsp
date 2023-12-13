@@ -7,7 +7,7 @@
 <title>Request</title>
 </head>
 <body>
-	<h1>New Request</h1> <br>
+<h1>New Request</h1> <br>
 	<form action="newRequest">
 	<center>
 	  <table border="1" cellpadding="5">
@@ -26,18 +26,21 @@
 						<input type="text" name="note" size="100" value="Any notes" onfocus="this.value=''">
 					</td>
 				</tr>
-				        		
+				</table>
 				
-				
-			<!--	<div id="tree_data"></div>
+				<div id="tree_data"></div>
 				<button type="button" onclick="addTreeInfo()">Add New Tree</button>
+				<input type="hidden" id="addTreeCounterValue" name="addTreeCounter" value="0"> <!-- Hidden input field -->
+				
 				<br>
 				<button type="submit">Submit</button>
 				
         		
-       </center> 		
+       </center> 	
+       </form>	
         <script>
         let fieldCounter = 1;
+        let counter = 0;
 
         function addTreeInfo() {
             addField('TreeDistance');
@@ -45,6 +48,15 @@
             addField('TreeHeight');
             addField('TreeLocation');
             fieldCounter++;
+            counter++;
+            updateCounter();
+        }
+        
+        function updateCounter(){
+        	const counterElement = document.getElementById('addTreeCounterValue');
+        	if(counterElement){
+        		counterElement.value = counter;
+        	}
         }
 
         function addField(fieldType) {
@@ -53,13 +65,15 @@
             const paragraph = document.createElement("p"); // Create a paragraph element
 
             const label = document.createElement("label");
-            label.textContent = `${fieldCounter}.${fieldType}: `;
+            label.textContent = fieldCounter + '.'+ fieldType+': ';
             
             const input = document.createElement("input");
             input.type = "number";
-            input.name = `${fieldType}${fieldCounter}`;
+            input.name = fieldType+fieldCounter;
             
             const lineBreak = document.createElement("br");
+            
+
             
             paragraph.appendChild(label); // Append label to the paragraph
             paragraph.appendChild(input); // Append input to the paragraph
@@ -71,48 +85,6 @@
             
         }
         
-    </script>  -->
-    
-    
-				 <tr>
-					<th>Tree Distance </th>
-					<td align="center" colspan="3">
-						<input type="text" name="tree_distance" size="100" value="Tree distance from house" onfocus="this.value=''">
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<th>Trunk Size </th>
-					<td align="center" colspan="3">
-						<input type="text" name="trunk_size" size="100" value="Approx. Trunk Size" onfocus="this.value=''">
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<th>Tree Height</th>
-					<td align="center" colspan="3">
-						<input type="text" name="tree_height" size="100" value="Approx. Tree Height" onfocus="this.value=''">
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<th>Tree location</th>
-					<td align="center" colspan="3">
-						<input type="text" name="tree_location" size="100" value="Tree Location" onfocus="this.value=''">
-
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<td align="center" colspan="5">
-						<input type="submit" value="Submit Request"/>
-					</td>
-				</tr>
-	</table>
-	</form>
+    </script>  
 </body>
 </html>
