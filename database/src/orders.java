@@ -3,7 +3,7 @@ public class orders {
 		protected String email;
 		protected String orderID;
 		protected String status;
-		protected int tree_id;
+		protected int unique_tree_id;
 		protected Date finish_date;
 		
 		public orders(){
@@ -14,9 +14,9 @@ public class orders {
 			this.status = status;
 			this.email = email;
 		}
-		public orders(String email,String orderID,String status,int tree_id){
+		public orders(String email,String orderID,String status,int unique_tree_id){
 			this(email,orderID,status);
-			this.tree_id = tree_id;
+			this.unique_tree_id = unique_tree_id;
 			
 		}
 		public orders(String email,String orderID,String status,Date finish_date){
@@ -44,8 +44,8 @@ public class orders {
 		public void setStatus(String status) {
 			this.status = status;
 		}
-		public int getTree_id() {
-			return tree_id;
+		public int getUnique_tree_id() {
+			return unique_tree_id;
 		}
 		public String getEmail() {
 			return email;
