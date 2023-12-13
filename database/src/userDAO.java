@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
@@ -215,8 +216,8 @@ public class userDAO
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
             int price = resultSet.getInt("price");
-            int tree_id =  resultSet.getInt("tree_id");
-            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+            int unique_tree_id =  resultSet.getInt("unique_tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,unique_tree_id);
             listQuote.add(Quotes);
         }        
         resultSet.close();
@@ -240,8 +241,8 @@ public class userDAO
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
             int price = resultSet.getInt("price");
-            int tree_id =  resultSet.getInt("tree_id");
-            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+            int unique_tree_id =  resultSet.getInt("unique_tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,unique_tree_id);
             listQuote.add(Quotes);
         }        
         resultSet.close();
@@ -266,8 +267,8 @@ public class userDAO
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
             int price = resultSet.getInt("price");
-            int tree_id =  resultSet.getInt("tree_id");
-            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+            int unique_tree_id =  resultSet.getInt("unique_tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,unique_tree_id);
             listQuote.add(Quotes);
         }        
         resultSet.close();
@@ -294,8 +295,8 @@ public class userDAO
             String user_status = resultSet.getString("user_status");
             String work_period = resultSet.getString("work_period");
             int price = resultSet.getInt("price");
-            int tree_id =  resultSet.getInt("tree_id");
-            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+            int unique_tree_id =  resultSet.getInt("unique_tree_id");
+            quote Quotes = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,unique_tree_id);
             listQuote.add(Quotes);
         }        
         resultSet.close();
@@ -433,15 +434,68 @@ public class userDAO
         while (resultSet.next()) {
             String orderID = resultSet.getString("orderID");
             String status = resultSet.getString("status");
-            int tree_id = resultSet.getInt("tree_id");
+            int unique_tree_id = resultSet.getInt("unique_tree_id");
             Date finish_date = resultSet.getDate("finish_date");
-            orders Order = new orders(email, orderID, status, tree_id,finish_date);
+            orders Order = new orders(email, orderID, status, unique_tree_id,finish_date);
             listOrder.add(Order);
         }        
         resultSet.close();
         disconnect();        
         return listOrder;
     }
+    
+    public List<tree> listSpecificTrees(int unique_tree_id) throws SQLException {
+        List<tree> listTree = new ArrayList<>();
+        System.out.println("Started");
+        List<Integer> treeIDs = getTreeIdentifier(unique_tree_id);
+        for (int i = 0; i < treeIDs.size(); i++) {
+            String sql = "SELECT * FROM tree WHERE tree_id = ?";
+            connect_func();
+            PreparedStatement preparedStatement = connect.prepareStatement(sql);
+            preparedStatement.setInt(1, treeIDs.get(i));
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int tree_distance = resultSet.getInt("tree_distance");
+                int trunk_size = resultSet.getInt("trunk_size");
+                int tree_height = resultSet.getInt("tree_height");
+                int tree_location = resultSet.getInt("tree_location");
+                tree Tree = new tree(tree_distance, trunk_size, tree_height, tree_location);
+                listTree.add(Tree);
+            }
+            resultSet.close();
+            preparedStatement.close();
+        }
+        disconnect();
+        return listTree;
+    }
+    
+    public List<messages> listSpecificMessages(String quoteID) throws SQLException {
+    	List<messages> listMessages = new ArrayList<messages>();        
+        System.out.println("Started");
+        String sql = String.format("SELECT * FROM messages WHERE quoteID=\"%s\";",quoteID);    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+        	int message_id = resultSet.getInt("message_id");
+            String sender = resultSet.getString("sender");
+            String recipient = resultSet.getString("recipient");
+            String message_content = resultSet.getString("message_content");
+            String timestamp = resultSet.getString("timestamp");
+
+            messages Message = new messages(message_id, sender, recipient, message_content,timestamp,quoteID);
+            listMessages.add(Message);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listMessages;
+    }
+
+    
     protected void disconnect() throws SQLException {
         if (connect != null && !connect.isClosed()) {
         	connect.close();
@@ -472,14 +526,14 @@ public class userDAO
     	System.out.println("insert began");
     	connect_func("root","rishi1234"); 
     	System.out.println("connected");
-		String sql = "insert into Request(email, requestID,status,note,tree_id) values (?, ?, ?, ?,?)";
+		String sql = "insert into Request(email, requestID,status,note,unique_tree_id) values (?, ?, ?, ?,?)";
 		
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		 preparedStatement.setString(1, requests.getEmail());
 	        preparedStatement.setString(2, requests.getRequestID());
 			preparedStatement.setString(3, requests.getStatus());
 			preparedStatement.setString(4, requests.getNote());
-			preparedStatement.setInt(5, requests.getTree_id());
+			preparedStatement.setInt(5, requests.getUnique_tree_id());
 			System.out.println("sql implemented.");
 
 		preparedStatement.executeUpdate();
@@ -493,7 +547,7 @@ public class userDAO
     	connect_func("root","rishi1234"); 
     	System.out.println("connected");
     	System.out.println(quotes.getQuoteID());
-		String sql = "insert into quote(email,quoteID, contractor_status, user_status ,negotiation_note,work_period,price,tree_id) values (?,?, ?, ?, ?, ?,?, ?)";
+		String sql = "insert into quote(email,quoteID, contractor_status, user_status ,negotiation_note,work_period,price,unique_tree_id) values (?,?, ?, ?, ?, ?,?, ?)";
 		
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		 preparedStatement.setString(1, quotes.getEmail());
@@ -503,7 +557,7 @@ public class userDAO
 			preparedStatement.setString(5, quotes.getNegotiation_note());
 			preparedStatement.setString(6, quotes.getWork_period());
 			preparedStatement.setInt(7, quotes.getPrice());
-			preparedStatement.setInt(8, quotes.getTree_id());
+			preparedStatement.setInt(8, quotes.getUnique_tree_id());
 			System.out.println("sql implemented.");
 
 		preparedStatement.executeUpdate();
@@ -546,20 +600,41 @@ public class userDAO
         return tree_id;
     }
     
+    public void insertTreeIdentifier(TreeIdentifier tree_identifier) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+    	//System.out.println(quotes.getQuoteID());
+		String sql = "insert into TreeIdentifier(unique_id, tree_ids) values (?, ?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setInt(1, tree_identifier.getUnique_id());
+		 preparedStatement.setInt(2, tree_identifier.getTree_ids());
+			
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+
+        preparedStatement.close();
+        System.out.println("closed");
+        return;
+    }
+    
     public void insertOrder(orders Order) throws SQLException {
     	System.out.println("insert began");
     	connect_func("root","rishi1234"); 
     	System.out.println("connected");
     	//System.out.println(quotes.getQuoteID());
-		String sql = "insert into Orders(orderID,status,email,tree_id) values (?, ?, ?, ?,?)";
-		System.out.println(Order.getTree_id());
+		String sql = "insert into Orders(orderID,status,email,unique_tree_id) values (?, ?, ?, ?)";
+		System.out.println(Order.getUnique_tree_id());
 		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		 preparedStatement.setString(1, Order.getOrderID());
 		 preparedStatement.setString(2, Order.getStatus());
 	        preparedStatement.setString(3, Order.getEmail());
 	        System.out.println(Order.getEmail());
-	        preparedStatement.setInt(4, Order.getTree_id());
-	        preparedStatement.setDate(5, (java.sql.Date) Order.getFinish_date());
+	        preparedStatement.setInt(4, Order.getUnique_tree_id());
+	        //preparedStatement.setDate(5, (java.sql.Date) Order.getFinish_date());
 			
 			System.out.println("sql implemented.");
 
@@ -577,6 +652,48 @@ public class userDAO
 		        System.err.println("SQLState: " + e.getSQLState());
 		        System.err.println("VendorError: " + e.getErrorCode());
 		    }
+    }
+    
+    public void insertMessagesForClient(String quoteID,String email,String user_note) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+    	System.out.println(quoteID);
+		String sql = "insert into messages(sender,recipient, message_content,quoteID) values (?,?, ?,?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, email);
+		 preparedStatement.setString(2, "david@gmail.com");
+	        preparedStatement.setString(3, user_note);
+	        preparedStatement.setString(4, quoteID);
+
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+        preparedStatement.close();
+        System.out.println("closed");
+    }
+    
+    public void insertMessagesForContractor(String quoteID,String user_email,String contractor_note) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+    	System.out.println(quoteID);
+		String sql = "insert into messages(sender,recipient, message_content,quoteID) values (?,?, ?,?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, "david@gmail.com");
+		 preparedStatement.setString(2, user_email);
+	        preparedStatement.setString(3, contractor_note);
+	        preparedStatement.setString(4, quoteID);
+
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+        preparedStatement.close();
+        System.out.println("closed");
     }
     
     public boolean delete(String email) throws SQLException {
@@ -640,6 +757,37 @@ public class userDAO
 
                 System.out.println("Updated user_note: " + updatedUserNote);
                 System.out.println("Updated user_status: " + updatedUserStatus);
+            }
+
+            return rowUpdated;
+        
+        
+        
+    }
+    
+    public boolean modifyUserQuoteForNegotiationStatus(String quoteID) throws SQLException {
+        String updateSql = "UPDATE quote SET negotiationStatus = ? WHERE quoteID = ?";
+        String selectSql = "SELECT negotiationStatus FROM quote WHERE quoteID = ?";
+        connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(updateSql);
+             PreparedStatement selectStatement = (PreparedStatement) connect.prepareStatement(selectSql);
+
+            // Update the quote
+            updateStatement.setInt(1, 1);
+            updateStatement.setString(2, quoteID);
+
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+            // Retrieve updated values
+            selectStatement.setString(1, quoteID);
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int updatedNegStatus = resultSet.getInt("negotiationStatus");
+
+                System.out.println("Updated user_note: " + updatedNegStatus);
             }
 
             return rowUpdated;
@@ -726,13 +874,13 @@ public request getRequest(String requestID) throws SQLException {
      
     ResultSet resultSet = preparedStatement.executeQuery();
     String user_note = ""; 
-    int tree_id= 1; 
+    int unique_tree_id= 1; 
     if (resultSet.next()) {
     	 user_note = resultSet.getString("note");
-         tree_id = resultSet.getInt("tree_id"); 
+         unique_tree_id = resultSet.getInt("unique_tree_id"); 
          }
-    Request = new request(user_note, tree_id);
-    System.out.println(Request.getTree_id()); 
+    Request = new request(user_note, unique_tree_id);
+    System.out.println(Request.getUnique_tree_id()); 
     resultSet.close();
     preparedStatement.close();
      
@@ -750,7 +898,7 @@ public quote getQuote(String quoteID) throws SQLException {
      
     ResultSet resultSet = preparedStatement.executeQuery();
     String user_note = "",contractor_status="", user_status="", negotiation_note="",work_period ="",email=""; 
-    int tree_id= 1, price=0; 
+    int unique_tree_id= 1, price=0; 
     if (resultSet.next()) {
     	 user_note = resultSet.getString("user_note");
     	 contractor_status = resultSet.getString("contractor_status");
@@ -759,9 +907,9 @@ public quote getQuote(String quoteID) throws SQLException {
     	 work_period = resultSet.getString("work_period");
     	 price = resultSet.getInt("price");
     	 email = resultSet.getString("email");
-         tree_id = resultSet.getInt("tree_id"); 
+         unique_tree_id = resultSet.getInt("unique_tree_id"); 
          }
-    Quote = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,tree_id);
+    Quote = new quote(quoteID,contractor_status,user_status,negotiation_note,work_period,price,email,user_note,unique_tree_id);
     //System.out.println(Request.getTree_id()); 
     resultSet.close();
     preparedStatement.close();
@@ -793,6 +941,69 @@ public tree getTree(int treeID) throws SQLException {
     preparedStatement.close();
     return Tree;
 }
+
+public ArrayList<Integer> getTreeIdentifier(int unique_id) throws SQLException {
+	System.out.println("Started");
+	String sql = "SELECT * FROM TreeIdentifier WHERE unique_id = ?";
+	connect_func();
+
+	preparedStatement = connect.prepareStatement(sql);
+	preparedStatement.setInt(1, unique_id);
+
+	ResultSet resultSet = preparedStatement.executeQuery();
+	//System.out.println("RS: " + resultSet);
+
+	ArrayList<Integer> tree_id_list = new ArrayList<>();
+	while (resultSet.next()) {
+	    String treeIdsString = resultSet.getString("tree_ids");
+	    System.out.println(treeIdsString); 
+	    String[] treeIdsArray = treeIdsString.split(",");
+	    for (String id : treeIdsArray) {
+	        int treeId = Integer.parseInt(id.trim());
+	        tree_id_list.add(treeId);
+	        System.out.println(treeId);
+	    }
+	}
+
+	System.out.println("finished");
+
+	resultSet.close();
+	preparedStatement.close();
+
+	return tree_id_list;
+//	//tree Tree = null;
+//	System.out.println("Started");
+//    String sql = "SELECT tree_ids FROM TreeIdentifier WHERE unique_id = ?";
+//     
+//    connect_func();
+//     
+//    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+//    preparedStatement.setInt(1, unique_id);
+//     
+//    ResultSet resultSet = preparedStatement.executeQuery();
+//	System.out.println("RS: "+resultSet);
+//
+//    String tree_ids = "";
+//    int tree = 0;
+//    //ArrayList<tree> treeList = new ArrayList<>();
+//    ArrayList<Integer> tree_id_list = new ArrayList<>();
+//    if (resultSet.next()) {
+//    	tree_ids = resultSet.getString("tree_ids");
+//    	tree_id_list.add(tree);
+//    	System.out.println(tree_ids);
+//         }
+//    
+//    //System.out.println(Tree.getTree_distance()+" "+Tree.getTrunk_size()+" "+Tree.getTree_height()+" "+Tree.getTree_location()); 
+//	System.out.println("finished");
+//
+//    resultSet.close();
+//
+//    preparedStatement.close();
+//
+//    return tree_id_list;
+
+}
+
 @SuppressWarnings("deprecation")
 public orders getOrder(String orderID) throws SQLException {
 	orders Order = null;
@@ -805,15 +1016,15 @@ public orders getOrder(String orderID) throws SQLException {
      
     ResultSet resultSet = preparedStatement.executeQuery();
     String status="", email="";
-    int tree_id = 1;
+    int unique_tree_id = 1;
     Date finish_date = new Date(100,9,1);
     if (resultSet.next()) {
     	 status = resultSet.getString("status");
          email = resultSet.getString("email");
-         tree_id = resultSet.getInt("tree_id");
+         unique_tree_id = resultSet.getInt("unique_tree_id");
          finish_date = resultSet.getDate("finish_date");
          }
-    Order = new orders(email,orderID,status,tree_id,finish_date); 
+    Order = new orders(email,orderID,status,unique_tree_id,finish_date); 
     //System.out.println(Tree.getTree_distance()+" "+Tree.getTrunk_size()+" "+Tree.getTree_height()+" "+Tree.getTree_location()); 
 
     resultSet.close();
@@ -965,9 +1176,8 @@ public orders getOrder(String orderID) throws SQLException {
 		        	"requestID VARCHAR(10),"+
 		        	"status VARCHAR(1),"+
 		        	"note VARCHAR(100),"+
-		        	"tree_id INT,"+
-		        	"PRIMARY KEY(requestID),"+
-		        	"FOREIGN KEY(tree_id) REFERENCES tree(tree_id));")
+		        	"unique_tree_id INT AUTO_INCREMENT,"+
+		        	"PRIMARY KEY(unique_tree_id));")
 
         };
         String[] INITIAL3 = {
@@ -981,9 +1191,9 @@ public orders getOrder(String orderID) throws SQLException {
 		        	"work_period VARCHAR(2),"+
 		        	"price INT,"+
 		        	"user_note VARCHAR(100),"+
-		        	"tree_id INT,"+
-		        	"PRIMARY KEY(quoteID),"+
-		        	"FOREIGN KEY(tree_id) REFERENCES tree(tree_id));")
+		        	"unique_tree_id INT,"+
+		        	"negotiationStatus INT(1),"+
+		        	"PRIMARY KEY(quoteID));")
         };
         
         String[] INITIAL4 = {
@@ -1015,12 +1225,33 @@ public orders getOrder(String orderID) throws SQLException {
     					"orderID VARCHAR(10), "+
     							"status VARCHAR(1),"+
     		                    "email VARCHAR(50),"+
-    		                    "tree_id INT,"+
+    		                    "unique_tree_id INT,"+
     		                    "finish_date DATE,"+
-    		                    "PRIMARY KEY(orderID),"+
-    		                    "FOREIGN KEY(tree_id) REFERENCES tree(tree_id));")
+    		                    "PRIMARY KEY(orderID));")
 
         };
+        
+        String[] INITIAL7 = {
+        		"drop table if exists TreeIdentifier;",
+        		("CREATE TABLE IF NOT EXISTS TreeIdentifier ( "+
+        			    "unique_id INT,"+
+        			    "tree_ids INT);")
+
+        };
+        
+        String[] INITIAL8 = {
+        		"drop table if exists messages;",
+        		("CREATE TABLE IF NOT EXISTS messages ( "+
+        			    "message_id INT AUTO_INCREMENT,"+
+        			    "sender VARCHAR(50),"+
+        			    "recipient VARCHAR(50),"+
+        			    "message_content TEXT,"+
+        			    "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
+        			    "quoteID VARCHAR(10),"+
+        			    "PRIMARY KEY (message_id));")
+
+        };
+        
         
         System.out.println("finish it.");
         String[] TUPLES = {("insert into User(email, firstName, lastName, password, phone_number, adress_street_num, adress_street, adress_city, adress_state, adress_zip_code, creditcard_information)"+
@@ -1038,7 +1269,7 @@ public orders getOrder(String orderID) throws SQLException {
         		)
            			};
         String[] TUPLES2 = {
-        		("insert into Request(email,requestID, status,note,tree_id)"+
+        		("insert into Request(email,requestID, status,note,unique_tree_id)"+
             			"values ('roy@gmail.com','334DGWP','P','Nothing',1),"+
         				"('roy@gmail.com','4930634532','P','note',2),"+
             			"('dick@gmail.com','492054243','R','NA',3),"+
@@ -1052,16 +1283,16 @@ public orders getOrder(String orderID) throws SQLException {
         };
         String[] TUPLES3 = {
 //        		
-        		("insert into Quote(email, quoteID, contractor_status, user_status,negotiation_note,work_period,price,user_note,tree_id)"+
-            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20',2500,'',1),"+
-        				"('roy@gmail.com','49204GQW3','P','P','satisfied','12',1340,'',2),"+
-            			"('dick@gmail.com','492054HW','R','R','invalid','13',4400,'',3),"+
-        				"('bat@gmail.com','39402043HQ','P','P','better deal','35',3752,'',4),"+
-            			"('dick@gmail.com','AW492054E4','P','P','do better','3',23456,'',5),"+
-        				"('barbara@gmail.com','4825042','P','P','accepted','3',100,'',6),"+
-            			"('tim@gmail.com','5449205425','P','P','like it','7',3456,'',7),"+
-        				"('damian@gmail.com','4920543243','P','P','no','8',567,'',8),"+
-        				"('maria@gmail.com','4920542431','P','P','yes','19',2435,'',9);")
+        		("insert into Quote(email, quoteID, contractor_status, user_status,negotiation_note,work_period,price,user_note,unique_tree_id,negotiationStatus)"+
+            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20',2500,'',1,0),"+
+        				"('roy@gmail.com','49204GQW3','P','P','satisfied','12',1340,'',2,0),"+
+            			"('dick@gmail.com','492054HW','R','R','invalid','13',4400,'',3,0),"+
+        				"('bat@gmail.com','39402043HQ','P','P','better deal','35',3752,'',4,0),"+
+            			"('dick@gmail.com','AW492054E4','P','P','do better','3',23456,'',5,0),"+
+        				"('barbara@gmail.com','4825042','P','P','accepted','3',100,'',6,0),"+
+            			"('tim@gmail.com','5449205425','P','P','like it','7',3456,'',7,0),"+
+        				"('damian@gmail.com','4920543243','P','P','no','8',567,'',8,0),"+
+        				"('maria@gmail.com','4920542431','P','P','yes','19',2435,'',9,0);")
         };
         
         String[] TUPLES4 = {
@@ -1093,14 +1324,42 @@ public orders getOrder(String orderID) throws SQLException {
         				)
         };
         
+        String[] TUPLES7 = {
+        		("insert into TreeIdentifier(unique_id, tree_ids)"+
+            			"values (1,1),"+
+        				"(2,2),"+
+            			"(3,3),"+
+        				"(4,4),"+	
+            			"(5,5),"+
+        				"(6,6),"+
+            			"(7,7),"+
+        				"(8,8),"+
+        				"(9,9);"
+        				)
+        };
+        
         String[] TUPLES6 = {
-        		("insert into Orders(orderID,status,email,tree_id,finish_date)\n"
+        		("insert into Orders(orderID,status,email,unique_tree_id,finish_date)\n"
         				+ "            			values ('ap9807','P', 'roy@gmail.com',1,'2023-10-12');")
         };
         
-        //for loop to put these in database
+        String[] TUPLES8 = {
+        		("insert into messages(sender,recipient,message_content,timestamp,quoteID)\n"
+        				+ "            			values ('roy@gmail.com','david@gmail.com', 'Can I get a price reduction?','2023-12-10 09:56:46','4421FGWP'),"+
+        												"('david@gmail.com','roy@gmail.com','Sure. I can reduce 100 dollars','2023-12-10 10:56:00','4421FGWP');")
+        };
+//        for (int i = 0; i < INITIAL8.length; i++)
+//        	statement.execute(INITIAL8[i]);
+//        
+//        for (int i = 0; i<TUPLES8.length;i++) {
+//       	statement.execute(TUPLES8[i]);
+//       }
+//        
+//        //for loop to put these in database
         for (int i = 0; i < INITIAL.length; i++)
         	statement.execute(INITIAL[i]);
+        for (int i = 0; i < INITIAL7.length; i++)
+        	statement.execute(INITIAL7[i]);
         for (int i = 0; i < INITIAL4.length; i++)
         	statement.execute(INITIAL4[i]);
         for (int i = 0; i < INITIAL2.length; i++)
@@ -1116,12 +1375,17 @@ public orders getOrder(String orderID) throws SQLException {
         for (int i = 0; i < INITIAL6.length; i++)
         	statement.execute(INITIAL6[i]);
         
+        for (int i = 0; i < INITIAL8.length; i++)
+        	statement.execute(INITIAL8[i]);
+        
+        
+        System.out.println("dsjfbsjfb");
         for (int i = 0; i < TUPLES.length; i++)
         	{statement.execute(TUPLES[i]);
         	}
         	
       
-        	System.out.println("dsjfbsjfb");
+        	
         for (int i = 0; i<TUPLES4.length;i++) {
             statement.execute(TUPLES4[i]);
             }
@@ -1140,6 +1404,15 @@ public orders getOrder(String orderID) throws SQLException {
         for (int i = 0; i<TUPLES6.length;i++) {
         	statement.execute(TUPLES6[i]);
         }
+        
+        for (int i = 0; i<TUPLES7.length;i++) {
+        	statement.execute(TUPLES7[i]);
+        }
+        
+        for (int i = 0; i<TUPLES8.length;i++) {
+        	statement.execute(TUPLES8[i]);
+        }
+        
         
         
         disconnect();
