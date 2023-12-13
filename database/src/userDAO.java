@@ -1305,7 +1305,8 @@ public orders getOrder(String orderID) throws SQLException {
         				"(3920,4322,33333,3),"+
             			"(1232,11,222,20),"+
         				"(4323,234,423,16),"+
-        				"(3333,2222,333333,18);"
+        				"(3333,2222,333333,18),"+
+        				"(23,12,18,20);"
         				)
         };
        
@@ -1334,7 +1335,8 @@ public orders getOrder(String orderID) throws SQLException {
         				"(6,6),"+
             			"(7,7),"+
         				"(8,8),"+
-        				"(9,9);"
+        				"(9,9),"+
+        				"(9,10);"
         				)
         };
         
