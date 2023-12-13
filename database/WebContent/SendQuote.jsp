@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +11,9 @@
 <body>
 <center>
 <h1>Send Quote</h1> <br>
-	<form action="sendQuote">
+<c:out value="${SpecificTrees}" />
+        <br>
+   	<form action="sendQuote">
 	<table border="1" cellpadding="5">
 				<tr> 
 				<th>Email Address</th>
@@ -26,7 +30,6 @@
 					<td align="center" colspan="3">
 						<p>${quoteID}</p>
 						<input type="hidden" name="quoteID" value = "${quoteID}">
-						<input type="hidden" name="tree_id" value = "${tree_id}">
 					</td>
 					
 				</tr>
@@ -45,38 +48,6 @@
 						<p>${user_note}</p>
 						<input type="hidden" name="user_note" value = "${user_note}">
 						
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<th>Tree Distance </th>
-					<td align="center" colspan="3">
-						<p>${tree_distance}</p>
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<th>Trunk Size</th>
-					<td align="center" colspan="3">
-						<p>${trunk_size}</p>
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<th>Tree Height</th>
-					<td align="center" colspan="3">
-						<p>${tree_height}</p>
-					</td>
-					
-				</tr>
-				
-				<tr>
-					<th>Tree Location</th>
-					<td align="center" colspan="3">
-						<p>${tree_location}</p>
 					</td>
 					
 				</tr>
@@ -112,7 +83,29 @@
 					<td align="center" colspan="3">
 						<input type="text" name="price" size="20" value="Enter the quote price" onfocus="this.value=''">
 					</td>
+					
 				</tr>
+				
+				<tr>
+				<table border="1" cellpadding="6">
+    <caption><h2>Tree Table</h2></caption>
+    <tr>
+        <th>Tree Distance</th>
+        <th>Trunk Size</th>
+        <th>Tree Height</th>
+        <th>Tree Location</th>
+    </tr>
+
+    <c:forEach var="tree" items="${SpecificTrees}">
+        <tr style="text-align:center">
+            <td><c:out value="${tree.tree_distance}" /></td>
+            <td><c:out value="${tree.trunk_size}" /></td>
+            <td><c:out value="${tree.tree_height}" /></td>
+            <td><c:out value="${tree.tree_location}" /></td>
+        </tr>
+    </c:forEach>
+</table>
+</tr>
 				<tr>
 					<td align="center" colspan="5">
 						<input type="submit" value="Submit Quote"/>
@@ -122,5 +115,13 @@
 	
 	</form>
 	</center>
+	
+
+  <!-- <div id="table-container"></div>
+
+  
+ -->
+</center>
+	
 </body>
 </html>
