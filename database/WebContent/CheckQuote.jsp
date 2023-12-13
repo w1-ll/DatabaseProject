@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,32 +53,49 @@
 				</tr>
 				
 				<tr>
-					<th>Tree Distance </th>
-					<td align="center" colspan="3">
-						<p>${tree_distance}</p>
-					</td>
-				</tr>
-				
-				<tr>
-					<th>Trunk Size </th>
-					<td align="center" colspan="3">
-						<p>${trunk_size}</p>
-					</td>
-				</tr>
-				
-				<tr>
-					<th>Tree Height </th>
-					<td align="center" colspan="3">
-						<p>${tree_height}</p>
-					</td>
-				</tr>
-				
-				<tr>
-					<th>Tree Location </th>
-					<td align="center" colspan="3">
-						<p>${tree_location}</p>
-					</td>
-				</tr>
+				<table border="1" cellpadding="6">
+    <caption><h2>Tree Table</h2></caption>
+    <tr>
+        <th>Tree Distance</th>
+        <th>Trunk Size</th>
+        <th>Tree Height</th>
+        <th>Tree Location</th>
+    </tr>
+
+    <c:forEach var="tree" items="${SpecificTrees}">
+        <tr style="text-align:center">
+            <td><c:out value="${tree.tree_distance}" /></td>
+            <td><c:out value="${tree.trunk_size}" /></td>
+            <td><c:out value="${tree.tree_height}" /></td>
+            <td><c:out value="${tree.tree_location}" /></td>
+        </tr>
+    </c:forEach>
+</table>
+</tr>
+
+<tr>
+	<table border="1" cellpadding="6">
+    <caption><h2>Messages</h2></caption>
+    <tr>
+        <th>Sender</th>
+        <th>Recipient</th>
+        <th>Message Content</th>
+        <th>Date and Time</th>
+    </tr>
+
+    <c:forEach var="message" items="${SpecificMessages}">
+        <tr style="text-align:center">
+            <td><c:out value="${message.sender}" /></td>
+            <td><c:out value="${message.recipient}" /></td>
+            
+            <td><c:out value="${message.message_content}" /></td>
+            <td><c:out value="${message.time_stamp}" /></td>
+        </tr>
+    </c:forEach>
+</table>
+
+</tr>
+
 				
 				<!--  <tr>
 					<td align="center" colspan="5">
@@ -92,7 +111,7 @@
 				<tr> 
 				<th>Note</th>
 				<td align="center" colspan="3">
-						<input type="text" name="note" size="45"  value="Enter your queries" onfocus="this.value=''">
+						<input type="text" name="note" size="45"  value="" onfocus="this.value=''">
 					</td>
 				</tr>
 				<tr> 
