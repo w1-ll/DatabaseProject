@@ -93,7 +93,7 @@
                     <td><c:out value="${quote.work_period}" /></td>
                     <td><c:out value="${quote.price}" /></td>    
                     <td><c:out value="${quote.user_note}" /></td>    
-                    <td><c:out value="${quote.tree_id}" /></td>           
+                    <td><c:out value="${quote.unique_tree_id}" /></td>           
            </c:forEach>
         </table>
         
