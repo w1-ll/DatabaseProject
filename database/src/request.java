@@ -4,7 +4,7 @@ public class request
 		protected String requestID;
 	 	protected String status;
 	    protected String note;
-	    protected int tree_id;
+	    protected int unique_tree_id;
 	    //protected tree Tree;
 	 
 	    //constructors
@@ -22,18 +22,18 @@ public class request
 	    	this.requestID = requestID;
 	    	
 	    }
-	    public request(String requestID, String status, String note, String email,int tree_id) 
+	    public request(String requestID, String status, String note, String email,int unique_tree_id) 
 	    {
 	    	this(status,note,email);
 	    	this.requestID = requestID;
-	    	this.tree_id = tree_id;
+	    	this.unique_tree_id = unique_tree_id;
 	    	
 	    }
 	 
-	    public request(String note, int tree_id) 
+	    public request(String note, int unique_tree_id) 
 	    {
 	    	this.note = note;
-	    	this.tree_id = tree_id;
+	    	this.unique_tree_id = unique_tree_id;
 	    }
 	    
 	    public request(String status, String note, String email) 
@@ -75,7 +75,7 @@ public class request
     public String getEmail() {
     	return email;
     }
-    public int getTree_id() {
-    	return tree_id;
+    public int getUnique_tree_id() {
+    	return unique_tree_id;
     }   
 	}
