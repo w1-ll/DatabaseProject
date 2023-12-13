@@ -117,6 +117,9 @@ public class ControlServlet extends HttpServlet {
         		 System.out.println("change finish date initiated.");
         		 ChangeFinishDate(request,response);
         		 break;
+        	 case "/goToContractorFromOrders":
+        		 System.out.println("go to contractor page from check order initiated.");
+        		 contractorPage(request,response,"");
 	    	}
 	    }
 	    catch(Exception ex) {
@@ -255,23 +258,40 @@ private void newRequest(HttpServletRequest request, HttpServletResponse response
 	    	String Status = request.getParameter("status");
 	    	String Note = request.getParameter("note");
 	    	String Email =  (String)session.getAttribute("username");
-	    	int tree_distance = Integer.parseInt(request.getParameter("tree_distance"));
-	    	int trunk_size = Integer.parseInt(request.getParameter("trunk_size"));
-	    	int tree_height = Integer.parseInt(request.getParameter("tree_height"));
-	    	int tree_location = Integer.parseInt(request.getParameter("tree_location"));
-	    	//System.out.println(Email);
+	    	int counter = Integer.parseInt(request.getParameter("addTreeCounter"));
+	    	//System.out.println("Whats wrong?");
+	    	System.out.println("Count: "+counter);
+	    	int tree_distance = 0,trunk_size = 0, tree_height = 0,tree_location=0;
+	    	request Request = new request(RequestID,Status,Note, Email);
+	    	userDAO.insertRequest(Request);
+	    	int number = userDAO.getRequest(RequestID).getUnique_tree_id();
+	    	System.out.println(number);
+	    	//TreeIdentifier newIdentifier = new TreeIdentifier(Request.getUnique_tree_id());
+	    	for (int i = 0;i<counter;i++) {
+	    		tree_distance = Integer.parseInt(request.getParameter("TreeDistance"+(i+1)));
+		    	trunk_size = Integer.parseInt(request.getParameter("TrunkSize"+(i+1)));
+		    	tree_height = Integer.parseInt(request.getParameter("TreeHeight"+(i+1)));
+		    	tree_location = Integer.parseInt(request.getParameter("TreeLocation"+(i+1)));
+		    	System.out.println("Tree dist.: "+tree_distance);
+		    	System.out.println("Tree size: "+trunk_size);
+		    	System.out.println("Tree height: "+tree_height);
+		    	System.out.println("Tree location: "+tree_location);
+		    	tree Tree = new tree(tree_distance,trunk_size, tree_height,tree_location);
+		    	int tree_id = userDAO.insertTree(Tree);
+		    	System.out.println("Issue1?");
+		    	TreeIdentifier newIdentifier = new TreeIdentifier(userDAO.getRequest(RequestID).getUnique_tree_id());
+		    	System.out.println("Issue2?");
+		    	newIdentifier.setTree_ids(tree_id);
+		    	System.out.println("Issue3?");
+		    	userDAO.insertTreeIdentifier(newIdentifier);
+		    	System.out.println("Issue4?");
+
+	    	}
+	    	userPage(request, response, "");	
+
 //	    	SELECT users.user_id, username, order_id, order_date
 //	    	FROM users
 //	    	INNER JOIN orders ON users.user_id = orders.user_id;
-	    	System.out.println("data obtained.");
-	    	tree Tree = new tree(tree_distance,trunk_size, tree_height,tree_location);
-	    	int tree_id = userDAO.insertTree(Tree);
-	    	request Request = new request(RequestID,Status,Note, Email,tree_id);
-	    	System.out.println("new request created");
-	    	System.out.println("new tree created");
-	    	userDAO.insertRequest(Request);
-	    	System.out.println("userDAO ran.");
-	    	userPage(request, response, "");
 	    }    
 	    
 private void newQuote(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
@@ -284,15 +304,17 @@ private void newQuote(HttpServletRequest request, HttpServletResponse response) 
 	    	int price = Integer.parseInt(request.getParameter("price"));
 	    	String requestID = request.getParameter("selectedRequestID");
 	    	String user_note = request.getParameter("user_note");
-	    	int tree_id = Integer.parseInt(request.getParameter("tree_id"));
+	    	request tempReq = userDAO.getRequest(requestID);
+	    	
+	    	int unique_tree_id = tempReq.getUnique_tree_id();;
 	    	
 	    	System.out.println("data obtained.");
-	    	System.out.println(tree_id);
+	    	System.out.println(unique_tree_id);
 	    	userDAO.updateRequest(requestID,RequestStatus);
-	    	if (RequestStatus == "S") {
-	    		quote Quote = new quote(QuoteID,"P","P",Note, WorkPeriod,price,email,user_note,tree_id);
+	    	if (RequestStatus.equals("S")) {
+	    		quote Quote = new quote(QuoteID,"P","P",Note, WorkPeriod,price,email,user_note,unique_tree_id);
 	    	//Quote.setRequest(null);
-	    		System.out.println(Quote.getTree_id());
+	    		System.out.println(Quote.getUnique_tree_id());
 	    		System.out.println("new quote created");
 	    		userDAO.insertQuote(Quote);
 	    	}
@@ -332,15 +354,16 @@ private void DirectToQuotePage(HttpServletRequest request, HttpServletResponse r
 	 request.setAttribute("emailID", email);
 	 request.setAttribute("requestID", requestID);
 	 request re = userDAO.getRequest(requestID);
-	 tree Tr = userDAO.getTree(re.getTree_id());
-	 request.setAttribute("tree_id", re.getTree_id());
+	 List<tree> specificTrees = userDAO.listSpecificTrees(re.getUnique_tree_id());
+	 System.out.println("Specific Trees: " + specificTrees); // Debug output
+	 //request.setAttribute("SpecificTrees", specificTrees);
+
+	 request.setAttribute("SpecificTrees", specificTrees);
+
+
 	 request.setAttribute("user_note", re.getNote());
-	 request.setAttribute("tree_distance", Tr.getTree_distance());
-	 request.setAttribute("trunk_size", Tr.getTrunk_size());
-	 request.setAttribute("tree_height", Tr.getTree_height());
-	 request.setAttribute("tree_location", Tr.getTree_location());
 	 System.out.println("Re started");	
- 	request.getRequestDispatcher("SendQuote.jsp").forward(request, response);
+	 request.getRequestDispatcher("SendQuote.jsp").forward(request, response);
  	System.out.println("Re ended");
 
 	    } 
@@ -353,18 +376,16 @@ private void ClientQuotePage(HttpServletRequest request, HttpServletResponse res
 	 String work_period = sample.getWork_period();
 	 int price = sample.getPrice();
 	 String user_note = sample.getUser_note();
-	 tree sampleT = userDAO.getTree(sample.getTree_id());
+	 tree sampleT = userDAO.getTree(sample.getUnique_tree_id());
 	 request.setAttribute("quoteID", quoteID);
 	 request.setAttribute("user_status", user_status);
 	 request.setAttribute("note", note);
 	 request.setAttribute("work_period", work_period);
 	 request.setAttribute("price", price);
 	 request.setAttribute("user_note", user_note);
-	 request.setAttribute("tree_distance", sampleT.getTree_distance());
-	 request.setAttribute("trunk_size", sampleT.getTrunk_size());
-	 request.setAttribute("tree_height", sampleT.getTree_height());
-	 request.setAttribute("tree_location", sampleT.getTree_location());
-
+	 List<tree> specificTrees = userDAO.listSpecificTrees(sample.getUnique_tree_id());
+	 request.setAttribute("SpecificTrees", specificTrees);
+	 request.setAttribute("SpecificMessages", userDAO.listSpecificMessages(quoteID));
 
 	 System.out.println("Re started");	
 	request.getRequestDispatcher("CheckQuote.jsp").forward(request, response);
@@ -373,19 +394,26 @@ private void ClientQuotePage(HttpServletRequest request, HttpServletResponse res
 	    } 
 
 private void ContractorQuotePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	
+	 System.out.println("Started");
+
 	 String quoteID = request.getParameter("quoteID");
+
 	 quote sample = userDAO.getQuote(quoteID);
 	 String email = sample.getEmail();
+
 	 String Contractor_status = sample.getContractor_status();
 	 String user_status = sample.getUser_status();
+
 	 String note = sample.getNegotiation_note();
 	 String work_period = sample.getWork_period();
+
 	 int price = sample.getPrice();
-	 System.out.println("Tree ID 1st print :" + (sample.getTree_id()));
+
+	 System.out.println("Tree ID 1st print :" + (sample.getUnique_tree_id()));
 	 String user_note = sample.getUser_note();
-	 tree sampleT = userDAO.getTree(sample.getTree_id());
-	 System.out.println("Tree ID 1st print :" + (sampleT.getTree_id()));
+	 tree sampleT = userDAO.getTree(sample.getUnique_tree_id());
+	 //System.out.println("Tree ID 1st print :" + (sampleT.getTree_id()));
+
 	 request.setAttribute("email", email);
 	 request.setAttribute("quoteID", quoteID);
 	 request.setAttribute("Contractor_status", Contractor_status);
@@ -394,12 +422,11 @@ private void ContractorQuotePage(HttpServletRequest request, HttpServletResponse
 	 request.setAttribute("work_period", work_period);
 	 request.setAttribute("price", price);
 	 request.setAttribute("user_note", user_note);
-	 request.setAttribute("tree_id", sample.getTree_id());
-	 System.out.println("Tree ID :" + sampleT.getTree_id());
-	 request.setAttribute("tree_distance", sampleT.getTree_distance());
-	 request.setAttribute("trunk_size", sampleT.getTrunk_size());
-	 request.setAttribute("tree_height", sampleT.getTree_height());
-	 request.setAttribute("tree_location", sampleT.getTree_location());
+	 
+	 List<tree> specificTrees = userDAO.listSpecificTrees(sample.getUnique_tree_id());
+	 request.setAttribute("SpecificTrees", specificTrees);
+	 request.setAttribute("SpecificMessages", userDAO.listSpecificMessages(quoteID));
+	 
 	 System.out.println("Re started");	
 	request.getRequestDispatcher("ContractorQuotePage.jsp").forward(request, response);
 	System.out.println("Re ended");
@@ -410,13 +437,22 @@ private void checkQuote(HttpServletRequest request, HttpServletResponse response
 	 String user_note = request.getParameter("note");
 	 String status = request.getParameter("options");
 	 String quoteID = request.getParameter("quoteID");
+	 session = request.getSession();
+	 String email = (String)session.getAttribute("username");
 	 System.out.println(user_note);
 	 System.out.println(status);
 	 System.out.println(quoteID);
-	
-	 System.out.println("Re started");
+	 userDAO.insertMessagesForClient(quoteID, email, user_note);
+	 List<messages> specificMessages = userDAO.listSpecificMessages(quoteID);
+
 	 
+	 System.out.println("Re started");
+	 System.out.println("Size: "+specificMessages.size());
 	 userDAO.modifyUserQuote(quoteID,user_note,status);
+	 if ((specificMessages.size() == 1)&& (status.equals("S"))) {
+		 System.out.println("negstatus function ran.");
+		 userDAO.modifyUserQuoteForNegotiationStatus(quoteID);
+	 }
 	 userPage(request, response, "");
 	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 	System.out.println("Re ended");
@@ -438,45 +474,60 @@ private void SendToRequestPage(HttpServletRequest request, HttpServletResponse r
 
 
 private void ReviseQuote(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-	 int tree_id = Integer.parseInt(request.getParameter("tree_id"));
+	 System.out.println("Started.");
+	//int tree_id = Integer.parseInt(request.getParameter("tree_id"));
 	 String email = request.getParameter("email");
+
 	 String price1 = request.getParameter("price");
 	 String price2 = request.getParameter("price2");
+
 	 String Contractor_status = request.getParameter("options");
 	 String user_status = request.getParameter("user_status");
+
 	 String Contractor_note = request.getParameter("Contractor_note");
 	 String quoteID = request.getParameter("quoteID");
+	 quote sample = userDAO.getQuote(quoteID);
 	 System.out.println("data:");
 	 System.out.println("Price1: "+price1);
 	 System.out.println("Price2: "+price2);
 	 System.out.println(Contractor_status);
 	 System.out.println(quoteID);
-	 System.out.println(tree_id);
+	 //System.out.println(tree_id);
 	 
-	  
+
 	 if (!(user_status.equals("S") || user_status.equals("R")) ) Contractor_status = "P";
 	 
 	 if (Contractor_status.equals("S") && user_status.equals("S")) {
-		 orders Order = new orders(email,randomIDGenerator(),"P",tree_id);
+		 orders Order = new orders(email,randomIDGenerator(),"P", sample.getUnique_tree_id());
 		 userDAO.insertOrder(Order);
 		 System.out.println("Order inserted.");
 	 }
+	 
 	 System.out.println("Re started");
 	 String newP = (price2 == "")? price1:price2;
+
 	 userDAO.modifyContractorQuote(quoteID,Contractor_note,Contractor_status,newP);
+	 userDAO.insertMessagesForClient(quoteID, email, Contractor_note);
 	 contractorPage(request, response, "");
 	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 	System.out.println("Re ended");
 
 	    }
 	     
+@SuppressWarnings("deprecation")
 private void CheckOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 System.out.println("Started");
 	 String orderID = request.getParameter("orderID");
 	 String status = request.getParameter("status");
+	 System.out.println("1");
 	 String email = request.getParameter("email");
 	 orders newOrder = userDAO.getOrder(orderID);
-	 int tree_id = newOrder.getTree_id();
-	 tree newTree = userDAO.getTree(tree_id);
+	 System.out.println("2");
+	 List<tree>SpecificTrees = userDAO.listSpecificTrees(newOrder.getUnique_tree_id());
+	 request.setAttribute("SpecificTrees", SpecificTrees);
+	 System.out.println("3");
+	 //int tree_id = newOrder.getUnique_tree_id();
+	// tree newTree = userDAO.getTree(tree_id);
 	 request.setAttribute("orderID", orderID);
 	 request.setAttribute("status", status);
 	 request.setAttribute("email", email);
@@ -486,11 +537,12 @@ private void CheckOrder(HttpServletRequest request, HttpServletResponse response
 		request.setAttribute("finish_date", null); 
 
 	 }
-	 
-	 request.setAttribute("tree_distance", newTree.getTree_distance());
-	 request.setAttribute("trunk_size", newTree.getTrunk_size());
-	 request.setAttribute("tree_height", newTree.getTree_height());
-	 request.setAttribute("tree_location", newTree.getTree_location());
+	 System.out.println("4");
+//	 
+//	 request.setAttribute("tree_distance", newTree.getTree_distance());
+//	 request.setAttribute("trunk_size", newTree.getTrunk_size());
+//	 request.setAttribute("tree_height", newTree.getTree_height());
+//	 request.setAttribute("tree_location", newTree.getTree_location());
 	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
 
 
@@ -505,16 +557,13 @@ private void ClientOrderPage(HttpServletRequest request, HttpServletResponse res
 	 session = request.getSession();
 	 String email = (String)session.getAttribute("username");
 	 orders newOrder = userDAO.getOrder(orderID);
-	 int tree_id = newOrder.getTree_id();
-	 tree newTree = userDAO.getTree(tree_id);
+	 List<tree>SpecificTrees = userDAO.listSpecificTrees(newOrder.getUnique_tree_id());
+	 request.setAttribute("SpecificTrees", SpecificTrees);
 	 request.setAttribute("orderID", orderID);
 	 request.setAttribute("status", status);
 	 request.setAttribute("finish_date", newOrder.getFinish_date());
 	 System.out.println(newOrder.getFinish_date());
-	 request.setAttribute("tree_distance", newTree.getTree_distance());
-	 request.setAttribute("trunk_size", newTree.getTrunk_size());
-	 request.setAttribute("tree_height", newTree.getTree_height());
-	 request.setAttribute("tree_location", newTree.getTree_location());
+
 	 request.getRequestDispatcher("ClientOrderPage.jsp").forward(request, response);
 
 
@@ -526,18 +575,21 @@ private void ClientOrderPage(HttpServletRequest request, HttpServletResponse res
 
 @SuppressWarnings("deprecation")
 private void ChangeFinishDate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 System.out.println("Started");
 	 String firstInput = request.getParameter("changeFinishDate");
 	 String orderID = request.getParameter("orderID");
 	 String status = request.getParameter("status");
-	 session = request.getSession();
-	 String email = (String)session.getAttribute("username");
-	 orders tempOrder = userDAO.getOrder(orderID);
+	 String email = request.getParameter("email");
 	 Date finishDate = new Date();
 	 Calendar cal = Calendar.getInstance();
 	 cal.setTime(finishDate);
+	 System.out.println("slice began");
+
 	 int day = Integer.parseInt(firstInput.substring(8,10));
 	 int month = Integer.parseInt(firstInput.substring(5,7))-1;
 	 int year = Integer.parseInt(firstInput.substring(0,4));
+	 System.out.println("slice end");
+
 	 
 	 cal.set(Calendar.DAY_OF_MONTH, day); // Set the day of the month
 	 cal.set(Calendar.YEAR, year); // Set the year
@@ -547,8 +599,9 @@ private void ChangeFinishDate(HttpServletRequest request, HttpServletResponse re
 	 System.out.println(finishDate.toString());
 	 
 	 orders newOrder = userDAO.getOrder(orderID);
-	 int tree_id = newOrder.getTree_id();
-	 tree newTree = userDAO.getTree(tree_id);
+	 List<tree>SpecificTrees = userDAO.listSpecificTrees(newOrder.getUnique_tree_id());
+	 request.setAttribute("SpecificTrees", SpecificTrees);
+	 
 	 request.setAttribute("orderID", orderID);
 	 request.setAttribute("status", status);
 	 request.setAttribute("email", email);
@@ -558,20 +611,36 @@ private void ChangeFinishDate(HttpServletRequest request, HttpServletResponse re
 		request.setAttribute("finish_date", null); 
 
 	 }
-	 
-	 request.setAttribute("tree_distance", newTree.getTree_distance());
-	 request.setAttribute("trunk_size", newTree.getTrunk_size());
-	 request.setAttribute("tree_height", newTree.getTree_height());
-	 request.setAttribute("tree_location", newTree.getTree_location());
+
 	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
+
+	System.out.println("Re ended");
+	 
+	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
+	    }
+
+private void newMessageInsertion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 String orderID = request.getParameter("orderID");
+	 String status = request.getParameter("status");
+	 session = request.getSession();
+	 String email = (String)session.getAttribute("username");
+	 orders newOrder = userDAO.getOrder(orderID);
+	 List<tree>SpecificTrees = userDAO.listSpecificTrees(newOrder.getUnique_tree_id());
+	 request.setAttribute("SpecificTrees", SpecificTrees);
+	 request.setAttribute("orderID", orderID);
+	 request.setAttribute("status", status);
+	 request.setAttribute("finish_date", newOrder.getFinish_date());
+	 System.out.println(newOrder.getFinish_date());
+
+	 request.getRequestDispatcher("ClientOrderPage.jsp").forward(request, response);
 
 
 	//request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 	System.out.println("Re ended");
-	 
-	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
+
 	    }
         
 	        
 	    
 }
+	        
