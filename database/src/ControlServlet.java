@@ -120,6 +120,19 @@ public class ControlServlet extends HttpServlet {
         	 case "/goToContractorFromOrders":
         		 System.out.println("go to contractor page from check order initiated.");
         		 contractorPage(request,response,"");
+        		 break;
+        	 case "/newBill":
+        		 System.out.println("New bill initiated.");
+        		 newBill(request, response);
+        		 break;
+        	 case "/CheckBill":
+        		 System.out.println("New bill initiated.");
+        		 CheckBill(request, response);
+        		 break;
+        	 case "/ClientBillPage":
+        		 System.out.println("Client Bill Page initiated.");
+        		 ClientBillPage(request, response);
+        		 break;
 	    	}
 	    }
 	    catch(Exception ex) {
@@ -149,11 +162,18 @@ public class ControlServlet extends HttpServlet {
 			request.setAttribute("Trees", userDAO.listAllTrees());
 
 			request.setAttribute("Orders", userDAO.listAllOrders());
+			request.setAttribute("BigClients", userDAO.listBigClients());
+			request.setAttribute("SingleTrees", userDAO.listSingleTree());
+			request.setAttribute("ProspectiveClients", userDAO.listProspectiveClients());
+			request.setAttribute("EasyClients", userDAO.listEasyClients());
+			request.setAttribute("HighestTree", userDAO.listHighestTree());
+			request.setAttribute("BadClients", userDAO.listBadClients());
+			request.setAttribute("GoodClients", userDAO.listGoodClients());
+			request.setAttribute("Statistics", userDAO.listStatistics());
+
+
 			List<bill> lb = userDAO.listAllBills();
 
-			for (bill e : lb) {
-				System.out.println(e.getBillID()+" "+e.getStatus()+" "+ e.getNegotiation_note()+" "+ e.getFinal_price());
-			}
 			request.setAttribute("Bills", userDAO.listAllBills());
 	    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
 	    }
@@ -167,6 +187,8 @@ public class ControlServlet extends HttpServlet {
 	    	request.setAttribute("RejectedRequests", userDAO.listAllRejectedRequests());
 	    	request.setAttribute("SuccessfulRequests", userDAO.listAllSuccessfulRequests());
 	    	request.setAttribute("SuccessfulQuotes", userDAO.listAllSuccessfulQuotes());
+			request.setAttribute("Bills", userDAO.listAllBills());
+
 	    	request.getRequestDispatcher("contractor.jsp").forward(request, response);
 
 	    }
@@ -178,6 +200,8 @@ public class ControlServlet extends HttpServlet {
 	    	 request.setAttribute("specificRequest",userDAO.listSpecificRequests(email));
 			 request.setAttribute("specificQuote", userDAO.listSpecificQuote(email));
 			 request.setAttribute("specificOrder", userDAO.listSpecificOrder(email));
+			 request.setAttribute("specificBill", userDAO.listSpecificBill(email));
+
 		     request.getRequestDispatcher("activitypage.jsp").forward(request, response);
 
 	    }
@@ -322,6 +346,39 @@ private void newQuote(HttpServletRequest request, HttpServletResponse response) 
 	    	contractorPage(request,response,"");
 	    	
 	    } 
+
+
+private void newBill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	System.out.println("Started");
+	String billID = randomIDGenerator();
+	String status = "P";
+	String user_note = "",contractor_note = "";
+	String orderID = request.getParameter("orderID");
+	System.out.println("1");
+	String email = request.getParameter("email");
+	orders tempOrder = userDAO.getOrder(orderID);
+	System.out.println("2");
+
+	int unique_treeID = tempOrder.getUnique_tree_id();
+	System.out.println("3");
+
+	int amt_due = userDAO.getQuotePriceFromUniqueTreeID(unique_treeID);
+//	System.out.println("4");
+//
+//	System.out.println("orderID: "+orderID);
+//	System.out.println("billID: "+billID);
+//	System.out.println("amt_due: "+amt_due);
+//	System.out.println("unique_tree_id: "+unique_treeID);
+	userDAO.updateOrder(orderID,"S");
+
+	bill Bills = new bill(billID,status,user_note,contractor_note,amt_due,0,unique_treeID,email,0);
+	userDAO.insertBill(Bills);
+	System.out.println("userDAO ran.");
+	contractorPage(request,response,"");
+	
+} 
+
+
 private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    	currentUser = "";
         		response.sendRedirect("login.jsp");
@@ -639,8 +696,59 @@ private void newMessageInsertion(HttpServletRequest request, HttpServletResponse
 	System.out.println("Re ended");
 
 	    }
-        
+
+private void CheckBill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	System.out.println("Started");
+	 String billID = request.getParameter("billID");
+	 String status = request.getParameter("status");
+	 String user_note = request.getParameter("user_note");
+	 String contractor_note = request.getParameter("contractor_note");
+
+	 int amt_due = Integer.parseInt(request.getParameter("amt_due"));
+	 int amt_paid = Integer.parseInt(request.getParameter("amt_paid"));
+	 int unique_tree_id = Integer.parseInt(request.getParameter("unique_tree_id"));
+	 request.setAttribute("billID", billID);
+	 request.setAttribute("status", status);
+	 request.setAttribute("user_note", user_note);
+	 request.setAttribute("contractor_note", contractor_note);
+	 request.setAttribute("amt_due", amt_due);
+	 request.setAttribute("amt_paid", amt_paid);
+
+		List<tree>SpecificTrees = userDAO.listSpecificTrees(unique_tree_id);
+		 request.setAttribute("SpecificTrees", SpecificTrees);
+		 request.setAttribute("SpecificMessages", userDAO.listSpecificMessagesFromBillID(billID));
+
+
+	request.getRequestDispatcher("ContractorBillPage.jsp").forward(request, response);
+	System.out.println("Re ended");
+
+	    } 
+private void ClientBillPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	System.out.println("Started");
+	 String billID = request.getParameter("billID");
+	 String status = request.getParameter("status");
+	 String user_note = request.getParameter("user_note");
+	 String contractor_note = request.getParameter("contractor_note");
+
+	 int amt_due = Integer.parseInt(request.getParameter("amt_due"));
+	 int amt_paid = Integer.parseInt(request.getParameter("amt_paid"));
+	 int unique_tree_id = Integer.parseInt(request.getParameter("unique_tree_id"));
+	 request.setAttribute("billID", billID);
+	 request.setAttribute("status", status);
+	 request.setAttribute("user_note", user_note);
+	 request.setAttribute("contractor_note", contractor_note);
+	 request.setAttribute("amt_due", amt_due);
+	 request.setAttribute("amt_paid", amt_paid);
+
+		List<tree>SpecificTrees = userDAO.listSpecificTrees(unique_tree_id);
+		 request.setAttribute("SpecificTrees", SpecificTrees);
+
+		 request.setAttribute("SpecificMessages", userDAO.listSpecificMessagesFromBillID(billID));
+
+	request.getRequestDispatcher("ClientBillPage.jsp").forward(request, response);
+	System.out.println("Re ended");
+
+	    }
 	        
 	    
 }
-	        
