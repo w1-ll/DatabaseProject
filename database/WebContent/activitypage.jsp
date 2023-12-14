@@ -112,6 +112,42 @@
                  </form>            
            </c:forEach>
         </table>
+        
+        
+        
+                <table border="1" cellpadding="6">
+            <caption><h2>Your Bills</h2></caption>
+            <tr>
+                <th>BillID</th>
+                <th>Status</th>
+                <th>Check</th>
+                              
+            </tr>
+            
+            
+            <c:forEach var="bills" items="${specificBill}">
+            <form action="ClientBillPage" method="post">
+            
+                <tr style="text-align:center">
+                    <td><c:out value="${bills.billID}" /></td>
+                    <td><c:out value="${bills.status}" /></td>
+
+                    <input type="hidden" name="billID" value="${bills.billID}" />
+                    <input type="hidden" name="status" value="${bills.status}" />
+                    <input type="hidden" name="user_note" value="${bills.user_note}" />
+                     <input type="hidden" name="contractor_note" value="${bills.contractor_note}" />
+                    
+                    <input type="hidden" name="amt_due" value="${bills.amt_due}" />
+                    <input type="hidden" name="amt_paid" value="${bills.amt_paid}" />
+                    <input type="hidden" name="unique_tree_id" value="${bills.unique_tree_id}" />
+                    <td><input type="submit" value="Check Bill" /> 
+                    
+                    <!--<center><a href="ClientRequest.jsp"target ="_self" > Check Quote </a></center>-->
+                </td>   
+                </tr>
+                 </form>            
+           </c:forEach>
+        </table>
     </center>   	
 	</body>
 </html>
