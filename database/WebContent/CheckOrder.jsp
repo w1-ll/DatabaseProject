@@ -84,13 +84,20 @@
     </c:forEach>
 </table>
 </tr>
+	
+	<form action="newBill">
+
 				<tr>
 					<td align="center" colspan="5">
 						<input type="submit" value="Order Completed"/>
+						<input type="hidden" name="orderID" value = "${orderID}">
+						<input type="hidden" name="email" value = "${email}">
+						
+						
 					</td>
 				</tr>
 	</table>
-
+</form>
 	</center>
 </body>
 </html>
