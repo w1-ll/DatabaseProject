@@ -336,12 +336,18 @@ public class userDAO
         while (resultSet.next()) {
         	String billID = resultSet.getString("billID");
         	String status = resultSet.getString("status");
-        	String negotiation_note = resultSet.getString("negotiation_note");
-        	int final_price = resultSet.getInt("final_price");
-            System.out.println(billID+" "+status+" "+negotiation_note+" "+final_price);
+        	String contractor_note = resultSet.getString("contractor_note");
+        	String user_note = resultSet.getString("user_note");
+        	String email = resultSet.getString("email");
+
+        	int amt_due = resultSet.getInt("amt_due");
+        	int amt_paid = resultSet.getInt("amt_paid");
+        	int unique_tree_id = resultSet.getInt("unique_tree_id");
+
+            System.out.println(billID+" "+status+" ");
              
-            bill Bill = new bill(billID,status,negotiation_note,final_price);
-            System.out.println(Bill.getBillID()+" "+Bill.getStatus()+" "+ Bill.getNegotiation_note()+" "+ Bill.getFinal_price());
+            bill Bill = new bill(billID,status,user_note,contractor_note,amt_due,amt_paid,unique_tree_id);
+            System.out.println(Bill.getBillID()+" "+Bill.getStatus()+" ");
             listBill.add(Bill);
         }        
         resultSet.close();
@@ -493,6 +499,55 @@ public class userDAO
         resultSet.close();
         disconnect();        
         return listMessages;
+    }
+    
+    public List<messages> listSpecificMessagesFromBillID(String billID) throws SQLException {
+    	List<messages> listMessages = new ArrayList<messages>();        
+        System.out.println("Started");
+        String sql = String.format("SELECT * FROM messages WHERE billID=\"%s\";",billID);    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+        	int message_id = resultSet.getInt("message_id");
+            String sender = resultSet.getString("sender");
+            String recipient = resultSet.getString("recipient");
+            String message_content = resultSet.getString("message_content");
+            String timestamp = resultSet.getString("timestamp");
+
+            messages Message = new messages(billID,message_id, sender, recipient, message_content,timestamp);
+            listMessages.add(Message);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listMessages;
+    }
+    public List<bill> listSpecificBill(String email) throws SQLException {
+        List<bill> listBill = new ArrayList<bill>();        
+        System.out.println("Started");
+        String sql = String.format("SELECT * FROM bill WHERE email=\"%s\";",email);    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String billID = resultSet.getString("billID");
+            String status = resultSet.getString("status");
+            int amt_due = resultSet.getInt("amt_due");
+            int amt_paid = resultSet.getInt("amt_paid");
+            String user_note = resultSet.getString("user_note");
+            String contractor_note = resultSet.getString("contractor_note");
+            int unique_tree_id = resultSet.getInt("unique_tree_id");
+
+            bill Bill = new bill(billID,status,user_note,contractor_note,amt_due,amt_paid,unique_tree_id,email);
+            listBill.add(Bill);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listBill;
     }
 
     
@@ -652,6 +707,29 @@ public class userDAO
 		        System.err.println("SQLState: " + e.getSQLState());
 		        System.err.println("VendorError: " + e.getErrorCode());
 		    }
+    }
+    public void insertBill(bill bills) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+    	System.out.println(bills.getBillID());
+		String sql = "insert into bill(billID,status, user_note,contractor_note, amt_due ,amt_paid,unique_tree_id) values (?,?, ?, ?, ?, ?,?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, bills.getBillID());
+		 preparedStatement.setString(2, bills.getStatus());
+	        preparedStatement.setString(3, bills.getUser_note());
+	        preparedStatement.setString(4, bills.getContractor_note());
+
+	        preparedStatement.setInt(5, bills.getAmt_due());
+			preparedStatement.setInt(6, bills.getAmt_paid());
+			preparedStatement.setInt(7, bills.getUnique_tree_id());
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+        preparedStatement.close();
+        System.out.println("closed");
     }
     
     public void insertMessagesForClient(String quoteID,String email,String user_note) throws SQLException {
@@ -917,6 +995,28 @@ public quote getQuote(String quoteID) throws SQLException {
     return Quote;
 }
 
+public int getQuotePriceFromUniqueTreeID(int unique_tree_id ) throws SQLException {
+	System.out.println("Price started");
+    String sql = "SELECT price FROM quote WHERE unique_tree_id = ?";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setInt(1, unique_tree_id);
+     
+    ResultSet resultSet = preparedStatement.executeQuery();
+    int price=0; 
+    if (resultSet.next()) {
+    	 price = resultSet.getInt("price");
+         }
+    //System.out.println(Request.getTree_id()); 
+    resultSet.close();
+    preparedStatement.close();
+     
+    return price;
+}
+
+
 public tree getTree(int treeID) throws SQLException {
 	tree Tree = null;
     String sql = "SELECT * FROM tree WHERE tree_id = ?";
@@ -1143,7 +1243,227 @@ public orders getOrder(String orderID) throws SQLException {
 
             return rowUpdated;
     }
+    public boolean updateOrder(String orderID, String status) throws SQLException
+    {
+    	String sql = "UPDATE orders SET status = ? WHERE orderID = ?";
+    	connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(sql);
+
+            // Update the request
+            updateStatement.setString(1, status);
+            updateStatement.setString(2, orderID);
+           
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+            return rowUpdated;
+    }
+    public List<String> listBigClients() throws SQLException {
+    	List<String> list = new ArrayList<String>();        
+        System.out.println("Started");
+        String sql = ("select\n"
+        		+ "  q.email,\n"
+        		+ "  COUNT(t.tree_ids) AS tree_count\n"
+        		+ "from\n"
+        		+ "  quote q, treeIdentifier t\n"
+        		+ "where q.unique_tree_id = t.unique_id\n"
+        		+ "GROUP BY\n"
+        		+ "  q.email\n"
+        		+ "Order by \n"
+        		+ " tree_count DESC\n"
+        		+ "LIMIT 1;");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            String treeCount = resultSet.getString("tree_count");
+            list.add(email);
+            list.add(treeCount);
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }  
     
+    public List<String> listSingleTree() throws SQLException {
+    	List<String> list = new ArrayList<String>();        
+        System.out.println("Started");
+        String sql = ("SELECT\n"
+        		+ "  q.email,\n"
+        		+ "  COUNT(t.tree_ids) AS tree_count\n"
+        		+ "FROM quote q, treeIdentifier t \n"
+        		+ "where q.unique_tree_id = t.unique_id\n"
+        		+ "GROUP BY q.email\n"
+        		+ "having  tree_count = 1\n"
+        		+ "order by\n"
+        		+ "tree_count DESC;");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            String treeCount = resultSet.getString("tree_count");
+            list.add(email);
+            list.add(treeCount);
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }
+    
+    public List<String> listProspectiveClients() throws SQLException {
+    	List<String> list = new ArrayList<String>();        
+        System.out.println("Started");
+        String sql = (" select distinct email from quote\n"
+        		+ "where user_status = \"P\";");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            list.add(email);
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }
+    
+    public List<String> listEasyClients() throws SQLException {
+    	List<String> list = new ArrayList<String>();        
+        System.out.println("Started");
+        String sql = ("SELECT email\n"
+        		+ "from quote \n"
+        		+ "where user_status = 'S' AND negotiationStatus = 1;");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            list.add(email);
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }
+    
+    public List<Integer> listHighestTree() throws SQLException {
+    	List<Integer> list = new ArrayList<Integer>();        
+        System.out.println("Started");
+        String sql = ("SELECT tree_height\n"
+        		+ "FROM tree\n"
+        		+ "WHERE tree_height = (\n"
+        		+ "    SELECT MAX(tree_height)\n"
+        		+ "    FROM tree\n"
+        		+ ");");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            int tree_height = resultSet.getInt("tree_height");
+            list.add(tree_height);
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }
+    
+    public List<String> listBadClients() throws SQLException {
+    	List<String> list = new ArrayList<String>();        
+        System.out.println("Started");
+        String sql = (" SELECT\n"
+        		+ "  email\n"
+        		+ "FROM\n"
+        		+ "  bill\n"
+        		+ "WHERE\n"
+        		+ "  counter>7;");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            list.add(email);
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }
+    
+    public List<String> listGoodClients() throws SQLException {
+    	List<String> list = new ArrayList<String>();        
+        System.out.println("Started");
+        String sql = ("    SELECT\n"
+        		+ "  email\n"
+        		+ "FROM\n"
+        		+ "  bill\n"
+        		+ "WHERE\n"
+        		+ "  counter<=1;");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            list.add(email);
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }
+    
+    public List<String> listStatistics() throws SQLException {
+    	List<String> list = new ArrayList<String>();        
+        System.out.println("Started");
+        String sql = ("SELECT\n"
+        		+ "  q.email,\n"
+        		+ "  COUNT(t.tree_id) AS total_trees,\n"
+        		+ "  SUM(b.amt_due) AS total_due_amount,\n"
+        		+ "  SUM(b.amt_paid) AS total_paid_amount,\n"
+        		+ "  o.finish_date AS work_done_date\n"
+        		+ "FROM\n"
+        		+ "  quote q\n"
+        		+ "JOIN tree t ON q.unique_tree_id = t.tree_id\n"
+        		+ "JOIN orders o ON q.unique_tree_id = o.unique_tree_id\n"
+        		+ "JOIN bill b ON q.unique_tree_id = b.unique_tree_id \n"
+        		+ "GROUP BY q.email,o.finish_date;");    
+        
+        connect_func();      
+        statement = (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        System.out.println("SQL started");
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            String trees = resultSet.getString("total_trees");
+            String amt_due = resultSet.getString("total_due_amount");
+            String amt_paid = resultSet.getString("total_paid_amount");
+            String date = resultSet.getString("work_done_date");
+
+
+            list.add(email);
+            list.add(trees);
+            list.add(amt_due);
+            list.add(amt_paid);
+            list.add(date);
+
+        }        
+        resultSet.close();
+        disconnect();        
+        return list;
+    }
     
     public void init() throws SQLException, FileNotFoundException, IOException{
     	System.out.println("init started.");
@@ -1213,8 +1533,13 @@ public orders getOrder(String orderID) throws SQLException {
         		("CREATE TABLE IF NOT EXISTS bill ( "+
         			    "billID VARCHAR(10),"+
         			    "status VARCHAR(1),"+
-        			    "negotiation_note VARCHAR(60),"+
-        			    "final_price INT,"+
+        			    "user_note VARCHAR(60),"+
+        			    "contractor_note VARCHAR(60),"+
+        			    "amt_due INT,"+
+        			    "amt_paid INT,"+
+        			    "unique_tree_id INT,"+
+        			    "email VARCHAR(50),"+
+        			    "counter INT,"+
         			    "PRIMARY KEY (billID));")
 
         };
@@ -1248,6 +1573,7 @@ public orders getOrder(String orderID) throws SQLException {
         			    "message_content TEXT,"+
         			    "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
         			    "quoteID VARCHAR(10),"+
+        			    "BillID VARCHAR(10),"+
         			    "PRIMARY KEY (message_id));")
 
         };
@@ -1284,12 +1610,12 @@ public orders getOrder(String orderID) throws SQLException {
         String[] TUPLES3 = {
 //        		
         		("insert into Quote(email, quoteID, contractor_status, user_status,negotiation_note,work_period,price,user_note,unique_tree_id,negotiationStatus)"+
-            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20',2500,'',1,0),"+
+            			"values ('roy@gmail.com','4421FGWP','P','P','Nothing','20',3000,'',1,0),"+
         				"('roy@gmail.com','49204GQW3','P','P','satisfied','12',1340,'',2,0),"+
-            			"('dick@gmail.com','492054HW','R','R','invalid','13',4400,'',3,0),"+
+            			"('dick@gmail.com','492054HW','R','S','invalid','13',4400,'',3,1),"+
         				"('bat@gmail.com','39402043HQ','P','P','better deal','35',3752,'',4,0),"+
             			"('dick@gmail.com','AW492054E4','P','P','do better','3',23456,'',5,0),"+
-        				"('barbara@gmail.com','4825042','P','P','accepted','3',100,'',6,0),"+
+        				"('barbara@gmail.com','4825042','P','S','accepted','3',100,'',6,1),"+
             			"('tim@gmail.com','5449205425','P','P','like it','7',3456,'',7,0),"+
         				"('damian@gmail.com','4920543243','P','P','no','8',567,'',8,0),"+
         				"('maria@gmail.com','4920542431','P','P','yes','19',2435,'',9,0);")
@@ -1312,16 +1638,16 @@ public orders getOrder(String orderID) throws SQLException {
        
         
         String[] TUPLES5 = {
-        		("insert into bill(billID, status,negotiation_note,final_price)"+
-            			"values ('0000','P','No notes',0000),"+
-        				"('S24S','P','Reduce price',800),"+
-            			"('g345','P','No notes',7777),"+
-        				"('dwrt','P','No notes',8749),"+
-            			"('Jk98','P','No notes',3100),"+
-        				"('h832','P','No notes',4000),"+
-            			"('1232','P','Reduce price',6100),"+
-        				"('43y3','P','Reduce price',2150),"+
-        				"('hy78','P','Reduce price',4000);"
+        		("insert into bill(billID, status,user_note,contractor_note,amt_due,amt_paid,unique_tree_id,email,counter)"+
+            			"values ('0000','P','No notes','',5000,200,1,'roy@gmail.com',1),"+
+        				"('S24S','P','Reduce price','',1340,100,2,'bat@gmail.com',3),"+
+            			"('g345','P','No notes','',1200,90,3,'maria@gmail.com',4),"+
+        				"('dwrt','P','No notes','',1000,200,4,'dick@gmail.com',1),"+
+            			"('Jk98','P','No notes','',3100,1300,5,'barbara@gmail.com',3),"+
+        				"('h832','P','No notes','',4000,1200,6,'tim@gmail.com',2),"+
+            			"('1232','P','Reduce price','',6100,2000,7,'damian@gmail.com',6),"+
+        				"('43y3','P','Reduce price','',2150,400,8,'damiam@gmail.com',9),"+
+        				"('hy78','P','Reduce price','',4000,300,9,'barbara@gmail.com',10);"
         				)
         };
         
@@ -1349,6 +1675,11 @@ public orders getOrder(String orderID) throws SQLException {
         		("insert into messages(sender,recipient,message_content,timestamp,quoteID)\n"
         				+ "            			values ('roy@gmail.com','david@gmail.com', 'Can I get a price reduction?','2023-12-10 09:56:46','4421FGWP'),"+
         												"('david@gmail.com','roy@gmail.com','Sure. I can reduce 100 dollars','2023-12-10 10:56:00','4421FGWP');")
+        };
+        String[] TUPLES9 = {
+        		("insert into messages(sender,recipient,message_content,timestamp,billID)\n"
+        				+ "            			values ('roy@gmail.com','david@gmail.com', 'Can I get a price reduction?','2023-12-14 09:56:46','0000'),"+
+        												"('david@gmail.com','roy@gmail.com','Sure. I can reduce 100 dollars','2023-12-14 10:56:00','0000');")
         };
 //        for (int i = 0; i < INITIAL8.length; i++)
 //        	statement.execute(INITIAL8[i]);
@@ -1413,6 +1744,9 @@ public orders getOrder(String orderID) throws SQLException {
         
         for (int i = 0; i<TUPLES8.length;i++) {
         	statement.execute(TUPLES8[i]);
+        }
+        for (int i = 0; i<TUPLES9.length;i++) {
+        	statement.execute(TUPLES9[i]);
         }
         
         
