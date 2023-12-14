@@ -112,6 +112,53 @@
 
 
 <table border="1" cellpadding="6">
+            <caption><h2>Pending Bills</h2></caption>
+            <tr>
+                <th>Bill ID</th>
+                <th>Status</th>
+                <th>User Note</th>
+                 <th>Contractor Note</th>       
+                
+                <th>Amount Due</th>   
+                <th>Amount Paid</th> 
+                <th>Check Bill</th>  
+                     
+            </tr>
+            
+            
+            <c:forEach var="bills" items="${Bills}">
+            <form action="CheckBill" method="post">
+            
+                <tr style="text-align:center">
+                    <td><c:out value="${bills.billID}" /></td>
+                    <td><c:out value="${bills.status}" /></td>
+                    
+                    <td><c:out value="${bills.user_note}" /></td> 
+                    <td><c:out value="${bills.contractor_note}" /></td> 
+                  
+                    <td><c:out value="${bills.amt_due}" /></td> 
+                    <td><c:out value="${bills.amt_paid}" /></td> 
+                    <input type="hidden" name="billID" value="${bills.billID}" />
+                    <input type="hidden" name="status" value="${bills.status}" />
+                    <input type="hidden" name="user_note" value="${bills.user_note}" />
+                     <input type="hidden" name="contractor_note" value="${bills.contractor_note}" />
+                    
+                    <input type="hidden" name="amt_due" value="${bills.amt_due}" />
+                    <input type="hidden" name="amt_paid" value="${bills.amt_paid}" />
+                    <input type="hidden" name="unique_tree_id" value="${bills.unique_tree_id}" />
+                    
+                    
+                    
+                    
+                    <td><input type="submit" value="Check Bill" /> </td>
+                    </tr>
+                    </form>
+           </c:forEach>
+        </table>
+        
+        
+
+<table border="1" cellpadding="6">
     <caption><h2>Successful Requests</h2></caption>
     <tr>
         <th>RequestID</th>
