@@ -123,8 +123,11 @@
             <tr>
                 <th>Bill ID</th>
                 <th>Status</th>
-                <th>Negotiation Note</th>
-                <th>Final Price </th>              
+                <th>User Note</th>
+                <th>Contractor Note</th>
+                
+                <th>Amount Due</th>   
+                <th>Amount Paid</th>            
             </tr>
             
             
@@ -132,8 +135,13 @@
                 <tr style="text-align:center">
                     <td><c:out value="${bill.billID}" /></td>
                     <td><c:out value="${bill.status}" /></td>
-                    <td><c:out value="${bill.negotiation_note}" /></td>
-                    <td><c:out value="${bill.final_price}" /></td>   
+                    <td><c:out value="${bill.user_note}" /></td>
+                    <td><c:out value="${bill.contractor_note}" /></td>
+                    
+                    <td><c:out value="${bill.amt_due}" /></td>  
+                    <td><c:out value="${bill.amt_paid}" /></td> 
+                      
+                     
            </c:forEach>
         </table>
        
@@ -157,6 +165,17 @@
         </table>
 
 	</div>
+	<p>Big Clients: ${BigClients}</p>
+    <p>Single Tree: ${SingleTrees}</p>
+    <p>Prospective Clients: ${ProspectiveClients}</p>
+    <p>Easy Clients: ${EasyClients}</p>
+    <p>Highest Tree/s: ${HighestTree}</p>
+    <p>Bad Client/s: ${BadClients}</p>
+    <p>Good Client/s: ${GoodClients}</p>
+    <p>Statistics: ${Statistics}</p>
+    
+    
+	
 	</div>
 
 </body>
