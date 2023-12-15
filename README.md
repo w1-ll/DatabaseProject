@@ -78,4 +78,8 @@ For the user DAO functions, any code that has a password associated with the roo
 4) Once the contractor logs into his account, he can see the pending request and have the option to accept the request or reject it
 5) Once the request has been accepted, the contractor can then generate the bill
 6) User client needs to log into the pending bill and can negotiate the price
-7) If the user does not like the bill, then the client can either renegotiate or reject the contract all together,
+7) If the user does not like the bill, then the client can either renegotiate or reject the contract all together
+8) Once the contracts have been accepted, you should see the queries change in the root login.
+
+## Part 3 contributions:
+
