@@ -82,4 +82,15 @@ For the user DAO functions, any code that has a password associated with the roo
 8) Once the contracts have been accepted, you should see the queries change in the root login.
 
 ## Part 3 contributions:
+Will: 
+* Worked on each of the queries for the tables
+* Worked on debugging any issues
+* Worked on referencing the right tables to fit each query
+* 42 hours
 
+Rishitha: 
+* front end
+* back end
+* Made more tables to fit the requirements
+* 50 hours
+  
