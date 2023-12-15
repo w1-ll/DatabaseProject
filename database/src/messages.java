@@ -1,55 +1,70 @@
+import java.util.Date;
 
 public class messages {
-	protected String message_id;
-	protected String sender_id;
-	protected String recipient_id;
-	protected String content;
-	protected String timestamp;
+	protected int message_id;
+	protected String sender;
+	protected String recipient;
+	protected String message_content;
+	protected String time_stamp;
+	protected String quoteID;
+	protected String billID;
+
 	
 	public messages() {
 		
 	}
-	
-	
-	public messages(String sender_id, String recipient_id,String content, String timestamp) {
-		this.sender_id=sender_id; 
-		this.recipient_id=recipient_id;
-		this.content=content;
-		this.timestamp=timestamp;
-	}
-	
-	public void setMessage_id(String message_id) {
+	public messages(int message_id, String sender,String recipient, String message_content, String time_stamp, String quoteID) {
 		this.message_id = message_id;
+		this.sender = sender;
+		this.recipient = recipient;
+		this.message_content = message_content;
+		this.time_stamp = time_stamp;
+		this.quoteID = quoteID;
 	}
-	public void setSender_id(String sender_id) {
-		this.sender_id = sender_id;
+	public messages(String billID, int message_id, String sender,String recipient, String message_content, String time_stamp) {
+		this.message_id = message_id;
+		this.sender = sender;
+		this.recipient = recipient;
+		this.message_content = message_content;
+		this.time_stamp = time_stamp;
+		this.billID = billID;
 	}
-	public void setRecipient_id(String recipient_id) {
-		this.recipient_id = recipient_id;
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
-	public void setContent(String content) {
-		this.content = content;
+	public String getSender() {
+		return sender;
 	}
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
+	}
+	public String getRecipient() {
+		return recipient;
+	}
+	public void setMessage_content(String message_content) {
+		this.message_content = message_content;
+	}
+	public String getMessage_content() {
+		return message_content;
+	}
+	public void setTime_Stamp(String time_stamp) {
+		this.time_stamp = time_stamp;
+	}
+	public String getTime_stamp() {
+		return time_stamp;
 	}
 	
-	public String getMessage_id() {
-		return message_id;
+	public String getQuoteID() {
+		return quoteID;
 	}
-	public String getSender_id() {
-		return sender_id;
+	public void setQuoteID(String quoteID) {
+		this.quoteID = quoteID;
 	}
-	public String getRecipient_id() {
-		return recipient_id;
+	public String getBillID() {
+		return billID;
 	}
-	public String getContent() {
-		return content;
+	public void setBillID(String billID) {
+		this.billID = billID;
 	}
-	public String getTimestamp() {
-		return timestamp;
-	}
-	
-	
 
 }
