@@ -81,7 +81,7 @@
 				<tr>
 					<th>Total Cost </th>
 					<td align="center" colspan="3">
-						<input type="text" name="price" size="20" value="Enter the quote price" onfocus="this.value=''">
+						<input type="text" name="price" size="20" value="0" onfocus="this.value=''">
 					</td>
 					
 				</tr>
