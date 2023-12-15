@@ -1,12 +1,15 @@
 # Description
 This project is used as a basis to show how the code interacts with web servers through Java, SQL, and jsp files.
-This also sets a relation between the contractor, client, the negotiation quote, and more.  Part 2 is now about implementing the jsp files to interact with the users.  This part of the project is about the users and the client interacting with the requests for cutting trees and negotiating the price.
+This also sets a relation between the contractor, client, the negotiation quote, and more.  Part 2 is now about implementing the jsp files to interact with the users.  This part of the project is about the users and the client interacting with the requests for cutting trees and negotiating the price.  Part 3 is about the contractor and the user interacting through multiple tree orders and can distinguish between different clients from, the highest trees cut, overdue bills, etc...
 # Table of contents
 * [Prerequisite](#Prerequisite)
 * [Instructions](#Instruction-Setup)
 * [Run the code](#Run-the-code)
 * [Contributions](#contributions)
 * [Part 2 instructions](#Part-2-Project-Instructions)
+* [Part 2 contributions](#Part-2-contributions)
+* [Part 3 instructions](#Part-3-Project-Instructions)
+  
 # Prerequisite
 1) Install Eclipse Enterprise and Java Developers
 2) Follow the instructions when installing  [Apache Tomcat website ](https://tomcat.apache.org/)
@@ -69,3 +72,10 @@ Rishitha:
 ### Part 3 Project Instructions:
 Make sure that you follow the instructions on how to download the code and run it
 For the user DAO functions, any code that has a password associated with the root, change the password to your own root password
+1) User goes to the login page and registers as a client.
+2) Once the information is completed, they then log into the account that was created
+3) Users can then make a request with multiple tree orders
+4) Once the contractor logs into his account, he can see the pending request and have the option to accept the request or reject it
+5) Once the request has been accepted, the contractor can then generate the bill
+6) User client needs to log into the pending bill and can negotiate the price
+7) If the user does not like the bill, then the client can either renegotiate or reject the contract all together,
