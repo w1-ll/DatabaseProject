@@ -86,7 +86,7 @@ Will:
 * Worked on each of the queries for the tables
 * Worked on debugging any issues
 * Worked on referencing the right tables to fit each query
-* 42 hours
+* 45 hours
 
 Rishitha: 
 * front end
