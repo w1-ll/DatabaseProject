@@ -343,12 +343,16 @@ public class userDAO
         	int amt_due = resultSet.getInt("amt_due");
         	int amt_paid = resultSet.getInt("amt_paid");
         	int unique_tree_id = resultSet.getInt("unique_tree_id");
+        	Date createdDate = resultSet.getDate("billCreationDate");
+        	int counter = resultSet.getInt("counter");
+        	
 
             System.out.println(billID+" "+status+" ");
              
-            bill Bill = new bill(billID,status,user_note,contractor_note,amt_due,amt_paid,unique_tree_id);
+            bill Bill = new bill(billID,status,user_note,contractor_note,amt_due,amt_paid,unique_tree_id,email,counter,createdDate);
             System.out.println(Bill.getBillID()+" "+Bill.getStatus()+" ");
             listBill.add(Bill);
+            updateBillCounter(billID,createdDate);
         }        
         resultSet.close();
         disconnect();        
@@ -523,6 +527,8 @@ public class userDAO
         resultSet.close();
         disconnect();        
         return listMessages;
+        
+       
     }
     public List<bill> listSpecificBill(String email) throws SQLException {
         List<bill> listBill = new ArrayList<bill>();        
@@ -774,6 +780,47 @@ public class userDAO
         System.out.println("closed");
     }
     
+    public void insertMessagesForContractorUsingBillID(String billID,String user_email,String contractor_note) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+		String sql = "insert into messages(sender,recipient, message_content,BillID) values (?,?, ?,?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, "david@gmail.com");
+		 preparedStatement.setString(2, user_email);
+	        preparedStatement.setString(3, contractor_note);
+	        preparedStatement.setString(4, billID);
+
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+        preparedStatement.close();
+        System.out.println("closed");
+    }
+    
+    public void insertMessagesForClientUsingBillID(String billID,String user_email,String client_note) throws SQLException {
+    	System.out.println("insert began");
+    	connect_func("root","rishi1234"); 
+    	System.out.println("connected");
+		String sql = "insert into messages(sender,recipient, message_content,BillID) values (?,?, ?,?)";
+		
+		 preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		 preparedStatement.setString(1, user_email);
+		 preparedStatement.setString(2, "david@gmail.com");
+	        preparedStatement.setString(3, client_note);
+	        preparedStatement.setString(4, billID);
+
+			System.out.println("sql implemented.");
+
+		preparedStatement.executeUpdate();
+		System.out.println("updated");
+        preparedStatement.close();
+        System.out.println("closed");
+    }
+    
+    
     public boolean delete(String email) throws SQLException {
         String sql = "DELETE FROM User WHERE email = ?";        
         connect_func();
@@ -837,6 +884,25 @@ public class userDAO
                 System.out.println("Updated user_status: " + updatedUserStatus);
             }
 
+            return rowUpdated;
+        
+        
+        
+    }
+    
+public boolean modifyBill(String billID,String contractor_note,int amt_due) throws SQLException {
+        String updateSql = "UPDATE bill SET contractor_note = ?, amt_due = ? WHERE billID = ?";
+        connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(updateSql);
+
+            // Update the quote
+            updateStatement.setString(1, contractor_note);
+            updateStatement.setInt(2, amt_due);
+            updateStatement.setString(3, billID);
+
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
             return rowUpdated;
         
         
@@ -1132,6 +1198,36 @@ public orders getOrder(String orderID) throws SQLException {
     return Order;
 }
 
+public bill getBill(String billID) throws SQLException {
+	orders Order = null;
+    String sql = "SELECT * FROM bill WHERE billID = ?";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setString(1, billID);
+     
+    ResultSet resultSet = preparedStatement.executeQuery();
+    String status="", user_note="", contractor_note="",email="";
+    int unique_tree_id = 1,amt_due = 0,amt_paid =0,counter=0;
+    if (resultSet.next()) {
+    	 status = resultSet.getString("status");
+         email = resultSet.getString("email");
+         unique_tree_id = resultSet.getInt("unique_tree_id");
+         user_note = resultSet.getString("user_note");
+         contractor_note = resultSet.getString("contractor_note");
+         amt_due = resultSet.getInt("amt_due");
+         amt_paid = resultSet.getInt("amt_paid");
+         counter = resultSet.getInt("counter");
+
+         }
+    bill nBill = new bill(billID,status,user_note,contractor_note, amt_due,amt_paid,unique_tree_id,email); 
+    //System.out.println(Tree.getTree_distance()+" "+Tree.getTrunk_size()+" "+Tree.getTree_height()+" "+Tree.getTree_location()); 
+
+    resultSet.close();
+    preparedStatement.close();
+    return nBill;
+}
 
     public user getUser(String email) throws SQLException {
     	user user = null;
@@ -1243,6 +1339,7 @@ public orders getOrder(String orderID) throws SQLException {
 
             return rowUpdated;
     }
+    
     public boolean updateOrder(String orderID, String status) throws SQLException
     {
     	String sql = "UPDATE orders SET status = ? WHERE orderID = ?";
@@ -1259,6 +1356,87 @@ public orders getOrder(String orderID) throws SQLException {
 
             return rowUpdated;
     }
+    
+    public boolean updateBill(String billID, String status,int amt_due,int amt_paid) throws SQLException
+    {
+    	String sql = "UPDATE bill SET status = ?,amt_due=?,amt_paid=? WHERE billID = ?";
+    	connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(sql);
+
+            // Update the request
+            updateStatement.setString(1, status);
+            updateStatement.setInt(2, amt_due);
+            updateStatement.setInt(3, amt_paid);
+            updateStatement.setString(4, billID);
+
+           
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+            return rowUpdated;
+    }
+    
+private long BillDaysCalculator(Date billCreationDate) {
+    	System.out.println("");
+           // Date billCreationDate = new Date();
+            
+            Date currentDate = new Date();
+            
+            long daysDifference = (currentDate.getTime() - billCreationDate.getTime())/(1000 * 60 * 60 * 24);
+            System.out.println("Number of days since the bill was created: " + daysDifference + " days");
+            return daysDifference;
+
+          }
+    
+    public boolean updateBillCounter(String billID, Date billCreationDate) throws SQLException
+    {
+    	long counter = BillDaysCalculator(billCreationDate);
+    	String sql = "UPDATE bill SET counter = ? WHERE billID = ?";
+    	connect_func(); 
+        
+        	 
+             PreparedStatement updateStatement = (PreparedStatement) connect.prepareStatement(sql);
+
+            // Update the request
+            updateStatement.setInt(1, (int)counter);
+            updateStatement.setString(2, billID);
+           
+            boolean rowUpdated = updateStatement.executeUpdate() > 0;
+
+            return rowUpdated;
+    }
+    
+    public void updateAllBillCounter() throws SQLException
+    {
+    	String sql = "SELECT COUNT(*) AS row_count FROM bill;";
+    	         
+        preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+         
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.close();
+        preparedStatement.close();
+        int counter = 0;
+        if (resultSet.next()) {
+        	counter =resultSet.getInt("row_count");
+             }
+        String sql2 = "SELECT billID,billCreationDate FROM bill";
+        preparedStatement = (PreparedStatement) connect.prepareStatement(sql2);
+        ResultSet resultSet2 = preparedStatement.executeQuery();
+
+        String billID = "";
+        Date billCreationDate = new Date();
+        if (resultSet2.next()) {
+        	billID = resultSet2.getString("billID");
+        	billCreationDate = resultSet2.getDate("billCreationDate");
+        	updateBillCounter(billID,billCreationDate);
+        }
+        
+        resultSet2.close();
+        preparedStatement.close();
+    }
+    
+    
     public List<String> listBigClients() throws SQLException {
     	List<String> list = new ArrayList<String>();        
         System.out.println("Started");
@@ -1540,6 +1718,7 @@ public orders getOrder(String orderID) throws SQLException {
         			    "unique_tree_id INT,"+
         			    "email VARCHAR(50),"+
         			    "counter INT,"+
+        			    "billCreationDate DATE,"+
         			    "PRIMARY KEY (billID));")
 
         };
@@ -1638,16 +1817,16 @@ public orders getOrder(String orderID) throws SQLException {
        
         
         String[] TUPLES5 = {
-        		("insert into bill(billID, status,user_note,contractor_note,amt_due,amt_paid,unique_tree_id,email,counter)"+
-            			"values ('0000','P','No notes','',5000,200,1,'roy@gmail.com',1),"+
-        				"('S24S','P','Reduce price','',1340,100,2,'bat@gmail.com',3),"+
-            			"('g345','P','No notes','',1200,90,3,'maria@gmail.com',4),"+
-        				"('dwrt','P','No notes','',1000,200,4,'dick@gmail.com',1),"+
-            			"('Jk98','P','No notes','',3100,1300,5,'barbara@gmail.com',3),"+
-        				"('h832','P','No notes','',4000,1200,6,'tim@gmail.com',2),"+
-            			"('1232','P','Reduce price','',6100,2000,7,'damian@gmail.com',6),"+
-        				"('43y3','P','Reduce price','',2150,400,8,'damiam@gmail.com',9),"+
-        				"('hy78','P','Reduce price','',4000,300,9,'barbara@gmail.com',10);"
+        		("insert into bill(billID, status,user_note,contractor_note,amt_due,amt_paid,unique_tree_id,email,counter,billCreationDate)"+
+            			"values ('0000','P','No notes','',5000,200,1,'roy@gmail.com',1,'2023-12-15'),"+
+        				"('S24S','P','Reduce price','',1340,100,2,'bat@gmail.com',3,'2023-12-13'),"+
+            			"('g345','P','No notes','',1200,90,3,'maria@gmail.com',4,'2023-12-12'),"+
+        				"('dwrt','P','No notes','',1000,200,4,'dick@gmail.com',1,'2023-12-15'),"+
+            			"('Jk98','P','No notes','',3100,1300,5,'barbara@gmail.com',3,'2023-12-13'),"+
+        				"('h832','P','No notes','',4000,1200,6,'tim@gmail.com',2,'2023-12-14'),"+
+            			"('1232','P','Reduce price','',6100,2000,7,'damian@gmail.com',6,'2023-12-10'),"+
+        				"('43y3','P','Reduce price','',2150,400,8,'damian@gmail.com',9,'2023-12-07'),"+
+        				"('hy78','P','Reduce price','',4000,300,9,'barbara@gmail.com',10,'2023-12-16');"
         				)
         };
         
