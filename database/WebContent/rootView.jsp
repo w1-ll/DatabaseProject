@@ -127,7 +127,8 @@
                 <th>Contractor Note</th>
                 
                 <th>Amount Due</th>   
-                <th>Amount Paid</th>            
+                <th>Amount Paid</th> 
+                <th>Bill Creation Date</th>           
             </tr>
             
             
@@ -140,6 +141,8 @@
                     
                     <td><c:out value="${bill.amt_due}" /></td>  
                     <td><c:out value="${bill.amt_paid}" /></td> 
+                    <td><c:out value="${bill.createdDate}" /></td> 
+                    
                       
                      
            </c:forEach>
