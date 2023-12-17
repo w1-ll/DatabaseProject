@@ -67,7 +67,7 @@
 				<tr>
 					<th>Work Period </th>
 					<td align="center" colspan="3">
-						<input type="text" name="workPeriod" size="20" value="Enter No. of days" onfocus="this.value=''">
+						<input type="text" name="workPeriod" size="20" value="00" onfocus="this.value=''">
 					</td>
 				</tr>
 				
@@ -81,7 +81,7 @@
 				<tr>
 					<th>Total Cost </th>
 					<td align="center" colspan="3">
-						<input type="text" name="price" size="20" value="0" onfocus="this.value=''">
+						<input type="text" name="price" size="20" value="00" onfocus="this.value=''">
 					</td>
 					
 				</tr>
