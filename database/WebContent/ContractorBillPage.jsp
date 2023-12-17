@@ -9,16 +9,20 @@
 <title>Bill information</title>
 </head>
 <body>
+<form action="reviseBill">
 	<center><h1>Bill Information</h1>
 	
 	<h2>Your given Bill</h2>
-	<form action="ReviseQuote">
 	<table border="1" cellpadding="5">
 				<tr>
 					<th>Bill ID </th>
 					<td align="center" colspan="3">
 						<p>${billID}</p>
+						<input type="hidden" name="billID" value="${billID}">
+						<input type="hidden" name = "email" value="${email}">
 						
+
+
 					</td>
 				</tr>
 								
@@ -106,14 +110,14 @@
 	<table border="1" cellpadding="5">
 		<tr>
 			<th>Note </th>
-			<th><input type="text" name="Contractor_note" size="45"  value="Enter your queries" onfocus="this.value=''"></th>
+			<th><input type="text" name="contractor_note" size="45"  value="" onfocus="this.value=''"></th>
 			
 		</tr>
 		<tr>
-			<th>Price Changes: </th>
-			<th><input type="text" name="price2" size="45"  value="" onfocus="this.value=''"></th>
-			<input type="hidden" name = "quoteID" value="${quoteID}">
+			<th>Increase/Decrease due amount (insert (-) before number if you want to decrease due amount): </th>
+			<th><input type="text" name="price2" size="45"  value="0" onfocus="this.value=''"></th>
 		</tr>
+		
 		<tr> 
 					
 				<td align="center" colspan="3">
