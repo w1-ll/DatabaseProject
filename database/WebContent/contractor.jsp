@@ -118,7 +118,7 @@
                 <th>Status</th>
                 <th>User Note</th>
                  <th>Contractor Note</th>       
-                
+                <th>User Email</th>
                 <th>Amount Due</th>   
                 <th>Amount Paid</th> 
                 <th>Check Bill</th>  
@@ -135,6 +135,7 @@
                     
                     <td><c:out value="${bills.user_note}" /></td> 
                     <td><c:out value="${bills.contractor_note}" /></td> 
+                    <td><c:out value="${bills.email}" /></td> 
                   
                     <td><c:out value="${bills.amt_due}" /></td> 
                     <td><c:out value="${bills.amt_paid}" /></td> 
@@ -142,6 +143,7 @@
                     <input type="hidden" name="status" value="${bills.status}" />
                     <input type="hidden" name="user_note" value="${bills.user_note}" />
                      <input type="hidden" name="contractor_note" value="${bills.contractor_note}" />
+                     <input type="hidden" name="email" value="${bills.email}" />
                     
                     <input type="hidden" name="amt_due" value="${bills.amt_due}" />
                     <input type="hidden" name="amt_paid" value="${bills.amt_paid}" />
