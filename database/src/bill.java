@@ -12,6 +12,7 @@ public class bill
 	    protected int amt_paid;
 	    protected int unique_tree_id;
 		protected int date_counter;
+		protected Date createdDate;
 
 
 	 
@@ -49,7 +50,10 @@ public class bill
 	    	this( billID,  status,  user_note, contractor_note, amt_due, amt_paid,  unique_tree_id, email);
 	    	this.date_counter = counter;
 	    }
-
+	    public bill(String billID, String status, String user_note, String contractor_note, int amt_due,int amt_paid, int unique_tree_id,String email, int counter,Date createdDate) {
+	    	this(billID,  status,  user_note, contractor_note, amt_due, amt_paid,  unique_tree_id, email,counter);
+	    	this.createdDate = createdDate;
+	    }
 	    
 	    public bill(String status, String user_note,String contractor_note, int amt_due,int amt_paid) 
 	    {
@@ -105,10 +109,16 @@ public class bill
 	    public int getUnique_tree_id() {
 	        return unique_tree_id;
 	    }
+	    public String getEmail() {
+	        return email;
+	    }
 	    public void setDate_counter(int date_counter) {
 	        this.date_counter = date_counter;
 	    }
 	    public int getDate_counter() {
 	        return date_counter;
+	    }
+	    public Date getCreatedDate() {
+	        return createdDate;
 	    }
 	}
