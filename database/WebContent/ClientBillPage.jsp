@@ -9,7 +9,6 @@
 <title>Check Bill</title>
 </head>
 <body>
-	<form action="checkQuote">
 	<center><h1>Your given Bill</h1>
 	
 	<table border="1" cellpadding="5">
@@ -17,7 +16,6 @@
 					<th>Bill ID </th>
 					<td align="center" colspan="3">
 						<p>${billID}</p>
-						<input type="hidden" name = "billID" value="${billID}">
 					</td>
 				</tr>
 				<tr>
@@ -95,45 +93,46 @@
 
 </tr>
 
-				
-				<!--  <tr>
-					<td align="center" colspan="5">
-						<input type="submit" value="Submit Request"/>
-					</td>
-				</tr>-->
 	</table>
 	<br>
 	<br><br>
 	
 	<h2>Your response</h2>
 	<table border="1" cellpadding="5">
-				<tr> 
-				<th>Note</th>
-				<td align="center" colspan="3">
-						<input type="text" name="note" size="45"  value="" onfocus="this.value=''">
-					</td>
-				</tr>
-				<tr> 
-					
-				<td align="center" colspan="3">
-					<label for="options">Do you accept the contract?:</label>
-    				<select id="options" name="options">
-        			<option value="S" >Accept</option>
-        			<option value="R" >Reject</option>
-        			<option value="P" >Query</option>
-    			</select>	
-				</td> 
-				
-				</tr>
-				<tr>
+	<form action="payment">
+			<tr>
+			<th>Do want to make a payment now?:</th>					
 					<td align="center" colspan="5">
-						<input type="submit" value="Submit Response"/>
+						<input type="hidden" name = "billID" value="${billID}">
+						<input type="hidden" name = "amt_due" value="${amt_due}">
+						<input type="hidden" name = "amt_paid" value="${amt_paid}">
+					
+						<input type="submit" value="Make a payment"/>
+						
 					</td>
 				</tr>
+				</form>
+			    <form action="clientBillQueries">
+				
+				<tr> 
+				<th>Any notes or queries?</th>
+				<td align="center" colspan="3">
+						<input type="text" name="note" size="100"  value="" onfocus="this.value=''">
+						<input type="hidden" name = "billID" value="${billID}">
+						
+					</td>
+				
+					<td align="center" colspan="5">
+						<input type="submit" value="Submit"/>
+					</td>
+				</tr>
+					</form>
+				
+			
+
 				
 	</table>
 	
-	</form>
 	</center>
 </body>
 </html>
