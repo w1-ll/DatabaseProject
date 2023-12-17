@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.sql.PreparedStatement;
 import java.util.Random;
 
@@ -133,6 +135,22 @@ public class ControlServlet extends HttpServlet {
         		 System.out.println("Client Bill Page initiated.");
         		 ClientBillPage(request, response);
         		 break;
+        	 case "/reviseBill":
+        		 System.out.println("Client Bill Page initiated.");
+        		 ReviseBill(request, response);
+        		 break;
+        	 case "/payment":
+        		 System.out.println("Client Bill Page initiated.");
+        		 ClientPayment(request, response);
+        		 break;
+        	 case "/finishPayment":
+        		 System.out.println("Client Bill Page initiated.");
+        		 ClientFinishPayment(request, response);
+        		 break;
+        	 case "/clientBillQueries":
+        		 System.out.println("Client Bill Page initiated.");
+        		 ClientBillQueries(request, response);
+        		 break;
 	    	}
 	    }
 	    catch(Exception ex) {
@@ -156,7 +174,7 @@ public class ControlServlet extends HttpServlet {
 	    private void rootPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
 	    	System.out.println("root view");
 			request.setAttribute("listUser", userDAO.listAllUsers());
-			
+			//userDAO.updateAllBillCounter();
 			request.setAttribute("Requests", userDAO.listAllRequests());
 			request.setAttribute("Quotes", userDAO.listAllQuotes());
 			request.setAttribute("Trees", userDAO.listAllTrees());
@@ -187,7 +205,7 @@ public class ControlServlet extends HttpServlet {
 	    	request.setAttribute("RejectedRequests", userDAO.listAllRejectedRequests());
 	    	request.setAttribute("SuccessfulRequests", userDAO.listAllSuccessfulRequests());
 	    	request.setAttribute("SuccessfulQuotes", userDAO.listAllSuccessfulQuotes());
-			request.setAttribute("Bills", userDAO.listAllBills());
+	    	request.setAttribute("Bills", userDAO.listAllBills());
 
 	    	request.getRequestDispatcher("contractor.jsp").forward(request, response);
 
@@ -363,15 +381,11 @@ private void newBill(HttpServletRequest request, HttpServletResponse response) t
 	System.out.println("3");
 
 	int amt_due = userDAO.getQuotePriceFromUniqueTreeID(unique_treeID);
-//	System.out.println("4");
-//
-//	System.out.println("orderID: "+orderID);
-//	System.out.println("billID: "+billID);
-//	System.out.println("amt_due: "+amt_due);
-//	System.out.println("unique_tree_id: "+unique_treeID);
-	userDAO.updateOrder(orderID,"S");
 
-	bill Bills = new bill(billID,status,user_note,contractor_note,amt_due,0,unique_treeID,email,0);
+	userDAO.updateOrder(orderID,"S");
+    Date billCreationDate = new Date();
+
+	bill Bills = new bill(billID,status,user_note,contractor_note,amt_due,0,unique_treeID,email,0,billCreationDate);
 	userDAO.insertBill(Bills);
 	System.out.println("userDAO ran.");
 	contractorPage(request,response,"");
@@ -553,7 +567,7 @@ private void ReviseQuote(HttpServletRequest request, HttpServletResponse respons
 	 
 
 	 if (!(user_status.equals("S") || user_status.equals("R")) ) Contractor_status = "P";
-	 
+	 //Create a new Order
 	 if (Contractor_status.equals("S") && user_status.equals("S")) {
 		 orders Order = new orders(email,randomIDGenerator(),"P", sample.getUnique_tree_id());
 		 userDAO.insertOrder(Order);
@@ -576,15 +590,11 @@ private void CheckOrder(HttpServletRequest request, HttpServletResponse response
 	 System.out.println("Started");
 	 String orderID = request.getParameter("orderID");
 	 String status = request.getParameter("status");
-	 System.out.println("1");
 	 String email = request.getParameter("email");
 	 orders newOrder = userDAO.getOrder(orderID);
-	 System.out.println("2");
 	 List<tree>SpecificTrees = userDAO.listSpecificTrees(newOrder.getUnique_tree_id());
 	 request.setAttribute("SpecificTrees", SpecificTrees);
-	 System.out.println("3");
-	 //int tree_id = newOrder.getUnique_tree_id();
-	// tree newTree = userDAO.getTree(tree_id);
+
 	 request.setAttribute("orderID", orderID);
 	 request.setAttribute("status", status);
 	 request.setAttribute("email", email);
@@ -594,12 +604,7 @@ private void CheckOrder(HttpServletRequest request, HttpServletResponse response
 		request.setAttribute("finish_date", null); 
 
 	 }
-	 System.out.println("4");
-//	 
-//	 request.setAttribute("tree_distance", newTree.getTree_distance());
-//	 request.setAttribute("trunk_size", newTree.getTrunk_size());
-//	 request.setAttribute("tree_height", newTree.getTree_height());
-//	 request.setAttribute("tree_location", newTree.getTree_location());
+
 	 request.getRequestDispatcher("CheckOrder.jsp").forward(request, response);
 
 
@@ -703,7 +708,8 @@ private void CheckBill(HttpServletRequest request, HttpServletResponse response)
 	 String status = request.getParameter("status");
 	 String user_note = request.getParameter("user_note");
 	 String contractor_note = request.getParameter("contractor_note");
-
+	 
+	 String email =request.getParameter("email");
 	 int amt_due = Integer.parseInt(request.getParameter("amt_due"));
 	 int amt_paid = Integer.parseInt(request.getParameter("amt_paid"));
 	 int unique_tree_id = Integer.parseInt(request.getParameter("unique_tree_id"));
@@ -749,6 +755,118 @@ private void ClientBillPage(HttpServletRequest request, HttpServletResponse resp
 	System.out.println("Re ended");
 
 	    }
+
+private void ReviseBill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 System.out.println("Started.");
+	 String billID = request.getParameter("billID");
+	 int amt_due = Integer.parseInt(request.getParameter("amt_due"));
+	 int amt_paid = Integer.parseInt(request.getParameter("amt_paid"));
+	 bill nBill = userDAO.getBill(billID);
+	 String email = nBill.getEmail();
+	 int unique_tree_id = nBill.getUnique_tree_id();
+	 int total_price = userDAO.getQuotePriceFromUniqueTreeID(unique_tree_id);
+	 String user_note = request.getParameter("user_note");
+	 String temp_status = request.getParameter("options");
+
+	 String contractor_note = request.getParameter("contractor_note");
+	 
+	 int price2 = Integer.parseInt(request.getParameter("price2"));
+	 if (price2 != 0) {
+			 amt_due += price2;}
+	 if (temp_status.equals("S")) {
+	 userDAO.modifyBill(billID,contractor_note,amt_due);
+	 userDAO.insertMessagesForContractorUsingBillID(billID, email, contractor_note);
+	 }
+	
+	 System.out.println("Re started");
+	 //String newP = (price2 == "")? price1:price2;
+
+	 contractorPage(request, response, "");
+	System.out.println("Re ended");
+
+	    }
+
+private void ClientPayment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 System.out.println("Started.");
+	 String billID = request.getParameter("billID");
+	 int amt_due = Integer.parseInt(request.getParameter("amt_due"));
+	 int amt_paid = Integer.parseInt(request.getParameter("amt_paid"));
+	 
+	 session = request.getSession();
+	 String email = (String)session.getAttribute("username");
+	 request.setAttribute("billID", billID);
+	 request.setAttribute("amt_due", amt_due);
+	 request.setAttribute("amt_paid", amt_paid);
+	 request.setAttribute("email", email);
+
+		request.getRequestDispatcher("ClientPaymentPortal.jsp").forward(request, response);
+	System.out.println("Re ended");
+
+	    }
+
+private void ClientFinishPayment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 System.out.println("Started.");
+	 String status = "P";
+
+	 String billID = request.getParameter("billID");
+
+	 int amt_due = Integer.parseInt(request.getParameter("amt_due"));
+
+	 int amt_paid = Integer.parseInt(request.getParameter("amt_paid"));
+	 int payment = Integer.parseInt(request.getParameter("payment"));
+	 amt_due = amt_due - payment;
+	 amt_paid = amt_paid +payment;
+	 String email = request.getParameter("email");
+	 int diff = (amt_due-amt_paid);
+	 if (diff == 0) status = "S";
+	 
+	 userDAO.updateBill(billID, status, amt_due, amt_paid);
+	 
+	 bill nBill = userDAO.getBill(billID);
+	 String user_note = nBill.getUser_note();
+	 String contractor_note = nBill.getContractor_note();
+	 int unique_tree_id = nBill.getUnique_tree_id();
+	 request.setAttribute("billID",billID);
+	 request.setAttribute("status", status);
+	 request.setAttribute("user_note", user_note);
+	 request.setAttribute("contractor_note", contractor_note);
+	 request.setAttribute("amt_due", amt_due);
+	 request.setAttribute("amt_paid", amt_paid);
+	 
+	 List<tree>SpecificTrees = userDAO.listSpecificTrees(unique_tree_id);
+	 request.setAttribute("SpecificTrees", SpecificTrees);
+
+	 request.setAttribute("SpecificMessages", userDAO.listSpecificMessagesFromBillID(billID));
+
+
+		request.getRequestDispatcher("ClientBillPage.jsp").forward(request, response);
+	System.out.println("Re ended");
+
+	    }
+
+private void ClientBillQueries(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	 System.out.println("Started.");
+	String note = request.getParameter("note");
+	session = request.getSession();
+	 String email = (String)session.getAttribute("username");
+	 String billID = request.getParameter("billID");
+	 userDAO.insertMessagesForClientUsingBillID(billID, email, note);
+	 bill nBill = userDAO.getBill(billID);
+	 nBill.setUser_note(note);
+	 userPage(request, response, "");
+	System.out.println("Re ended");
+
+	    }
+
 	        
 	    
 }
+	        
+	        
+	    
+	        
+	        
+	        
+	    
+
+
